@@ -1,0 +1,1 @@
+# jfrog-docker-desktop-extension
