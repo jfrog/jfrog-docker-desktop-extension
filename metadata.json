@@ -1,0 +1,32 @@
+{
+  "name": "jfrog-docker-desktop-extension",
+  "provider": "JFrog",
+  "icon": "icon.svg",
+  "ui": {
+    "dashboard-tab": {
+      "title": "JFrog",
+      "root": "/ui",
+      "src": "index.html"
+    }
+  },
+  "host": {
+    "binaries": [
+      {
+        "darwin": [
+          {
+            "path": "/binaries/darwin/jf"
+          },
+          {
+            "path": "/binaries/darwin/runcli.sh"
+          },
+          {
+            "path": "/binaries/darwin/readconf.sh"
+          },
+          {
+            "path": "/binaries/darwin/writeconf.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
