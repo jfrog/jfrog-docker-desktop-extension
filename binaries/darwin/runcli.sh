@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/sh
 
 export JFROG_CLI_HOME_DIR=~/.jfrog-docker-desktop-extension
 
