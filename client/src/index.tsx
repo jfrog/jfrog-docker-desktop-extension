@@ -4,7 +4,6 @@ import { Helmet } from 'react-helmet';
 
 import App from './App';
 
-import reportWebVitals from './reportWebVitals';
 import { APP_TITLE, APP_DESCRIPTION } from './utils/constants';
 
 ReactDOM.render(
@@ -19,5 +18,3 @@ ReactDOM.render(
   </React.StrictMode>,
   document.getElementById('root')
 );
-
-reportWebVitals(console.log);

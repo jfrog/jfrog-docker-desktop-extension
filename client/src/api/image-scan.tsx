@@ -75,7 +75,7 @@ export async function scanImage(imageTag: string): Promise<any> {
     {
       Severity: "High",
       ImpactedPacakge: "log4J",
-      ImpactedPacakgeVersion: "",
+      ImpactedPacakgeVersion: "23213",
       Type: "GO",
       FixedVersions: "1.15.10",
       Component: "myproj",
@@ -85,7 +85,7 @@ export async function scanImage(imageTag: string): Promise<any> {
     {
       Severity: "High",
       ImpactedPacakge: "log4J",
-      ImpactedPacakgeVersion: "",
+      ImpactedPacakgeVersion: "23213",
       Type: "GO",
       FixedVersions: "1.15.10",
       Component: "myproj",
@@ -95,7 +95,7 @@ export async function scanImage(imageTag: string): Promise<any> {
     {
       Severity: "Medium",
       ImpactedPacakge: "log4Jlog4Jlog4J",
-      ImpactedPacakgeVersion: "",
+      ImpactedPacakgeVersion: "23213",
       Type: "GO",
       FixedVersions: "1.15.10",
       Component: "myproj",
@@ -105,7 +105,7 @@ export async function scanImage(imageTag: string): Promise<any> {
     {
       Severity: "Low",
       ImpactedPacakge: "dasd",
-      ImpactedPacakgeVersion: "",
+      ImpactedPacakgeVersion: "23213",
       Type: "GO",
       FixedVersions: "1.15.10",
       Component: "myproj",
@@ -115,7 +115,7 @@ export async function scanImage(imageTag: string): Promise<any> {
     {
       Severity: "High",
       ImpactedPacakge: "log4J",
-      ImpactedPacakgeVersion: "",
+      ImpactedPacakgeVersion: "23213",
       Type: "GO",
       FixedVersions: "1.15.10",
       Component: "myproj",
@@ -125,7 +125,7 @@ export async function scanImage(imageTag: string): Promise<any> {
     {
       Severity: "High",
       ImpactedPacakge: "log4J",
-      ImpactedPacakgeVersion: "",
+      ImpactedPacakgeVersion: "23213",
       Type: "GO",
       FixedVersions: "1.15.10",
       Component: "myproj",
@@ -135,7 +135,7 @@ export async function scanImage(imageTag: string): Promise<any> {
     {
       Severity: "High",
       ImpactedPacakge: "log4J",
-      ImpactedPacakgeVersion: "",
+      ImpactedPacakgeVersion: "23213",
       Type: "GO",
       FixedVersions: "1.15.10",
       Component: "myproj",
