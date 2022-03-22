@@ -1,3 +1,3 @@
 interface Window {
-  ddClient: any;
-}
+    ddClient: any;
+  }
