@@ -28,7 +28,7 @@ LABEL org.opencontainers.image.title="JFrog Docker Desktop Extension" \
     org.opencontainers.image.vendor="JFrog" \
     com.docker.desktop.extension.api.version="0.0.1"
 
-COPY --from=client-builder /app/client/dist ui
+COPY --from=client-builder /app/client/build ui
 COPY icon.svg .
 COPY metadata.json .
 VOLUME /config

@@ -10,6 +10,7 @@ import TableRow from '@mui/material/TableRow';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import Paper from '@mui/material/Paper';
 import { visuallyHidden } from '@mui/utils';
+import criticalSeverity from '../../assets/critical_severity.png'
 
 interface Column {
   id: string;
@@ -138,6 +139,8 @@ export default function DynamicTable({columnNames, rows}: {columnNames : string[
                       {columnNames.map((columnName) => {
                         return (
                           <TableCell key={columnName + index}>
+                            {// <img src={criticalSeverity} alt="criticalSeverity" /> 
+                            }
                             {row[columnName]}
                           </TableCell>
                         );

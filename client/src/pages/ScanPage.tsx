@@ -7,6 +7,10 @@ import Table from '../components/Table';
 import { AppContext } from '../contexts';
 import { APP_TITLE, PAGE_TITLE_HOME } from '../utils/constants';
 import jfrogLogo from '../assets/jfrog.png'
+import criticalSeverity from '../assets/critical_severity.png'
+import highSeverity from '../assets/high_severity.png'
+import mediumSeverity from '../assets/medium_severity.png'
+import lowSeverity from '../assets/low_severity.png'
 import http from "../http-common";
 import { getImages, scanImage } from "../api/image-scan";
 
