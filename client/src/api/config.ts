@@ -1,3 +1,5 @@
+import {throwErrorAsString} from "./utils";
+
 export class Config {
   jfrogCliConfig: JfrogCliConfig
   xrayScanConfig: XrayScanConfig
@@ -21,12 +23,16 @@ export class XrayScanConfig {
 }
 
 export async function importConfigFromHostCli(): Promise<void> {
-  let exportResponse = await window.ddClient.extension.host.cli.exec("jf", ["config", "export"]);
-  let serverToken = exportResponse.stdout;
-  await window.ddClient.extension.host.cli.exec("runcli.sh", ["config", "import", serverToken]);
+  try {
+    let exportResponse = await window.ddClient.extension.host.cli.exec("jf", ["config", "export"]);
+    let serverToken = exportResponse.stdout;
+    await window.ddClient.extension.host.cli.exec("runcli.sh", ["config", "import", serverToken]);
+  } catch (e) {
+    throwErrorAsString(e);
+  }
 }
 
-export async function saveConfig(config: Config): Promise<any> {
+export async function saveConfig(config: Config): Promise<void> {
   let configJson = JSON.stringify(config.xrayScanConfig).replaceAll('"', '\\"');
   let xrayScanConfPromise = window.ddClient.extension.host.cli.exec("writeconf.sh", ["\"" + configJson + "\""]);
   let savePromises: Promise<any>[] = [xrayScanConfPromise];
@@ -34,39 +40,69 @@ export async function saveConfig(config: Config): Promise<any> {
     let serverId = await getJfrogCliConfigServerId();
     savePromises.push(editCliConfig(config.jfrogCliConfig, serverId));
   }
-  let results = await Promise.all(savePromises);
-  return JSON.parse(results[0].stdout);
+  try {
+    await Promise.all(savePromises);
+  } catch (e) {
+    throwErrorAsString(e);
+  }
 }
 
 export async function getConfig(): Promise<Config> {
   let xrayScanConfPromise = getXrayScanConfig();
-  let cliConfPromise = getJfrogCliConfig()
-  let results = await Promise.all([xrayScanConfPromise, cliConfPromise]);
-  return {xrayScanConfig: results[0], jfrogCliConfig: results[1]};
+  let cliConfPromise = getJfrogCliConfig();
+  let config: Config = new Config();
+  try {
+    let results = await Promise.all([xrayScanConfPromise, cliConfPromise]);
+    config.xrayScanConfig = results[0];
+    config.jfrogCliConfig = results[1];
+  } catch (e) {
+    throwErrorAsString(e);
+  }
+  return config;
 }
 
 export async function getXrayScanConfig(): Promise<XrayScanConfig> {
-  let cmdResult = await window.ddClient.extension.host.cli.exec("readconf.sh");
-  return JSON.parse(cmdResult.stdout);
+  let xrayScanConfig;
+  try {
+    let cmdResult = await window.ddClient.extension.host.cli.exec("readconf.sh");
+    xrayScanConfig = JSON.parse(cmdResult.stdout);
+  } catch (e) {
+    throwErrorAsString(e);
+  }
+  return xrayScanConfig;
 }
 
 async function getJfrogCliConfig(): Promise<JfrogCliConfig> {
-  let cliConfResult = await window.ddClient.extension.host.cli.exec("runcli.sh", ["config", "export"]);
-  let cliConfigRes = JSON.parse(window.atob(cliConfResult.stdout));
+  let cliConfigRes = await getJfrogCliFullConfig();
   return {url: cliConfigRes.url, user: cliConfigRes.user, password: undefined, accessToken: undefined}
 }
 
 async function getJfrogCliConfigServerId(): Promise<string> {
-  let cliConfResult = await window.ddClient.extension.host.cli.exec("runcli.sh", ["config", "export"]);
-  let cliConfigRes = JSON.parse(window.atob(cliConfResult.stdout));
+  let cliConfigRes = await getJfrogCliFullConfig();
   return cliConfigRes.serverId;
 }
 
+async function getJfrogCliFullConfig(): Promise<any> {
+  let cliConfigRes;
+  try {
+    let cliConfResult = await window.ddClient.extension.host.cli.exec("runcli.sh", ["config", "export"]);
+    cliConfigRes = JSON.parse(window.atob(cliConfResult.stdout));
+  } catch (e) {
+    throwErrorAsString(e);
+  }
+  return cliConfigRes;
+}
+
 async function editCliConfig(cliConfig: JfrogCliConfig, serverId: string) {
-  const validationServerId = "validation"
-  let validationConfigAddArgs = buildConfigImportCmd(cliConfig, validationServerId)
-  await window.ddClient.extension.host.cli.exec("runcli.sh", validationConfigAddArgs)
-  let curlResult = await window.ddClient.extension.host.cli.exec("runcli.sh", ["xr", "curl", "--server-id", validationServerId, "-X", "POST", "-H", "\"Content-Type:application/json\"", "-d", "\"{\\\"component_details\\\":[{\\\"component_id\\\":\\\"testComponent\\\"}]}\"", "-o", "/dev/null", "-w", "%{http_code}", "api/v1/summary/component"])
+  const validationServerId = "validation";
+  let validationConfigAddArgs = buildConfigImportCmd(cliConfig, validationServerId);
+  let curlResult;
+  try {
+    await window.ddClient.extension.host.cli.exec("runcli.sh", validationConfigAddArgs);
+    curlResult = await window.ddClient.extension.host.cli.exec("runcli.sh", ["xr", "curl", "--server-id", validationServerId, "-X", "POST", "-H", "\"Content-Type:application/json\"", "-d", "\"{\\\"component_details\\\":[{\\\"component_id\\\":\\\"testComponent\\\"}]}\"", "-o", "/dev/null", "-w", "%{http_code}", "api/v1/summary/component"]);
+  } catch (e) {
+    throwErrorAsString(e);
+  }
   let statusCode = curlResult.stdout
   if (statusCode !== "200") {
     if (statusCode === "401") {
@@ -76,9 +112,13 @@ async function editCliConfig(cliConfig: JfrogCliConfig, serverId: string) {
     }
     throw "Error occurred: " + statusCode
   }
-  await window.ddClient.extension.host.cli.exec("runcli.sh", ["c", "rm", "--quiet", validationServerId])
-  let configAddArgs = buildConfigImportCmd(cliConfig, serverId)
-  await window.ddClient.extension.host.cli.exec("runcli.sh", configAddArgs)
+  try {
+    await window.ddClient.extension.host.cli.exec("runcli.sh", ["c", "rm", "--quiet", validationServerId])
+    let configAddArgs = buildConfigImportCmd(cliConfig, serverId)
+    await window.ddClient.extension.host.cli.exec("runcli.sh", configAddArgs)
+  } catch (e) {
+    throwErrorAsString(e);
+  }
 }
 
 function buildConfigImportCmd(cliConfig: JfrogCliConfig, serverId: string): string[] {
