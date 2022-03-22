@@ -11,7 +11,7 @@ export function App() {
           let res = await func();
           resultsElement.innerText = JSON.stringify(res);
         } catch (e) {
-          resultsElement.innerText = JSON.stringify(e);
+          resultsElement.innerText = e + "\n" + JSON.stringify(e);
         }
       }
     }
