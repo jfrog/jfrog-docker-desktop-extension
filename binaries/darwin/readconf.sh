@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 HOME_DIR=~/.jfrog-docker-desktop-extension
 CONF_FILE=$HOME_DIR/jfrog-docker-desktop-extension.conf
