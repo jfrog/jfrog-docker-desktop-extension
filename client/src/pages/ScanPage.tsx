@@ -6,7 +6,7 @@ import Select from '../components/Select';
 import Table from '../components/Table';
 import { AppContext } from '../contexts';
 import { APP_TITLE, PAGE_TITLE_HOME } from '../utils/constants';
-import jfrogLogo from '../jfrog.png'
+import jfrogLogo from '../assets/jfrog.png'
 import http from "../http-common";
 import { getImages, scanImage } from "../api/image-scan";
 
