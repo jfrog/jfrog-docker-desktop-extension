@@ -17,7 +17,6 @@ export class JfrogCliConfig {
 
 export class XrayScanConfig {
   project: string | undefined;
-  repoPath: string | undefined;
   watches: string[] | undefined;
 }
 
