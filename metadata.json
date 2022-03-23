@@ -39,6 +39,20 @@
           {
             "path": "/binaries/unix/writeconf.sh"
           }
+        ],
+        "windows": [
+          {
+            "path": "/binaries/windows/jf.exe"
+          },
+          {
+            "path": "/binaries/windows/runcli.bat"
+          },
+          {
+            "path": "/binaries/windows/readconf.bat"
+          },
+          {
+            "path": "/binaries/windows/writeconf.bat"
+          }
         ]
       }
     ]
