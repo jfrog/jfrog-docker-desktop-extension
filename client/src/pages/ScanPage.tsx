@@ -6,10 +6,6 @@ import Select from '../components/Select';
 import Table from '../components/Table';
 import { AppContext } from '../contexts';
 import { APP_TITLE, PAGE_TITLE_HOME } from '../utils/constants';
-import criticalSeverity from '../assets/severityIcons/critical_severity.png';
-import highSeverity from '../assets/severityIcons/high_severity.png';
-import mediumSeverity from '../assets/severityIcons/medium_severity.png';
-import lowSeverity from '../assets/severityIcons/low_severity.png';
 import { getImages, scanImage } from '../api/image-scan';
 import { JfrogHeadline } from '../components/JfrogHeadline';
 
@@ -77,14 +73,20 @@ export const ScanPage = () => {
       <Typography variant="subtitle1">Image</Typography>
       <Box display="flex" width={1 / 2}>
         <Select onChange={handleChange} options={dockerImages} />
-        <ScanButton variant="contained" disabled={selectedImage == ''} loading={isLoading} onClick={onScanClick}>
+        <ScanButton
+          variant="contained"
+          sx={{ fontSize: '16px', fontWeight: '700' }}
+          disabled={selectedImage == ''}
+          loading={isLoading}
+          onClick={onScanClick}
+        >
           Scan
         </ScanButton>
       </Box>
 
       {selectedImage ? (
-        <Box padding="5px 10px" bgcolor="#E5EBF3" alignItems="center" marginTop="20px" display="flex" width={1 / 2}>
-          <CircularProgress size="10px" sx={{ marginRight: '10px' }} />
+        <Box padding="5px 0" bgcolor="#E5EBF3" alignItems="center" marginTop="20px" display="flex" width={1 / 2}>
+          <CircularProgress size="10px" sx={{ margin: '0 10px' }} />
           <Typography color="#556274" fontWeight="400" fontSize="12px">
             scanning {selectedImage}...
           </Typography>
@@ -92,6 +94,7 @@ export const ScanPage = () => {
       ) : (
         ''
       )}
+
       {scanResults.length > 0 ? (
         <Box sx={{ marginTop: '50px' }}>
           <Typography fontWeight="500" fontSize="18px">
