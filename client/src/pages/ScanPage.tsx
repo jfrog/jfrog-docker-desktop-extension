@@ -1,4 +1,4 @@
-import { Box, styled, Typography, SelectChangeEvent } from '@mui/material';
+import { Box, styled, Typography, SelectChangeEvent, CircularProgress, Button } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { useContext, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
@@ -70,20 +70,33 @@ export const ScanPage = () => {
           {PAGE_TITLE_HOME} | {APP_TITLE}
         </title>
       </Helmet>
-      <JfrogHeadline headline="Jfrog Xray Scan2" />
-
-      <Typography fontFamily="Open-Sans" variant="subtitle1">
-        Image
-      </Typography>
-      <Box sx={{ display: 'flex', flexDirection: 'row', width: 1 / 2 }}>
+      <JfrogHeadline headline="Jfrog Xray Scan" />
+      <Button variant="outlined" sx={{ position: 'absolute', right: '20px', top: '20px', fontWeight: '700' }}>
+        Settings
+      </Button>
+      <Typography variant="subtitle1">Image</Typography>
+      <Box display="flex" width={1 / 2}>
         <Select onChange={handleChange} options={dockerImages} />
-        <ScanButton disabled={selectedImage == ''} loading={isLoading} onClick={onScanClick} variant="contained">
+        <ScanButton variant="contained" disabled={selectedImage == ''} loading={isLoading} onClick={onScanClick}>
           Scan
         </ScanButton>
       </Box>
+
+      {selectedImage ? (
+        <Box padding="5px 10px" bgcolor="#E5EBF3" alignItems="center" marginTop="20px" display="flex" width={1 / 2}>
+          <CircularProgress size="10px" sx={{ marginRight: '10px' }} />
+          <Typography color="#556274" fontWeight="400" fontSize="12px">
+            scanning {selectedImage}...
+          </Typography>
+        </Box>
+      ) : (
+        ''
+      )}
       {scanResults.length > 0 ? (
         <Box sx={{ marginTop: '50px' }}>
-          <Typography variant="h6">Image Scan Results</Typography>
+          <Typography fontWeight="500" fontSize="18px">
+            Image Scan Results
+          </Typography>
           {scanResults.length > 0 ? <Table columnNames={scanResultColumnNames} rows={scanResults} /> : ''}
         </Box>
       ) : (
