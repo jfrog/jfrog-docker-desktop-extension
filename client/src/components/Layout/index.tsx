@@ -14,12 +14,8 @@ export const Layout: FC = ({ children }) => {
   return (
     <LayoutWrapper>
       <ContentWrapper>
-        <Box component="header">
-          <Header toggleNavigation={toggleNavigation} />
-        </Box>
         <Navigation open={open} handleClose={toggleNavigation} />
         <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-          <DrawerHeader />
           {children}
         </Box>
       </ContentWrapper>
@@ -38,8 +34,3 @@ const ContentWrapper = styled('div')`
   display: flex;
   min-height: calc(100vh - ${FOOTER_HEIGHT}px);
 `;
-
-const DrawerHeader = styled('div')(({ theme }) => ({
-  padding: theme.spacing(0, 1),
-  ...theme.mixins.toolbar,
-}));

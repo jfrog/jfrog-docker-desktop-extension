@@ -1,22 +1,24 @@
 {
-  "name": "weldev-project-react-mui-ts-bp",
+  "name": "jfrog-docker-desktop-extension",
   "version": "2.0.0",
-  "description": "React TypeScript Material-UI boilerplate by Welcome, Developer.",
+  "description": "Jfrog Docker Desktop Extension",
   "author": {
-    "name": "Dan Castro",
-    "url": "https://www.welcomedeveloper.com"
+    "name": "Jfrog",
+    "url": "https://www.jfrog.com"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/danilocastronz/weldev-project-react-mui-ts-bp",
-    "directory": "weldev-project-react-mui-ts-bp"
+    "url": "https://github.com/jfrog/jfrog-docker-desktop-extension",
+    "directory": "jfrog-docker-desktop-extension"
   },
   "dependencies": {
     "@emotion/react": "^11.8.2",
     "@emotion/styled": "^11.8.1",
+    "@fontsource/open-sans": "^4.5.8",
+    "@fontsource/roboto": "^4.5.5",
     "@mui/icons-material": "^5.0.1",
     "@mui/lab": "^5.0.0-alpha.74",
-    "@mui/material": "^5.0.1",
+    "@mui/material": "^5.5.2",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
@@ -27,7 +29,6 @@
     "@types/react": "^16.9.53",
     "@types/react-dom": "^16.9.8",
     "@types/react-helmet": "^6.1.0",
-    "axios": "^0.26.1",
     "dotenv": "^8.2.0",
     "hamburger-react": "^2.4.1",
     "react": "^17.0.1",
