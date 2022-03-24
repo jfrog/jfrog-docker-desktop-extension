@@ -64,7 +64,12 @@ function TableHeadline(props: TableHeadlineProps) {
     <TableHead>
       <TableRow>
         {columnNames.map((columnName) => (
-          <TableCell align="center" key={columnName} sortDirection={orderBy === columnName ? order : false}>
+          <TableCell
+            sx={{ padding: '16px 0' }}
+            align="center"
+            key={columnName}
+            sortDirection={orderBy === columnName ? order : false}
+          >
             <TableSortLabel
               active={orderBy === columnName}
               direction={orderBy === columnName ? order : 'asc'}
@@ -116,17 +121,7 @@ export default function DynamicTable({ columnNames, rows }: { columnNames: strin
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
         <TableContainer>
-          <Table
-            sx={{
-              backgroundColor: '#E6E6ED',
-              minWidth: 750,
-              borderCollapse: 'separate',
-              borderSpacing: '0 10px',
-              padding: '0 10px',
-            }}
-            aria-labelledby="tableTitle"
-            size={'medium'}
-          >
+          <StyledTable aria-labelledby="tableTitle">
             <TableHeadline
               columnNames={columnNames}
               order={order}
@@ -155,16 +150,12 @@ export default function DynamicTable({ columnNames, rows }: { columnNames: strin
                   );
                 })}
               {emptyRows > 0 && (
-                <TableRow
-                  style={{
-                    height: 53 * emptyRows,
-                  }}
-                >
+                <TableRow style={{ height: 53 * emptyRows }}>
                   <TableCell colSpan={6} />
                 </TableRow>
               )}
             </TableBody>
-          </Table>
+          </StyledTable>
         </TableContainer>
         <TablePagination
           sx={{ backgroundColor: '#E6E6ED' }}
