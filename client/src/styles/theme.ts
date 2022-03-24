@@ -1,4 +1,4 @@
-import { createTheme, responsiveFontSizes, Theme } from '@mui/material';
+import { createTheme, responsiveFontSizes } from '@mui/material';
 
 import { DARK_MODE_THEME, LIGHT_MODE_THEME } from '../utils/constants';
 
