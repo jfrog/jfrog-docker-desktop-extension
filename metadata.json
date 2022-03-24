@@ -17,13 +17,27 @@
             "path": "/binaries/darwin/jf"
           },
           {
-            "path": "/binaries/darwin/runcli.sh"
+            "path": "/binaries/unix/runcli.sh"
           },
           {
-            "path": "/binaries/darwin/readconf.sh"
+            "path": "/binaries/unix/readconf.sh"
           },
           {
-            "path": "/binaries/darwin/writeconf.sh"
+            "path": "/binaries/unix/writeconf.sh"
+          }
+        ],
+        "linux": [
+          {
+            "path": "/binaries/linux/jf"
+          },
+          {
+            "path": "/binaries/unix/runcli.sh"
+          },
+          {
+            "path": "/binaries/unix/readconf.sh"
+          },
+          {
+            "path": "/binaries/unix/writeconf.sh"
           }
         ]
       }
