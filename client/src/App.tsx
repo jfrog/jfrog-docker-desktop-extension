@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 
 import { Layout } from './components/Layout';
 import { PageDefault } from './components/PageDefault';
@@ -42,6 +42,7 @@ function App() {
                 {routes.map((route: AppRoute) =>
                   route.subRoutes ? route.subRoutes.map((item: AppRoute) => addRoute(item)) : addRoute(route)
                 )}
+                <Redirect to="/" />
               </Layout>
             </Switch>
           </Router>

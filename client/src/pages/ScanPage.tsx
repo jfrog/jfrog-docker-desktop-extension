@@ -51,7 +51,7 @@ export const ScanPage = () => {
       setScanResults([]);
       let results = await scanImage(selectedImage);
       console.log(results);
-      setScanResults(results);
+      setScanResults(results.Vulnerabilities);
       setIsLoading(false);
     } catch (e) {
       setIsLoading(false);
@@ -75,7 +75,7 @@ export const ScanPage = () => {
         <Select onChange={handleChange} options={dockerImages} />
         <ScanButton
           variant="contained"
-          sx={{ fontSize: '16px', fontWeight: '700' }}
+          sx={{ width: '120px', fontSize: '16px', fontWeight: '700', textTransform: 'none' }}
           disabled={selectedImage == ''}
           loading={isLoading}
           onClick={onScanClick}
@@ -84,7 +84,7 @@ export const ScanPage = () => {
         </ScanButton>
       </Box>
 
-      {selectedImage ? (
+      {isLoading ? (
         <Box padding="5px 0" bgcolor="#E5EBF3" alignItems="center" marginTop="20px" display="flex" width={1 / 2}>
           <CircularProgress size="10px" sx={{ margin: '0 10px' }} />
           <Typography color="#556274" fontWeight="400" fontSize="12px">
@@ -97,7 +97,7 @@ export const ScanPage = () => {
 
       {scanResults.length > 0 ? (
         <Box sx={{ marginTop: '50px' }}>
-          <Typography fontWeight="500" fontSize="18px">
+          <Typography variant="h6" fontWeight="500" fontSize="18px">
             Image Scan Results
           </Typography>
           {scanResults.length > 0 ? <Table columnNames={scanResultColumnNames} rows={scanResults} /> : ''}
@@ -117,11 +117,11 @@ const ScanButton = styled(LoadingButton)`
 
 const scanResultColumnNames = [
   'Severity',
-  'ImpactedPacakge',
-  'ImpactedPacakgeVersion',
+  'ImpactedPackage',
+  'ImpactedPackageVersion',
   'Type',
   'FixedVersions',
-  'Component',
-  'ComponentVersion',
-  'Cve',
+  'CVE',
+  'CVSSv2',
+  'CVSSv3',
 ];

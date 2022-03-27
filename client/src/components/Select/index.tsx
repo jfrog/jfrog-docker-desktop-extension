@@ -16,6 +16,7 @@ export default function BasicSelect({ options, onChange }: SelectProps) {
       <FormControl fullWidth>
         <Select
           fullWidth
+          style={{ fontSize: '14px' }}
           SelectDisplayProps={{ style: { paddingTop: '10px', paddingBottom: '10px' } }}
           id="demo-simple-select"
           onChange={onChange}
