@@ -51,7 +51,7 @@ export const ScanPage = () => {
       setScanResults([]);
       let results = await scanImage(selectedImage);
       console.log(results);
-      setScanResults(results);
+      setScanResults(results.Vulnerabilities);
       setIsLoading(false);
     } catch (e) {
       setIsLoading(false);
@@ -84,7 +84,7 @@ export const ScanPage = () => {
         </ScanButton>
       </Box>
 
-      {selectedImage ? (
+      {isLoading ? (
         <Box padding="5px 0" bgcolor="#E5EBF3" alignItems="center" marginTop="20px" display="flex" width={1 / 2}>
           <CircularProgress size="10px" sx={{ margin: '0 10px' }} />
           <Typography color="#556274" fontWeight="400" fontSize="12px">
@@ -117,11 +117,11 @@ const ScanButton = styled(LoadingButton)`
 
 const scanResultColumnNames = [
   'Severity',
-  'ImpactedPacakge',
-  'ImpactedPacakgeVersion',
+  'ImpactedPackage',
+  'ImpactedPackageVersion',
   'Type',
   'FixedVersions',
-  'Component',
-  'ComponentVersion',
-  'Cve',
+  'CVE',
+  'CVSSv2',
+  'CVSSv3',
 ];

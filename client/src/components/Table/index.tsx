@@ -43,7 +43,7 @@ export default function DynamicTable({ columnNames, rows }: { columnNames: strin
 
   const includesSearchText = (row: any) => {
     for (let col of columnNames) {
-      if (row[col].toLowerCase().includes(searchText.toLowerCase())) {
+      if (row[col] && row[col].toLowerCase().includes(searchText.toLowerCase())) {
         return true;
       }
     }
@@ -59,10 +59,12 @@ export default function DynamicTable({ columnNames, rows }: { columnNames: strin
             Clear
           </Typography>
         </Box>
-        {exportButton()}
+        {
+          //exportButton()}
+        }
       </Box>
 
-      <TableContainer sx={{ overflowY: 'scroll', maxHeight: '400px' }}>
+      <TableContainer sx={{ overflow: 'hidden auto', maxHeight: '400px' }}>
         <StyledTable aria-labelledby="tableTitle">
           <TableHeader columnNames={columnNames} order={order} orderBy={orderBy} onRequestSort={handleRequestSort} />
           <TableBody>
@@ -72,24 +74,26 @@ export default function DynamicTable({ columnNames, rows }: { columnNames: strin
               .filter((row) => searchText == '' || includesSearchText(row))
               .map((row, i) => {
                 return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={i} sx={{ padding: '0 10px' }}>
+                  <TableRow hover role="row" tabIndex={-1} key={i} sx={{ padding: '0 10px' }}>
                     {columnNames.map((columnName, j) => {
                       return (
-                        <StyledCell key={columnName + i + j}>
-                          <Box display="flex" flexDirection="column" alignItems="center" sx={{ float: 'left' }}>
-                            {addIconIfNeeded(columnName, row[columnName])}
-                            <Typography
-                              overflow="hidden"
-                              title={row[columnName]}
-                              color="#414857"
-                              fontSize="12px"
-                              fontWeight="600"
-                              maxWidth="100%"
-                              textOverflow="ellipsis"
+                        <StyledCell
+                          sx={{ maxWidth: j == 0 || j == 3 || j == 6 || j == 7 ? '50px' : '' }}
+                          scope="row"
+                          role="cell"
+                          key={columnName + i + j}
+                        >
+                          {row[columnName] && (
+                            <Box
+                              display="flex"
+                              flexDirection="column"
+                              alignItems="center"
+                              sx={{ float: j == 0 || j == 3 || j == 6 || j == 7 ? 'center' : 'left', width: 'inherit' }}
                             >
-                              {row[columnName]}
-                            </Typography>
-                          </Box>
+                              {addIconIfNeeded(columnName, row[columnName])}
+                              <StyledTableCellText title={row[columnName]}>{row[columnName]}</StyledTableCellText>
+                            </Box>
+                          )}
                         </StyledCell>
                       );
                     })}
@@ -221,7 +225,7 @@ function TableHeader(props: TableHeaderProps) {
             align="left"
             key={columnName}
             sortDirection={orderBy === columnName ? order : false}
-            sx={{ backgroundColor: 'transparent' }}
+            sx={{ backgroundColor: 'transparent', padding: '10px', paddingRight: 0 }}
           >
             <TableSortLabel
               active={orderBy === columnName}
@@ -250,6 +254,7 @@ const StyledTable = styled(Table)`
 `;
 
 const StyledCell = styled(TableCell)`
+  padding: 5px 10px;
   max-width: 100%;
   background-color: #fcfcfe;
   border-right: 1px solid rgba(111, 111, 111, 0.1);
@@ -267,4 +272,14 @@ const StyledTableHeadline = styled(Typography)`
   color: #8494a9;
   font-weight: 600;
   font-size: 12px;
+`;
+
+const StyledTableCellText = styled(Typography)`
+  white-space: pre-wrap;
+  overflow: hidden;
+  color: #414857;
+  font-size: 12px;
+  font-weight: 600;
+  max-width: 100%;
+  text-overflow: ellipsis;
 `;

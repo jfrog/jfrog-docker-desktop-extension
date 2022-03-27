@@ -70,11 +70,13 @@ const testImageNames = [
   }
 ];
 
-const testScanResults = [
+const testScanResults = {
+  Vulnerabilities: 
+  [
   {
     Severity: "High",
-    ImpactedPacakge: "pip",
-    ImpactedPacakgeVersion: "21.2.3",
+    ImpactedPackage: "pip",
+    ImpactedPackageVersion: "21.2.3",
     Type: "Python",
     FixedVersions: "",
     Component: "tgagor/centostgagor/centostgagor/centostgagor/centostgagor/centostgagor/centostgagor/centostgagor/centostgagor/centos",
@@ -83,8 +85,8 @@ const testScanResults = [
   },
   {
     Severity: "High",
-    ImpactedPacakge: "pip",
-    ImpactedPacakgeVersion: "21.2.3",
+    ImpactedPackage: "pip",
+    ImpactedPackageVersion: "21.2.3",
     Type: "Python",
     FixedVersions: "",
     Component: "tgagor/centos",
@@ -93,8 +95,8 @@ const testScanResults = [
   },
   {
     Severity: "High",
-    ImpactedPacakge: "pip",
-    ImpactedPacakgeVersion: "21.2.3",
+    ImpactedPackage: "pip",
+    ImpactedPackageVersion: "21.2.3",
     Type: "Python",
     FixedVersions: "",
     Component: "tgagor/centos",
@@ -103,8 +105,8 @@ const testScanResults = [
   },
   {
     Severity: "High",
-    ImpactedPacakge: "pip",
-    ImpactedPacakgeVersion: "21.2.3",
+    ImpactedPackage: "pip",
+    ImpactedPackageVersion: "21.2.3",
     Type: "Python",
     FixedVersions: "",
     Component: "tgagor/centos",
@@ -113,8 +115,8 @@ const testScanResults = [
   },
   {
     Severity: "High",
-    ImpactedPacakge: "pip",
-    ImpactedPacakgeVersion: "21.2.3",
+    ImpactedPackage: "pip",
+    ImpactedPackageVersion: "21.2.3",
     Type: "Python",
     FixedVersions: "",
     Component: "tgagor/centos",
@@ -123,8 +125,8 @@ const testScanResults = [
   },
   {
     Severity: "High",
-    ImpactedPacakge: "pip",
-    ImpactedPacakgeVersion: "21.2.3",
+    ImpactedPackage: "pip",
+    ImpactedPackageVersion: "21.2.3",
     Type: "Python",
     FixedVersions: "",
     Component: "tgagor/centos",
@@ -133,8 +135,8 @@ const testScanResults = [
   },
   {
     Severity: "High",
-    ImpactedPacakge: "pip",
-    ImpactedPacakgeVersion: "21.2.3",
+    ImpactedPackage: "pip",
+    ImpactedPackageVersion: "21.2.3",
     Type: "Python",
     FixedVersions: "",
     Component: "tgagor/centos",
@@ -143,8 +145,8 @@ const testScanResults = [
   },
   {
     Severity: "High",
-    ImpactedPacakge: "log4J",
-    ImpactedPacakgeVersion: "2",
+    ImpactedPackage: "log4J",
+    ImpactedPackageVersion: "2",
     Type: "maven",
     FixedVersions: "1.15.10",
     Component: "myproj",
@@ -153,8 +155,8 @@ const testScanResults = [
   },
   {
     Severity: "Medium",
-    ImpactedPacakge: "log4J",
-    ImpactedPacakgeVersion: "3",
+    ImpactedPackage: "log4J",
+    ImpactedPackageVersion: "3",
     Type: "rpm",
     FixedVersions: "1.15.10",
     Component: "myproj",
@@ -163,8 +165,8 @@ const testScanResults = [
   },
   {
     Severity: "Low",
-    ImpactedPacakge: "log4Jlog4Jlog4J",
-    ImpactedPacakgeVersion: "4",
+    ImpactedPackage: "log4Jlog4Jlog4J",
+    ImpactedPackageVersion: "4",
     Type: "alpine",
     FixedVersions: "1.15.10",
     Component: "myproj",
@@ -174,8 +176,8 @@ const testScanResults = [
 
   {
     Severity: "High",
-    ImpactedPacakge: "log4J",
-    ImpactedPacakgeVersion: "23213",
+    ImpactedPackage: "log4J",
+    ImpactedPackageVersion: "23213",
     Type: "composer",
     FixedVersions: "1.15.10",
     Component: "myproj",
@@ -184,8 +186,8 @@ const testScanResults = [
   },
   {
     Severity: "High",
-    ImpactedPacakge: "log4J",
-    ImpactedPacakgeVersion: "23213",
+    ImpactedPackage: "log4J",
+    ImpactedPackageVersion: "23213",
     Type: "debian",
     FixedVersions: "1.15.10",
     Component: "myproj",
@@ -194,8 +196,8 @@ const testScanResults = [
   },
   {
     Severity: "High",
-    ImpactedPacakge: "log4J",
-    ImpactedPacakgeVersion: "23213",
+    ImpactedPackage: "log4J",
+    ImpactedPackageVersion: "23213",
     Type: "generic",
     FixedVersions: "1.15.10",
     Component: "myproj",
@@ -204,8 +206,8 @@ const testScanResults = [
   },
   {
     Severity: "Medium",
-    ImpactedPacakge: "log4Jlog4Jlog4J",
-    ImpactedPacakgeVersion: "",
+    ImpactedPackage: "log4Jlog4Jlog4J",
+    ImpactedPackageVersion: "",
     Type: "docker",
     FixedVersions: "1.15.10",
     Component: "myproj",
@@ -214,8 +216,8 @@ const testScanResults = [
   },
   {
     Severity: "Low",
-    ImpactedPacakge: "dasd",
-    ImpactedPacakgeVersion: "",
+    ImpactedPackage: "dasd",
+    ImpactedPackageVersion: "",
     Type: "npm",
     FixedVersions: "1.15.10",
     Component: "myproj",
@@ -224,8 +226,8 @@ const testScanResults = [
   },
   {
     Severity: "High",
-    ImpactedPacakge: "log4J",
-    ImpactedPacakgeVersion: "",
+    ImpactedPackage: "log4J",
+    ImpactedPackageVersion: "",
     Type: "GO",
     FixedVersions: "1.15.10",
     Component: "myproj",
@@ -234,8 +236,8 @@ const testScanResults = [
   },
   {
     Severity: "High",
-    ImpactedPacakge: "log4J",
-    ImpactedPacakgeVersion: "",
+    ImpactedPackage: "log4J",
+    ImpactedPackageVersion: "",
     Type: "Go",
     FixedVersions: "1.15.10",
     Component: "myproj",
@@ -244,8 +246,8 @@ const testScanResults = [
   },
   {
     Severity: "High",
-    ImpactedPacakge: "log4J",
-    ImpactedPacakgeVersion: "",
+    ImpactedPackage: "log4J",
+    ImpactedPackageVersion: "",
     Type: "Go",
     FixedVersions: "1.15.10",
     Component: "myproj",
@@ -254,8 +256,8 @@ const testScanResults = [
   },
   {
     Severity: "Medium",
-    ImpactedPacakge: "log4Jlog4Jlog4J",
-    ImpactedPacakgeVersion: "",
+    ImpactedPackage: "log4Jlog4Jlog4J",
+    ImpactedPackageVersion: "",
     Type: "Go",
     FixedVersions: "1.15.10",
     Component: "myproj",
@@ -264,8 +266,8 @@ const testScanResults = [
   },
   {
     Severity: "Low",
-    ImpactedPacakge: "dasd",
-    ImpactedPacakgeVersion: "",
+    ImpactedPackage: "dasd",
+    ImpactedPackageVersion: "",
     Type: "GO",
     FixedVersions: "1.15.10",
     Component: "myproj",
@@ -274,8 +276,8 @@ const testScanResults = [
   },
   {
     Severity: "High",
-    ImpactedPacakge: "log4J",
-    ImpactedPacakgeVersion: "",
+    ImpactedPackage: "log4J",
+    ImpactedPackageVersion: "",
     Type: "Go",
     FixedVersions: "1.15.10",
     Component: "myproj",
@@ -284,8 +286,8 @@ const testScanResults = [
   },
   {
     Severity: "High",
-    ImpactedPacakge: "log4J",
-    ImpactedPacakgeVersion: "",
+    ImpactedPackage: "log4J",
+    ImpactedPackageVersion: "",
     Type: "Go",
     FixedVersions: "1.15.10",
     Component: "myproj",
@@ -294,8 +296,8 @@ const testScanResults = [
   },
   {
     Severity: "High",
-    ImpactedPacakge: "log4J",
-    ImpactedPacakgeVersion: "",
+    ImpactedPackage: "log4J",
+    ImpactedPackageVersion: "",
     Type: "Go",
     FixedVersions: "1.15.10",
     Component: "myproj",
@@ -304,8 +306,8 @@ const testScanResults = [
   },
   {
     Severity: "Medium",
-    ImpactedPacakge: "log4Jlog4Jlog4J",
-    ImpactedPacakgeVersion: "",
+    ImpactedPackage: "log4Jlog4Jlog4J",
+    ImpactedPackageVersion: "",
     Type: "GO",
     FixedVersions: "1.15.10",
     Component: "myproj",
@@ -314,8 +316,8 @@ const testScanResults = [
   },
   {
     Severity: "Low",
-    ImpactedPacakge: "dasd",
-    ImpactedPacakgeVersion: "",
+    ImpactedPackage: "dasd",
+    ImpactedPackageVersion: "",
     Type: "GO",
     FixedVersions: "1.15.10",
     Component: "myproj",
@@ -324,8 +326,8 @@ const testScanResults = [
   },
   {
     Severity: "High",
-    ImpactedPacakge: "log4J",
-    ImpactedPacakgeVersion: "",
+    ImpactedPackage: "log4J",
+    ImpactedPackageVersion: "",
     Type: "Go",
     FixedVersions: "1.15.10",
     Component: "myproj",
@@ -334,8 +336,8 @@ const testScanResults = [
   },
   {
     Severity: "High",
-    ImpactedPacakge: "log4J",
-    ImpactedPacakgeVersion: "",
+    ImpactedPackage: "log4J",
+    ImpactedPackageVersion: "",
     Type: "Go",
     FixedVersions: "1.15.10",
     Component: "myproj",
@@ -344,8 +346,8 @@ const testScanResults = [
   },
   {
     Severity: "High",
-    ImpactedPacakge: "log4J",
-    ImpactedPacakgeVersion: "",
+    ImpactedPackage: "log4J",
+    ImpactedPackageVersion: "",
     Type: "Go",
     FixedVersions: "1.15.10",
     Component: "myproj",
@@ -354,8 +356,8 @@ const testScanResults = [
   },
   {
     Severity: "Medium",
-    ImpactedPacakge: "log4Jlog4Jlog4J",
-    ImpactedPacakgeVersion: "",
+    ImpactedPackage: "log4Jlog4Jlog4J",
+    ImpactedPackageVersion: "",
     Type: "Go",
     FixedVersions: "1.15.10",
     Component: "myproj",
@@ -364,8 +366,8 @@ const testScanResults = [
   },
   {
     Severity: "Low",
-    ImpactedPacakge: "dasd",
-    ImpactedPacakgeVersion: "",
+    ImpactedPackage: "dasd",
+    ImpactedPackageVersion: "",
     Type: "GO",
     FixedVersions: "1.15.10",
     Component: "myproj",
@@ -374,12 +376,12 @@ const testScanResults = [
   },
   {
     Severity: "High",
-    ImpactedPacakge: "log4J",
-    ImpactedPacakgeVersion: "",
+    ImpactedPackage: "log4J",
+    ImpactedPackageVersion: "",
     Type: "GO",
     FixedVersions: "1.15.10",
     Component: "myproj",
     ComponentVersion: "1.0.0",
     Cve: "CVE123123",
   },
-];
+]};
