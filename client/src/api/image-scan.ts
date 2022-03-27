@@ -11,7 +11,7 @@ export async function scanImage(imageTag: string): Promise<any> {
   }
 
   let xrayScanConfig = await getXrayScanConfig();
-  let cmdArgs: string[] = ["docker", "scan", imageTag, "--format", "json"];
+  let cmdArgs: string[] = ["docker", "scan", imageTag, "--format", "simple-json"];
   if (xrayScanConfig.project != undefined) {
     cmdArgs.push("--project", '"' + xrayScanConfig.project + '"');
   } else if (xrayScanConfig.watches != undefined) {
@@ -77,7 +77,7 @@ const testScanResults = [
     ImpactedPacakgeVersion: "21.2.3",
     Type: "Python",
     FixedVersions: "",
-    Component: "tgagor/centos",
+    Component: "tgagor/centostgagor/centostgagor/centostgagor/centostgagor/centostgagor/centostgagor/centostgagor/centostgagor/centos",
     ComponentVersion: "stream9",
     Cve: "cve-2018-20225",
   },

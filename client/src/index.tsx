@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Helmet } from 'react-helmet';
+import '@fontsource/open-sans';
+import '@fontsource/roboto';
 
 import App from './App';
 

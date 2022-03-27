@@ -75,7 +75,7 @@ export const ScanPage = () => {
         <Select onChange={handleChange} options={dockerImages} />
         <ScanButton
           variant="contained"
-          sx={{ fontSize: '16px', fontWeight: '700' }}
+          sx={{ width: '120px', fontSize: '16px', fontWeight: '700', textTransform: 'none' }}
           disabled={selectedImage == ''}
           loading={isLoading}
           onClick={onScanClick}
@@ -97,7 +97,7 @@ export const ScanPage = () => {
 
       {scanResults.length > 0 ? (
         <Box sx={{ marginTop: '50px' }}>
-          <Typography fontWeight="500" fontSize="18px">
+          <Typography variant="h6" fontWeight="500" fontSize="18px">
             Image Scan Results
           </Typography>
           {scanResults.length > 0 ? <Table columnNames={scanResultColumnNames} rows={scanResults} /> : ''}
