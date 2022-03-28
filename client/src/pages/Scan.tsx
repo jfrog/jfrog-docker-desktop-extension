@@ -8,23 +8,20 @@ import { APP_TITLE, PAGE_TITLE_HOME } from '../utils/constants';
 import { getImages, scanImage } from '../api/image-scan';
 import { JfrogHeadline } from '../components/JfrogHeadline';
 import { useHistory } from 'react-router-dom';
+
 export const ScanPage = () => {
   const context = useContext(AppContext);
   const [selectedImage, setSelectedImage] = useState('');
   const [dockerImages, setDockerImages] = useState<string[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isScanning, setIsScanning] = useState(false);
   const [scanResults, setScanResults] = useState<any[]>([]);
   let history = useHistory();
 
   const handleChange = (event: SelectChangeEvent<any>) => {
     setSelectedImage(event.target.value);
     setScanResults([]);
-    setIsLoading(false);
+    setIsScanning(false);
   };
-
-  interface IImageData {
-    RepoTags?: string[];
-  }
 
   useEffect(() => {
     const getDockerImages = async () => {
@@ -32,9 +29,10 @@ export const ScanPage = () => {
         let res = await getImages();
         let images: string[] = res
           .filter(
-            (image: IImageData) => image.RepoTags && image.RepoTags.length > 0 && image.RepoTags[0] != '<none>:<none>'
+            (image: { RepoTags?: string[] }) =>
+              image.RepoTags && image.RepoTags.length > 0 && image.RepoTags[0] != '<none>:<none>'
           )
-          .map((image: IImageData) => {
+          .map((image: { RepoTags?: string[] }) => {
             return image.RepoTags ? image.RepoTags[0] : '';
           });
         setDockerImages(images);
@@ -51,14 +49,14 @@ export const ScanPage = () => {
 
   const onScanClick = async () => {
     try {
-      setIsLoading(true);
+      setIsScanning(true);
       setScanResults([]);
       let results = await scanImage(selectedImage);
       console.log(results);
       setScanResults(results.Vulnerabilities);
-      setIsLoading(false);
+      setIsScanning(false);
     } catch (e) {
-      setIsLoading(false);
+      setIsScanning(false);
       alert(e);
     }
   };
@@ -85,20 +83,20 @@ export const ScanPage = () => {
       {getSettingsButton()}
 
       <JfrogHeadline headline="JFrog Xray Scan" marginBottom="50px" />
-      <Typography variant="subtitle1">Select local Docker image for scanning</Typography>
+      <Typography variant="subtitle1">Select local image for scanning</Typography>
       <Box display="flex" width={1 / 2}>
         <Select onChange={handleChange} options={dockerImages} />
         <ScanButton
           variant="contained"
           sx={{ width: '120px', fontSize: '16px', fontWeight: '700' }}
-          disabled={selectedImage == ''}
+          disabled={isScanning}
           onClick={onScanClick}
         >
           Scan
         </ScanButton>
       </Box>
 
-      {isLoading ? (
+      {isScanning ? (
         <Box padding="5px 0" bgcolor="#E5EBF3" alignItems="center" marginTop="20px" display="flex" width={1 / 2}>
           <CircularProgress size="10px" sx={{ margin: '0 10px' }} />
           <Typography color="#556274" fontWeight="400" fontSize="12px">
@@ -129,22 +127,10 @@ const ScanButton = styled(Button)`
   background-color: #4172e8;
 `;
 
-const scanResultColumnNames = [
-  'Severity',
-  'ImpactedPackage',
-  'ImpactedPackageVersion',
-  'Type',
-  'FixedVersions',
-  'CVE',
-  'CVSSv2',
-  'CVSSv3',
-];
-
 const scanTableColumnsData = [
   {
     name: 'Severity',
-    hasIcon: true,
-    minWidth: '50px',
+    maxWidth: '60px',
   },
   {
     name: 'ImpactedPackage',
@@ -154,21 +140,21 @@ const scanTableColumnsData = [
   },
   {
     name: 'Type',
-    hasIcon: true,
-    minWidth: '50px',
+    maxWidth: '60px',
   },
   {
     name: 'FixedVersions',
   },
   {
     name: 'CVE',
+    maxWidth: '80px',
   },
   {
     name: 'CVSSv2',
-    minWidth: '50px',
+    maxWidth: '50px',
   },
   {
     name: 'CVSSv3',
-    minWidth: '50px',
+    maxWidth: '50px',
   },
 ];
