@@ -107,7 +107,12 @@ export const SettingsForm = (
 
         <div>
           Dont have a JFrog environment?
-          <Link underline="hover" onClick={handleCreateFreeAccount} sx={{ marginLeft: '5px', cursor: 'pointer' }}>
+          <Link
+            underline="hover"
+            fontWeight="700"
+            onClick={handleCreateFreeAccount}
+            sx={{ marginLeft: '5px', cursor: 'pointer', textDecoration: 'underline' }}
+          >
             Create one for FREE
           </Link>
         </div>

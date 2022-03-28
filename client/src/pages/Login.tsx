@@ -1,4 +1,4 @@
-import { styled, Box } from '@mui/material';
+import { styled, Box, Typography } from '@mui/material';
 import { useHistory } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
@@ -55,8 +55,12 @@ export const LoginPage = () => {
               <Title>
                 <img src={box} alt="box" />
                 <Box>
-                  <h1>Welcome</h1>
-                  <div>Enter Your JFrog Connection Details</div>
+                  <Typography fontSize="34px" fontWeight="600" color="#414857">
+                    Welcome
+                  </Typography>
+                  <Typography fontSize="18px" fontWeight="600" color="#556274">
+                    Enter Your JFrog Connection Details
+                  </Typography>
                 </Box>
               </Title>
 
@@ -102,7 +106,7 @@ const StyledLogo = styled('img')`
 `;
 
 const LoginWrapper = styled(Box)`
-  margin: 0 100px;
+  margin-left: 130px;
 `;
 
 const Title = styled(Box)`
