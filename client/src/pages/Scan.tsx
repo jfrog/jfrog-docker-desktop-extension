@@ -8,6 +8,7 @@ import { APP_TITLE, PAGE_TITLE_HOME } from '../utils/constants';
 import { getImages, scanImage } from '../api/image-scan';
 import { JfrogHeadline } from '../components/JfrogHeadline';
 import { useHistory } from 'react-router-dom';
+
 export const ScanPage = () => {
   const context = useContext(AppContext);
   const [selectedImage, setSelectedImage] = useState('');

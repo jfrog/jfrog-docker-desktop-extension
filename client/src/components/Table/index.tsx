@@ -105,18 +105,13 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Colum
                   <TableRow hover role="row" tabIndex={-1} key={i} sx={{ padding: '0 10px' }}>
                     {columnsData.map((col, j) => {
                       return (
-                        <StyledCell
-                          sx={{ maxWidth: j == 0 || j == 3 || j == 6 || j == 7 ? '50px' : '' }}
-                          scope="row"
-                          role="cell"
-                          key={col.name + i + j}
-                        >
+                        <StyledCell sx={{ maxWidth: col.minWidth }} scope="row" role="cell" key={col.name + i + j}>
                           {row[col.name] && (
                             <Box
                               display="flex"
                               flexDirection="column"
                               alignItems="center"
-                              sx={{ float: j == 0 || j == 3 || j == 6 || j == 7 ? 'center' : 'left', width: 'inherit' }}
+                              sx={{ float: col.hasIcon ? 'center' : 'left', width: 'inherit' }}
                             >
                               {addIconIfNeeded(col.name, row[col.name])}
                               <StyledTableCellText title={row[col.name]}>{row[col.name]}</StyledTableCellText>

@@ -46,6 +46,7 @@ const theme = createTheme({
         '.MuiOutlinedInput-root': {
           background: '#fff',
         },
+        scrollbarColor: '#6b6b6b #2b2b2b',
       },
     },
   },
