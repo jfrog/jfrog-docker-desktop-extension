@@ -8,13 +8,14 @@ import { AppContext } from '../contexts';
 import { APP_TITLE, PAGE_TITLE_HOME } from '../utils/constants';
 import { getImages, scanImage } from '../api/image-scan';
 import { JfrogHeadline } from '../components/JfrogHeadline';
-
+import { useHistory } from 'react-router-dom';
 export const ScanPage = () => {
   const context = useContext(AppContext);
   const [selectedImage, setSelectedImage] = useState('');
   const [dockerImages, setDockerImages] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [scanResults, setScanResults] = useState<any[]>([]);
+  let history = useHistory();
 
   const handleChange = (event: SelectChangeEvent<any>) => {
     setSelectedImage(event.target.value);
@@ -45,6 +46,10 @@ export const ScanPage = () => {
     getDockerImages();
   }, []);
 
+  const onSettingsClick = async () => {
+    history.push('/settings');
+  }
+
   const onScanClick = async () => {
     try {
       setIsLoading(true);
@@ -67,7 +72,7 @@ export const ScanPage = () => {
         </title>
       </Helmet>
       <JfrogHeadline headline="Jfrog Xray Scan" />
-      <Button variant="outlined" sx={{ position: 'absolute', right: '20px', top: '20px', fontWeight: '700' }}>
+      <Button variant="outlined" onClick={onSettingsClick} sx={{ position: 'absolute', right: '20px', top: '20px', fontWeight: '700' }}>
         Settings
       </Button>
       <Typography variant="subtitle1">Image</Typography>

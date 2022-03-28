@@ -1,106 +1,51 @@
 import {
   Home as HomeIcon,
-  BarChartOutlined as DashboardIcon,
-  CodeOutlined as CodeIcon,
-  GitHub as GitHubIcon,
-  Public as PublicIcon,
-  PublicOff as PrivateIcon,
-  AccountBoxRounded as UserIcon,
-  SettingsOutlined as SettingsIcon,
-  ListAlt as ListIcon,
-  CreditCard as BillingIcon,
 } from '@mui/icons-material';
 
 import { ScanPage } from '../pages/ScanPage';
+import { LoginPage } from '../pages/Login';
+import { CreatePage } from '../pages/Create';
+import {  SettingsPage } from '../pages/Setting';
 
 import { Route } from '../types/Route';
 
 const routes: Array<Route> = [
   {
-    key: 'router-home',
-    title: 'Xray Scan',
-    description: 'Xray Scan',
-    component: ScanPage,
-    path: '/',
+    key: 'router-login',
+    title: 'login',
+    description: 'Login page ',
+    component: LoginPage,
+    path: '/login',
     isEnabled: true,
     icon: HomeIcon,
     appendDivider: true,
   },
   {
-    key: 'router-dashboard',
-    title: 'Dashboard',
-    description: 'Dashboard',
-    path: '/dashboard',
+    key: 'router-home',
+    title: 'Xray Scan',
+    description: 'Xray Scan',
+    component: ScanPage,
+    path: '/scan',
     isEnabled: true,
-    icon: DashboardIcon,
-  },
-  {
-    key: 'router-gh',
-    title: 'GitHub',
-    description: 'GitHub',
-    isEnabled: true,
-    icon: GitHubIcon,
-    subRoutes: [
-      {
-        key: 'router-gh-public',
-        title: 'Public Repos',
-        description: 'Public Repos',
-        path: '/gh/public',
-        isEnabled: true,
-        icon: PublicIcon,
-      },
-      {
-        key: 'router-gh-private',
-        title: 'Private Repos',
-        description: 'Private Repos',
-        path: '/gh/private',
-        isEnabled: false,
-        icon: PrivateIcon,
-      },
-    ],
-  },
-  {
-    key: 'router-code',
-    title: 'Code Editor',
-    description: 'Code Editor',
-    path: '/code-editor',
-    isEnabled: true,
-    icon: CodeIcon,
+    icon: HomeIcon,
     appendDivider: true,
   },
+
   {
-    key: 'router-my-account',
-    title: 'My Account',
-    description: 'My Account',
-    path: '/account',
+    key: 'router-create-config',
+    title: 'Create New Config',
+    description: 'Create New Config',
+    path: '/create',
+    component: CreatePage,
     isEnabled: true,
-    icon: UserIcon,
-    subRoutes: [
-      {
-        key: 'router-settings',
-        title: 'Settings',
-        description: 'Account Settings',
-        path: '/account/settings',
-        isEnabled: true,
-        icon: SettingsIcon,
-      },
-      {
-        key: 'router-preferences',
-        title: 'Preferences',
-        description: 'Account Preferences',
-        path: '/account/preferences',
-        isEnabled: true,
-        icon: ListIcon,
-      },
-      {
-        key: 'router-billing',
-        title: 'Billing',
-        description: 'Account Billing',
-        path: '/account/billing',
-        isEnabled: true,
-        icon: BillingIcon,
-      },
-    ],
+  },
+  {
+    key: 'router-settings',
+    title: 'Edit JFrog Platform connection details',
+    description: 'Edit Settings',
+    path: '/settings',
+    component: SettingsPage,
+    isEnabled: true,
   },
 ];
 
