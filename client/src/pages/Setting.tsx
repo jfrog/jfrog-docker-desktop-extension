@@ -63,7 +63,7 @@ export const SettingsPage = () => {
       ) : (
         <>
           <Wrapper>
-            <Box padding={'20px'} flexGrow={1} overflow={'auto'}>
+            <Box flexGrow={1} overflow={'auto'}>
               <Box maxWidth={'400px'}>
                 <Box>
                   {/* <Button variant="text" >
