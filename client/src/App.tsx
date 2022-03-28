@@ -11,8 +11,27 @@ import './main.css';
 const theme = createTheme({
   typography: {
     fontFamily: 'Open Sans',
+    h6: {
+      fontFamily: 'Roboto',
+    },
+    h5: {
+      fontFamily: 'Roboto',
+    },
+    button: {
+      textTransform: 'none',
+      fontSize: '16px',
+      fontWeight: '700',
+    },
   },
   components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          width: '120px',
+          height: '40px',
+        },
+      },
+    },
     MuiCssBaseline: {
       styleOverrides: {
         body: {

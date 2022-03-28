@@ -1,5 +1,4 @@
 import { Box, styled, Typography, SelectChangeEvent, CircularProgress, Button } from '@mui/material';
-import { LoadingButton } from '@mui/lab';
 import { useContext, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import Select from '../components/Select';
@@ -64,14 +63,8 @@ export const ScanPage = () => {
     }
   };
 
-  return (
-    <>
-      <Helmet>
-        <title>
-          {PAGE_TITLE_HOME} | {APP_TITLE}
-        </title>
-      </Helmet>
-      <JfrogHeadline headline="Jfrog Xray Scan" />
+  const getSettingsButton = () => {
+    return (
       <Button
         variant="outlined"
         onClick={onSettingsClick}
@@ -79,14 +72,26 @@ export const ScanPage = () => {
       >
         Settings
       </Button>
+    );
+  };
+
+  return (
+    <>
+      <Helmet>
+        <title>
+          {PAGE_TITLE_HOME} | {APP_TITLE}
+        </title>
+      </Helmet>
+      {getSettingsButton()}
+
+      <JfrogHeadline headline="JFrog Xray Scan" marginBottom="50px" />
       <Typography variant="subtitle1">Image</Typography>
       <Box display="flex" width={1 / 2}>
         <Select onChange={handleChange} options={dockerImages} />
         <ScanButton
           variant="contained"
-          sx={{ width: '120px', fontSize: '16px', fontWeight: '700', textTransform: 'none' }}
+          sx={{ width: '120px', fontSize: '16px', fontWeight: '700' }}
           disabled={selectedImage == ''}
-          loading={isLoading}
           onClick={onScanClick}
         >
           Scan
@@ -118,7 +123,7 @@ export const ScanPage = () => {
   );
 };
 
-const ScanButton = styled(LoadingButton)`
+const ScanButton = styled(Button)`
   margin-left: 30px;
   padding: 0 50px;
   background-color: #4172e8;
