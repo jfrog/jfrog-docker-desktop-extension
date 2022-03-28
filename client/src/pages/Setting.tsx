@@ -28,7 +28,6 @@ export const SettingsPage = () => {
           if (config.watches) {
             setPolicy(Policy.Watches);
           }
-          setWindowLoading(false);
         })
         .finally(() => {
           setWindowLoading(false);
@@ -59,7 +58,9 @@ export const SettingsPage = () => {
   return (
     <>
       {isWindowLoading ? (
-        <Loader />
+        <SpinnerWrapper className="login-wrapper">
+          <Loader />
+        </SpinnerWrapper>
       ) : (
         <>
           <Wrapper>
@@ -78,7 +79,7 @@ export const SettingsPage = () => {
                       color: '#414857',
                     }}
                   >
-                    <JfrogHeadline headline="JFrog Settings" />
+                    <JfrogHeadline headline="JFrog Environment Settings" />
                   </Box>
                 </Box>
                 <Stack spacing={1}>
@@ -93,14 +94,14 @@ export const SettingsPage = () => {
                     }}
                     id="demo-radio-buttons-group-label"
                   >
-                    JFrog platform connection details
+                    JFrog Environment Connection Details
                   </Box>
                   {SettingsForm(state, setValue)}
                 </Stack>
                 {/* <Box marginTop={6}/> */}
                 <Box marginBottom={'30px'}>
                   <Box marginTop={6}>
-                    <FormLabel id="demo-radio-buttons-group-label">Scanning policy</FormLabel>
+                    <FormLabel id="demo-radio-buttons-group-label">Scanning Policy</FormLabel>
                   </Box>
                   <RadioGroup
                     aria-labelledby="demo-radio-buttons-group-label"
@@ -177,7 +178,12 @@ const Wrapper = styled(Box)`
   flex-direction: column;
   justify-content: space-between;
 `;
-
+const SpinnerWrapper = styled(Box)`
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 const Footer = styled(Box)`
   border-top: 1px solid #ccc;
   padding: 20px;

@@ -22,3 +22,5 @@ export const GRAY_COLOR = '#556274';
 // LOGIN PAGE
 export const BASIC_AUTH = 'basic';
 export const ACCESS_TOKEN = 'accessToken';
+export const WINDOWS_SETUP = `powershell "Start-Process -Wait -Verb RunAs powershell '-NoProfile iwr https://releases.jfrog.io/artifactory/jfrog-cli/v2-jf/[RELEASE]/jfrog-cli-windows-amd64/jf.exe -OutFile $env:SYSTEMROOT\\system32\\jf.exe'" ; jf setup`;
+export const LINUX_SETUP = 'curl -fL https://getcli.jfrog.io?setup | sh';

@@ -40,7 +40,7 @@ export const SettingsForm = (
         <Box minHeight={'250px'}>
           <Box>
             <Label>
-              JFrog Platform URL
+              JFrog Environment URL
               <TextField
                 fullWidth
                 size="small"
@@ -106,7 +106,7 @@ export const SettingsForm = (
         </Box>
 
         <div>
-          Dont have a JFrog environment?
+          Don&apos;t have a JFrog environment?
           <Link
             underline="hover"
             fontWeight="700"
