@@ -38,7 +38,7 @@ const theme = createTheme({
           backgroundColor: '#F4F4F6',
           fontFamily: 'Open Sans',
           height: '100vh',
-          padding: '40px 30px',
+          padding: '40px 40px',
         },
         '.MuiFormLabel-root > .MuiFormControl-root': {
           marginTop: '3px',
