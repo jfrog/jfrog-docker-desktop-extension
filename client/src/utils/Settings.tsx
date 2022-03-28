@@ -95,6 +95,7 @@ export const SettingsForm = (
                     fullWidth
                     size="small"
                     label=""
+                    type="password"
                     defaultValue={state.accessToken}
                     onChange={(e: any) => setValue({ ...state, accessToken: e.target.value })}
                   />
