@@ -59,7 +59,7 @@ export const LoginPage = () => {
                     Welcome
                   </Typography>
                   <Typography fontSize="18px" fontWeight="600" color="#556274">
-                    Enter Your JFrog Connection Details
+                  JFrog Environment Connection Details
                   </Typography>
                 </Box>
               </Title>

@@ -86,7 +86,7 @@ export const ScanPage = () => {
       {getSettingsButton()}
 
       <JfrogHeadline headline="JFrog Xray Scan" marginBottom="50px" />
-      <Typography variant="subtitle1">Image</Typography>
+      <Typography variant="subtitle1">Select local Docker image for scanning</Typography>
       <Box display="flex" width={1 / 2}>
         <Select onChange={handleChange} options={dockerImages} />
         <ScanButton
