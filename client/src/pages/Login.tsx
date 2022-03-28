@@ -64,8 +64,7 @@ export const LoginPage = () => {
                 {SettingsForm(state, setState)}
 
                 <LoadingButton
-                  fullWidth
-                  sx={{ marginBottom: '16px', textTransform: 'capitalize', fontWeight: 'bold' }}
+                  sx={{ width: '100%' }}
                   loading={isButtonLoading}
                   type="submit"
                   variant="contained"

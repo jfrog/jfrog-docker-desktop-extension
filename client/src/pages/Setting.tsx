@@ -181,6 +181,7 @@ const Wrapper = styled(Box)`
 const Footer = styled(Box)`
   border-top: 1px solid #ccc;
   padding: 20px;
+  padding-bottom: 0;
   display: flex;
   justify-content: flex-end;
   gap: 16px;
