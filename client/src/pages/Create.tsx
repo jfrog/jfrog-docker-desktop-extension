@@ -1,9 +1,7 @@
-import { styled, TextField, Stack, Box,  Button, InputAdornment, IconButton } from '@mui/material';
+import { styled, TextField, Stack, Box, Button, InputAdornment, IconButton } from '@mui/material';
 import ContentCopy from '@mui/icons-material/ContentCopy';
 import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { LoadingButton } from '@mui/lab';
-
 
 import { JfrogHeadline } from '../components/JfrogHeadline';
 import { LINUX_SETUP, WINDOWS_SETUP } from '../utils/constants';
@@ -61,8 +59,7 @@ export const CreatePage = () => {
                   marginLeft: '41px',
                   marginTop: '14px',
                 }}
-              >
-              </Box>
+              ></Box>
             </Stack>
           </Box>
         </Title>

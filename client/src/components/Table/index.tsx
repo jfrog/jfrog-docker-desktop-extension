@@ -28,21 +28,21 @@ import debian from '../../assets/techIcons/debian.png';
 import exportcsv from '../../assets/exportcsv.svg';
 import Search from '../Search';
 import { visuallyHidden } from '@mui/utils';
-import { Margin } from '@mui/icons-material';
 
 export type ColumnsDataProps = {
-  name: string;
+  id: string;
+  label?: string;
   maxWidth?: string;
 };
 
 export default function DynamicTable({ columnsData, rows }: { columnsData: ColumnsDataProps[]; rows: any[] }) {
   const [order, setOrder] = React.useState<Order>('asc');
-  const [orderBy, setOrderBy] = React.useState<string>(columnsData[0].name);
+  const [orderBy, setOrderBy] = React.useState<string>(columnsData[0].id);
   const [searchText, setSearchText] = React.useState('');
 
   const includesSearchText = (row: any) => {
     for (let col of columnsData) {
-      if (row[col.name] && row[col.name].toLowerCase().includes(searchText.toLowerCase())) {
+      if (row[col.id] && row[col.id].toLowerCase().includes(searchText.toLowerCase())) {
         return true;
       }
     }
@@ -76,17 +76,23 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Colum
               {columnsData.map((col) => (
                 <TableCell
                   align="left"
-                  key={col.name}
-                  sortDirection={orderBy === col.name ? order : false}
-                  sx={{ backgroundColor: 'transparent', padding: '10px', paddingRight: 0, maxWidth: col.maxWidth }}
+                  key={col.id}
+                  sortDirection={orderBy === col.id ? order : false}
+                  sx={{
+                    backgroundColor: 'transparent',
+                    padding: '10px',
+                    paddingRight: 0,
+                    minWidth: '70px',
+                    maxWidth: col.maxWidth,
+                  }}
                 >
                   <TableSortLabel
-                    active={orderBy === col.name}
-                    direction={orderBy === col.name ? order : 'asc'}
-                    onClick={createSortHandler(col.name)}
+                    active={orderBy === col.id}
+                    direction={orderBy === col.id ? order : 'asc'}
+                    onClick={createSortHandler(col.id)}
                   >
-                    <StyledTableHeadline variant="subtitle2">{splitCamelCase(col.name)}</StyledTableHeadline>
-                    {orderBy === col.name ? (
+                    <StyledTableHeadline variant="subtitle2">{splitCamelCase(col.label || col.id)}</StyledTableHeadline>
+                    {orderBy === col.id ? (
                       <span style={visuallyHidden}>{order === 'desc' ? 'sorted descending' : 'sorted ascending'}</span>
                     ) : null}
                   </TableSortLabel>
@@ -105,16 +111,21 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Colum
                   <TableRow hover role="row" tabIndex={-1} key={i} sx={{ padding: '0 10px' }}>
                     {columnsData.map((col, j) => {
                       return (
-                        <StyledCell sx={{ maxWidth: col.maxWidth }} scope="row" role="cell" key={col.name + i + j}>
-                          {row[col.name] && (
+                        <StyledCell
+                          sx={{ minWidth: '70px', maxWidth: col.maxWidth }}
+                          scope="row"
+                          role="cell"
+                          key={col.id + i + j}
+                        >
+                          {row[col.id] && (
                             <Box
                               display="flex"
                               flexDirection="column"
                               alignItems="center"
                               sx={{ float: col.maxWidth ? 'center' : 'left', width: 'inherit' }}
                             >
-                              {addIconIfNeeded(col.name, row[col.name])}
-                              <StyledTableCellText title={row[col.name]}>{row[col.name]}</StyledTableCellText>
+                              {addIconIfNeeded(col.id, row[col.id])}
+                              <StyledTableCellText title={row[col.id]}>{row[col.id]}</StyledTableCellText>
                             </Box>
                           )}
                         </StyledCell>
@@ -245,6 +256,7 @@ const StyledTable = styled(Table)`
 `;
 
 const StyledCell = styled(TableCell)`
+  overflow-wrap: anywhere;
   padding: 5px 10px;
   max-width: 100%;
   background-color: #fcfcfe;
@@ -266,11 +278,10 @@ const StyledTableHeadline = styled(Typography)`
 `;
 
 const StyledTableCellText = styled(Typography)`
+  overflow-wrap: anywhere;
   white-space: pre-wrap;
-  overflow: hidden;
   color: #414857;
   font-size: 12px;
   font-weight: 600;
   max-width: 100%;
-  text-overflow: ellipsis;
 `;

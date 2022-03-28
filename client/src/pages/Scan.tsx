@@ -129,32 +129,33 @@ const ScanButton = styled(Button)`
 
 const scanTableColumnsData = [
   {
-    name: 'Severity',
+    id: 'Severity',
+    maxWidth: '70px',
+  },
+  {
+    id: 'ImpactedPackage',
+  },
+  {
+    id: 'ImpactedPackageVersion',
+    label: 'Version',
+  },
+  {
+    id: 'Type',
     maxWidth: '60px',
   },
   {
-    name: 'ImpactedPackage',
+    id: 'FixedVersions',
   },
   {
-    name: 'ImpactedPackageVersion',
+    id: 'CVE',
+    maxWidth: '120px',
   },
   {
-    name: 'Type',
-    maxWidth: '60px',
+    id: 'CVSSv2',
+    maxWidth: '70px',
   },
   {
-    name: 'FixedVersions',
-  },
-  {
-    name: 'CVE',
-    maxWidth: '80px',
-  },
-  {
-    name: 'CVSSv2',
-    maxWidth: '50px',
-  },
-  {
-    name: 'CVSSv3',
-    maxWidth: '50px',
+    id: 'CVSSv3',
+    maxWidth: '70px',
   },
 ];
