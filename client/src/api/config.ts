@@ -1,4 +1,4 @@
-import {execOnHost, throwErrorAsString} from "./utils";
+import {execOnHost, isWindows, throwErrorAsString} from "./utils";
 
 export class Config {
   jfrogCliConfig: JfrogCliConfig
@@ -33,8 +33,7 @@ export async function importConfigFromHostCli(): Promise<void> {
 }
 
 export async function saveConfig(config: Config): Promise<void> {
-  let configJson = JSON.stringify(config.xrayScanConfig).replaceAll('"', '\\"');
-  let xrayScanConfPromise = execOnHost("writeconf.sh", "writeconf.bat", ["\"" + configJson + "\""]);
+  let xrayScanConfPromise = editXrayScanConfig(config.xrayScanConfig);
   let savePromises: Promise<any>[] = [xrayScanConfPromise];
   if (config.jfrogCliConfig?.password != undefined || config.jfrogCliConfig?.accessToken != undefined) {
     let serverId = await getJfrogCliConfigServerId();
@@ -116,6 +115,27 @@ async function getJfrogCliFullConfig(): Promise<any> {
     throwErrorAsString(e);
   }
   return cliConfigRes;
+}
+
+async function editXrayScanConfig(xrayScanConfig: XrayScanConfig): Promise<any> {
+  if (xrayScanConfig.project !== undefined) {
+    xrayScanConfig.project = xrayScanConfig.project.trim();
+    if (!xrayScanConfig.project.match(/^[a-z0-9]+$/)) {
+      throw "Project key supports only lowercase alphanumeric characters";
+    }
+  } else if (xrayScanConfig.watches !== undefined) {
+    for (let watchIndex in xrayScanConfig.watches) {
+      xrayScanConfig.watches[watchIndex] = xrayScanConfig.watches[watchIndex].trim();
+      if (xrayScanConfig.watches[watchIndex].includes(" ")) {
+        throw "Watch name cannot contain spaces";
+      }
+    }
+  }
+  let configJson = JSON.stringify(xrayScanConfig).replaceAll(" ", "");
+  if (await isWindows()) {
+    return window.ddClient.extension.host.cli.exec("writeconf.bat", [configJson]);
+  }
+  return window.ddClient.extension.host.cli.exec("writeconf.sh", ['"' + configJson.replaceAll('"', '\\"') + '"']);
 }
 
 async function editCliConfig(cliConfig: JfrogCliConfig, serverId?: string) {
