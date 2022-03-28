@@ -28,11 +28,11 @@ import debian from '../../assets/techIcons/debian.png';
 import exportcsv from '../../assets/exportcsv.svg';
 import Search from '../Search';
 import { visuallyHidden } from '@mui/utils';
+import { Margin } from '@mui/icons-material';
 
 export type ColumnsDataProps = {
   name: string;
-  hasIcon?: boolean;
-  minWidth?: string;
+  maxWidth?: string;
 };
 
 export default function DynamicTable({ columnsData, rows }: { columnsData: ColumnsDataProps[]; rows: any[] }) {
@@ -78,7 +78,7 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Colum
                   align="left"
                   key={col.name}
                   sortDirection={orderBy === col.name ? order : false}
-                  sx={{ backgroundColor: 'transparent', padding: '10px', paddingRight: 0 }}
+                  sx={{ backgroundColor: 'transparent', padding: '10px', paddingRight: 0, maxWidth: col.maxWidth }}
                 >
                   <TableSortLabel
                     active={orderBy === col.name}
@@ -105,13 +105,13 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Colum
                   <TableRow hover role="row" tabIndex={-1} key={i} sx={{ padding: '0 10px' }}>
                     {columnsData.map((col, j) => {
                       return (
-                        <StyledCell sx={{ maxWidth: col.minWidth }} scope="row" role="cell" key={col.name + i + j}>
+                        <StyledCell sx={{ maxWidth: col.maxWidth }} scope="row" role="cell" key={col.name + i + j}>
                           {row[col.name] && (
                             <Box
                               display="flex"
                               flexDirection="column"
                               alignItems="center"
-                              sx={{ float: col.hasIcon ? 'center' : 'left', width: 'inherit' }}
+                              sx={{ float: col.maxWidth ? 'center' : 'left', width: 'inherit' }}
                             >
                               {addIconIfNeeded(col.name, row[col.name])}
                               <StyledTableCellText title={row[col.name]}>{row[col.name]}</StyledTableCellText>
@@ -192,7 +192,6 @@ function splitCamelCase(name: string) {
 function descendingComparator(a: any, b: any, orderBy: string) {
   const aValue: string = a[orderBy];
   const bValue: string = b[orderBy];
-  console.log(orderBy);
   if (orderBy == 'Severity') {
     const sevirityOrder = ['Critical', 'High', 'Medium', 'Low', 'Unknown'];
     if (sevirityOrder.indexOf(bValue) < sevirityOrder.indexOf(aValue)) {

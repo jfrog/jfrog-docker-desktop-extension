@@ -37,7 +37,7 @@ export const SettingsForm = (
             label="Access Token"
           />
         </RadioGroup>
-        <Box minHeight={'250px'}>
+        <Box>
           <Box>
             <Label>
               JFrog Environment URL
