@@ -52,7 +52,7 @@ export const CreatePage = () => {
                 color: '#414857',
               }}
             >
-              <JfrogHeadline headline="Create a FREE JFrog environment" />
+              <JfrogHeadline headline="Create a FREE JFrog Environment" />
 
               <Box
                 sx={{
@@ -78,7 +78,7 @@ export const CreatePage = () => {
           <Stack direction="column" justifyContent="flex-start" alignItems="flex-start" spacing={2}>
             <Box mt={4}>
               <TextField
-                sx={{ width: '570px', height: '40px' }}
+                sx={{ width: '712px', height: '40px' }}
                 size="small"
                 id="outlined-basic"
                 value={copyText}
