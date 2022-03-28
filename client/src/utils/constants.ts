@@ -1,6 +1,6 @@
 // APP TEXT
 export const APP_TITLE = 'docker';
-export const APP_DESCRIPTION = 'React TypeScript Material-UI boilerplate by Welcome, Developer.';
+export const APP_DESCRIPTION = 'Jfrog docker desktop extension';
 export const FOOTER_TEXT = `${new Date().getFullYear()} Jfrog Ecosystem`;
 // PAGES TITLE
 export const PAGE_TITLE_HOME = 'Home';
