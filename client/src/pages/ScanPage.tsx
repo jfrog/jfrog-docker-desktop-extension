@@ -114,7 +114,7 @@ export const ScanPage = () => {
           <Typography variant="h6" fontWeight="500" fontSize="18px">
             Image Scan Results
           </Typography>
-          {scanResults.length > 0 ? <Table columnNames={scanResultColumnNames} rows={scanResults} /> : ''}
+          {scanResults.length > 0 ? <Table columnsData={scanTableColumnsData} rows={scanResults} /> : ''}
         </Box>
       ) : (
         ''
@@ -138,4 +138,37 @@ const scanResultColumnNames = [
   'CVE',
   'CVSSv2',
   'CVSSv3',
+];
+
+const scanTableColumnsData = [
+  {
+    name: 'Severity',
+    hasIcon: true,
+    minWidth: '50px',
+  },
+  {
+    name: 'ImpactedPackage',
+  },
+  {
+    name: 'ImpactedPackageVersion',
+  },
+  {
+    name: 'Type',
+    hasIcon: true,
+    minWidth: '50px',
+  },
+  {
+    name: 'FixedVersions',
+  },
+  {
+    name: 'CVE',
+  },
+  {
+    name: 'CVSSv2',
+    minWidth: '50px',
+  },
+  {
+    name: 'CVSSv3',
+    minWidth: '50px',
+  },
 ];
