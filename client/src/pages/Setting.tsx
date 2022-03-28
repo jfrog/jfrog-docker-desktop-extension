@@ -8,6 +8,7 @@ import { BASIC_AUTH } from '../utils/constants';
 import { Policy } from '../types/policy';
 import { LoadingButton } from '@mui/lab';
 import Loader from '../components/Loader';
+import { JfrogHeadline } from '../components/JfrogHeadline';
 
 export const SettingsPage = () => {
   let history = useHistory();
@@ -63,83 +64,96 @@ export const SettingsPage = () => {
         <>
           <Wrapper>
             <Box padding={'20px'} flexGrow={1} overflow={'auto'}>
-              <Box  maxWidth={'400px'}>
+              <Box maxWidth={'400px'}>
                 <Box>
                   {/* <Button variant="text" >
           <ArrowBackIosNew />
         </Button> */}
-                <Box
-                  sx={{
-                    fontStyle: 'normal',
-                    fontWeight: 600,
-                    fontSize: '24px',
-                    color: '#17191E',
-                  }}
-                >
-                  JFrog Settings
+                  <Box
+                    sx={{
+                      fontFamily: 'Open Sans',
+                      fontStyle: 'normal',
+                      fontWeight: 600,
+                      fontSize: '30px',
+                      color: '#414857',
+                    }}
+                  >
+                    <JfrogHeadline headline="JFrog Settings" />
                   </Box>
                 </Box>
-              <Stack spacing={1}>
-                <div id="demo-radio-buttons-group-label">JFrog platform connection details</div>
-                {SettingsForm(state, setValue)}
-              </Stack>
-              {/* <Box marginTop={6}/> */}
-              <Box marginBottom={'30px'}>
-                <Box marginTop={6}>
-                  <FormLabel id="demo-radio-buttons-group-label">Scanning policy</FormLabel>
+                <Stack spacing={1}>
+                  <Box
+                    sx={{
+                      fontFamily: 'Roboto',
+                      fontStyle: 'normal',
+                      fontWeight: 400,
+                      fontSize: '16px',
+                      color: '#414857',
+                      marginTop: '25px',
+                    }}
+                    id="demo-radio-buttons-group-label"
+                  >
+                    JFrog platform connection details
+                  </Box>
+                  {SettingsForm(state, setValue)}
+                </Stack>
+                {/* <Box marginTop={6}/> */}
+                <Box marginBottom={'30px'}>
+                  <Box marginTop={6}>
+                    <FormLabel id="demo-radio-buttons-group-label">Scanning policy</FormLabel>
+                  </Box>
+                  <RadioGroup
+                    aria-labelledby="demo-radio-buttons-group-label"
+                    defaultValue={policy}
+                    name="radio-buttons-group"
+                  >
+                    <FormControlLabel
+                      value="allVulnerabilities"
+                      onChange={() => {
+                        setPolicy(Policy.Vulnerabilities);
+                      }}
+                      control={<Radio />}
+                      label="All Vulnerabilities"
+                    />
+                    <FormControlLabel
+                      value="project"
+                      onChange={() => {
+                        setPolicy(Policy.Project);
+                      }}
+                      control={<Radio />}
+                      label="JFrog Project"
+                    />
+                    <Box ml={4}>
+                      <TextField
+                        disabled={policy !== Policy.Project}
+                        placeholder="Project Name"
+                        defaultValue={state.project}
+                        onChange={(e: any) => setValue({ ...state, project: e.target.value })}
+                        size="small"
+                        id="project"
+                      />
+                    </Box>
+                    <FormControlLabel
+                      value="watches"
+                      onChange={() => {
+                        setPolicy(Policy.Watches);
+                      }}
+                      control={<Radio />}
+                      label="Watches"
+                    />
+                    <Box ml={4}>
+                      <TextField
+                        disabled={policy !== Policy.Watches}
+                        placeholder="watch1,watch2,..."
+                        defaultValue={state.watches}
+                        onChange={(e: any) => setValue({ ...state, watches: e.target.value })}
+                        size="small"
+                        id="watches"
+                      />
+                    </Box>
+                  </RadioGroup>
                 </Box>
-                <RadioGroup
-                  aria-labelledby="demo-radio-buttons-group-label"
-                  defaultValue={policy}
-                  name="radio-buttons-group"
-                >
-                  <FormControlLabel
-                    value="allVulnerabilities"
-                    onChange={() => {
-                      setPolicy(Policy.Vulnerabilities);
-                    }}
-                    control={<Radio />}
-                    label="All Vulnerabilities"
-                  />
-                  <FormControlLabel
-                    value="project"
-                    onChange={() => {
-                      setPolicy(Policy.Project);
-                    }}
-                    control={<Radio />}
-                    label="JFrog Project"
-                  />
-                  <Box ml={4}>
-                    <TextField
-                      disabled={policy !== Policy.Project}
-                      placeholder="Project Name"
-                      defaultValue={state.project}
-                      onChange={(e: any) => setValue({ ...state, project: e.target.value })}
-                      size="small"
-                      id="project"
-                    />
-                  </Box>
-                  <FormControlLabel
-                    value="watches"
-                    onChange={() => {
-                      setPolicy(Policy.Watches);
-                    }}
-                    control={<Radio />}
-                    label="Watches"
-                  />
-                  <Box ml={4}>
-                    <TextField
-                      disabled={policy !== Policy.Watches}
-                      placeholder="watch1,watch2,..."
-                      defaultValue={state.watches}
-                      onChange={(e: any) => setValue({ ...state, watches: e.target.value })}
-                      size="small"
-                      id="watches"
-                    />
-                  </Box>
-                </RadioGroup>
               </Box>
-            </Box>
             </Box>
 
             <Footer>
