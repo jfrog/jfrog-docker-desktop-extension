@@ -19,3 +19,6 @@ export const DARK_MODE_THEME = 'dark';
 export const LIGHT_MODE_THEME = 'light';
 export const GRAY_COLOR = '#556274';
 
+// LOGIN PAGE
+export const BASIC_AUTH = 'basic';
+export const ACCESS_TOKEN = 'accessToken';

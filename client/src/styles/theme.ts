@@ -10,6 +10,17 @@ export const getAppTheme = (mode: typeof LIGHT_MODE_THEME | typeof DARK_MODE_THE
       },
       mode,
     },
+    typography: {
+      allVariants: {
+        fontFamily: 'Open Sans',
+      },
+      h6:{
+        fontFamily: 'Roboto',
+      },
+      h5: {
+        fontFamily: 'Roboto',
+      }
+    },
   });
   theme = responsiveFontSizes(theme);
   return theme;

@@ -1,5 +1,5 @@
 import { Route } from './Route';
 import { MenuItem } from './MenuItem';
-import { User } from './User';
+import { ExtensionConfig } from './ExtensionConfig';
 
-export type { Route, MenuItem, User };
+export type { Route, MenuItem, ExtensionConfig };
