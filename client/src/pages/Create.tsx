@@ -29,7 +29,7 @@ export const CreatePage = () => {
   return (
     <>
       {/* <Container fixed> */}
-      <Box padding={'20px'}>
+      <Box>
         <Title>
           <Box>
             <Stack
