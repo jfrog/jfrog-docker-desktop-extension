@@ -1,12 +1,12 @@
 import { styled, TextField, Stack, Box, FormLabel, Button, InputAdornment, IconButton, Alert } from '@mui/material';
 import ContentCopy from '@mui/icons-material/ContentCopy';
 import { useState } from 'react';
-import jfrogLogo from '../assets/jfrog.png';
 import { useHistory } from 'react-router-dom';
 
 import ArtifactoryIcon from '../assets/artifactory.png';
 import PipelinesIcon from '../assets/pipelines.png';
 import XrayIcon from '../assets/xray.png';
+import { JfrogHeadline } from '../components/JfrogHeadline';
 export const CreatePage = () => {
   const [state, setState] = useState('curl -fL https://getcli.jfrog.io?setup | sh');
   const [isCopied, setIsCopied] = useState(false);
@@ -31,7 +31,6 @@ export const CreatePage = () => {
       {/* <Container fixed> */}
       <Box padding={'20px'}>
         <Title>
-          <StyledLogo src={jfrogLogo} alt="logo" />
           <Box>
             <Stack
               sx={{
@@ -42,9 +41,19 @@ export const CreatePage = () => {
                 color: '#414857',
               }}
             >
-              Create a FREE JFrog environment account
+              <JfrogHeadline headline="Create a FREE JFrog Environment Account" />
+
+              <Box
+                sx={{
+                  fontSize: '18px',
+                  color: '#556274',
+                  marginLeft: '41px',
+                  marginTop: '14px',
+                }}
+              >
+                Get started using JFrog CLI
+              </Box>
             </Stack>
-            <div>Get started using JFrog CLI</div>
           </Box>
         </Title>
 
