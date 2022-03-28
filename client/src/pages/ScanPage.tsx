@@ -48,7 +48,7 @@ export const ScanPage = () => {
 
   const onSettingsClick = async () => {
     history.push('/settings');
-  }
+  };
 
   const onScanClick = async () => {
     try {
@@ -72,7 +72,11 @@ export const ScanPage = () => {
         </title>
       </Helmet>
       <JfrogHeadline headline="Jfrog Xray Scan" />
-      <Button variant="outlined" onClick={onSettingsClick} sx={{ position: 'absolute', right: '20px', top: '20px', fontWeight: '700' }}>
+      <Button
+        variant="outlined"
+        onClick={onSettingsClick}
+        sx={{ position: 'absolute', right: '0', top: '0', fontWeight: '700' }}
+      >
         Settings
       </Button>
       <Typography variant="subtitle1">Image</Typography>
