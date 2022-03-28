@@ -11,9 +11,6 @@ import {
   TableSortLabel,
   styled,
 } from '@mui/material';
-
-import Search from '../Search';
-import { visuallyHidden } from '@mui/utils';
 import criticalSeverity from '../../assets/severityIcons/critical.png';
 import highSeverity from '../../assets/severityIcons/high.png';
 import mediumSeverity from '../../assets/severityIcons/medium.png';
@@ -29,25 +26,33 @@ import go from '../../assets/techIcons/go.png';
 import alpine from '../../assets/techIcons/alpine.png';
 import debian from '../../assets/techIcons/debian.png';
 import exportcsv from '../../assets/exportcsv.svg';
+import Search from '../Search';
+import { visuallyHidden } from '@mui/utils';
 
-export default function DynamicTable({ columnNames, rows }: { columnNames: string[]; rows: any[] }) {
+export type ColumnsDataProps = {
+  name: string;
+  hasIcon?: boolean;
+  minWidth?: string;
+};
+
+export default function DynamicTable({ columnsData, rows }: { columnsData: ColumnsDataProps[]; rows: any[] }) {
   const [order, setOrder] = React.useState<Order>('asc');
-  const [orderBy, setOrderBy] = React.useState<string>(columnNames[0]);
+  const [orderBy, setOrderBy] = React.useState<string>(columnsData[0].name);
   const [searchText, setSearchText] = React.useState('');
 
-  const handleRequestSort = (event: React.MouseEvent<unknown>, columnName: string) => {
-    const isAsc = orderBy === columnName && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
-    setOrderBy(columnName);
-  };
-
   const includesSearchText = (row: any) => {
-    for (let col of columnNames) {
-      if (row[col] && row[col].toLowerCase().includes(searchText.toLowerCase())) {
+    for (let col of columnsData) {
+      if (row[col.name] && row[col.name].toLowerCase().includes(searchText.toLowerCase())) {
         return true;
       }
     }
     return false;
+  };
+
+  const createSortHandler = (columnName: string) => (event: React.MouseEvent<unknown>) => {
+    const isAsc = orderBy === columnName && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
+    setOrderBy(columnName);
   };
 
   return (
@@ -66,7 +71,30 @@ export default function DynamicTable({ columnNames, rows }: { columnNames: strin
 
       <TableContainer sx={{ overflow: 'hidden auto', maxHeight: '400px' }}>
         <StyledTable aria-labelledby="tableTitle">
-          <TableHeader columnNames={columnNames} order={order} orderBy={orderBy} onRequestSort={handleRequestSort} />
+          <TableHead>
+            <TableRow>
+              {columnsData.map((col) => (
+                <TableCell
+                  align="left"
+                  key={col.name}
+                  sortDirection={orderBy === col.name ? order : false}
+                  sx={{ backgroundColor: 'transparent', padding: '10px', paddingRight: 0 }}
+                >
+                  <TableSortLabel
+                    active={orderBy === col.name}
+                    direction={orderBy === col.name ? order : 'asc'}
+                    onClick={createSortHandler(col.name)}
+                  >
+                    <StyledTableHeadline variant="subtitle2">{splitCamelCase(col.name)}</StyledTableHeadline>
+                    {orderBy === col.name ? (
+                      <span style={visuallyHidden}>{order === 'desc' ? 'sorted descending' : 'sorted ascending'}</span>
+                    ) : null}
+                  </TableSortLabel>
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+
           <TableBody>
             {rows
               .slice()
@@ -75,23 +103,23 @@ export default function DynamicTable({ columnNames, rows }: { columnNames: strin
               .map((row, i) => {
                 return (
                   <TableRow hover role="row" tabIndex={-1} key={i} sx={{ padding: '0 10px' }}>
-                    {columnNames.map((columnName, j) => {
+                    {columnsData.map((col, j) => {
                       return (
                         <StyledCell
                           sx={{ maxWidth: j == 0 || j == 3 || j == 6 || j == 7 ? '50px' : '' }}
                           scope="row"
                           role="cell"
-                          key={columnName + i + j}
+                          key={col.name + i + j}
                         >
-                          {row[columnName] && (
+                          {row[col.name] && (
                             <Box
                               display="flex"
                               flexDirection="column"
                               alignItems="center"
                               sx={{ float: j == 0 || j == 3 || j == 6 || j == 7 ? 'center' : 'left', width: 'inherit' }}
                             >
-                              {addIconIfNeeded(columnName, row[columnName])}
-                              <StyledTableCellText title={row[columnName]}>{row[columnName]}</StyledTableCellText>
+                              {addIconIfNeeded(col.name, row[col.name])}
+                              <StyledTableCellText title={row[col.name]}>{row[col.name]}</StyledTableCellText>
                             </Box>
                           )}
                         </StyledCell>
@@ -166,22 +194,31 @@ function splitCamelCase(name: string) {
   return name.replace(/([a-z](?=[A-Z]))/g, '$1 ');
 }
 
-function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
+function descendingComparator(a: any, b: any, orderBy: string) {
+  const aValue: string = a[orderBy];
+  const bValue: string = b[orderBy];
+  console.log(orderBy);
+  if (orderBy == 'Severity') {
+    const sevirityOrder = ['Critical', 'High', 'Medium', 'Low', 'Unknown'];
+    if (sevirityOrder.indexOf(bValue) < sevirityOrder.indexOf(aValue)) {
+      return -1;
+    } else if (sevirityOrder.indexOf(bValue) > sevirityOrder.indexOf(aValue)) {
+      return 1;
+    }
+  } else {
+    if (bValue < aValue) {
+      return -1;
+    }
+    if (bValue > aValue) {
+      return 1;
+    }
   }
   return 0;
 }
 
 type Order = 'asc' | 'desc';
 
-function getComparator<Key extends keyof any>(
-  order: Order,
-  orderBy: Key
-): (a: { [key in Key]: number | string }, b: { [key in Key]: number | string }) => number {
+function getComparator(order: Order, orderBy: string): (a: any, b: any) => number {
   return order === 'desc'
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
@@ -201,46 +238,6 @@ function exportButton() {
     >
       <img src={exportcsv} width="18px" height="18px" alt={'export csv'} />
     </Box>
-  );
-}
-
-interface TableHeaderProps {
-  columnNames: string[];
-  onRequestSort: (event: React.MouseEvent<unknown>, columnId: string) => void;
-  order: Order;
-  orderBy: string;
-}
-
-function TableHeader(props: TableHeaderProps) {
-  const { columnNames, order, orderBy, onRequestSort } = props;
-  const createSortHandler = (columnId: string) => (event: React.MouseEvent<unknown>) => {
-    onRequestSort(event, columnId);
-  };
-
-  return (
-    <TableHead>
-      <TableRow>
-        {columnNames.map((columnName) => (
-          <TableCell
-            align="left"
-            key={columnName}
-            sortDirection={orderBy === columnName ? order : false}
-            sx={{ backgroundColor: 'transparent', padding: '10px', paddingRight: 0 }}
-          >
-            <TableSortLabel
-              active={orderBy === columnName}
-              direction={orderBy === columnName ? order : 'asc'}
-              onClick={createSortHandler(columnName)}
-            >
-              <StyledTableHeadline variant="subtitle2">{splitCamelCase(columnName)}</StyledTableHeadline>
-              {orderBy === columnName ? (
-                <span style={visuallyHidden}>{order === 'desc' ? 'sorted descending' : 'sorted ascending'}</span>
-              ) : null}
-            </TableSortLabel>
-          </TableCell>
-        ))}
-      </TableRow>
-    </TableHead>
   );
 }
 
