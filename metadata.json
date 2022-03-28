@@ -24,6 +24,9 @@
           },
           {
             "path": "/binaries/unix/writeconf.sh"
+          },
+          {
+            "path": "/binaries/unix/scanpermissions.sh"
           }
         ],
         "linux": [
@@ -38,6 +41,9 @@
           },
           {
             "path": "/binaries/unix/writeconf.sh"
+          },
+          {
+            "path": "/binaries/unix/scanpermissions.sh"
           }
         ],
         "windows": [
@@ -52,6 +58,12 @@
           },
           {
             "path": "/binaries/windows/writeconf.bat"
+          },
+          {
+            "path": "/binaries/windows/iswindows.bat"
+          },
+          {
+            "path": "/binaries/windows/scanpermissions.bat"
           }
         ]
       }
