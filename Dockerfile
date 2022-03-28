@@ -23,10 +23,11 @@ RUN --mount=type=cache,target=/usr/local/share/.cache/yarn-${TARGETARCH} yarn bu
 
 FROM alpine:3.15
 
-LABEL org.opencontainers.image.title="JFrog Docker Desktop Extension" \
+LABEL org.opencontainers.image.title="JFrog" \
     org.opencontainers.image.description="Scan your Docker images for vulnerabilities with JFrog Xray." \
-    org.opencontainers.image.vendor="JFrog" \
-    com.docker.desktop.extension.api.version="0.0.1"
+    org.opencontainers.image.vendor="JFrog Ltd." \
+    com.docker.desktop.extension.api.version="0.0.1" \
+    com.docker.desktop.extension.icon="https://media.jfrog.com/wp-content/uploads/2022/02/04003536/JFrog_Logo_partner_isv.svg"
 
 COPY --from=client-builder /app/client/build ui
 COPY icon.svg .

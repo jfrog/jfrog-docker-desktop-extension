@@ -1,5 +1,5 @@
-import {getXrayScanConfig} from "./config";
-import {throwErrorAsString} from "./utils";
+import {getConfig} from "./config";
+import {execOnHost, throwErrorAsString} from "./utils";
 
 const development: boolean = !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
 
@@ -10,16 +10,16 @@ export async function scanImage(imageTag: string): Promise<any> {
     return testScanResults;
   }
 
-  let xrayScanConfig = await getXrayScanConfig();
+  let config = await getConfig();
   let cmdArgs: string[] = ["docker", "scan", imageTag, "--format", "simple-json"];
-  if (xrayScanConfig.project != undefined) {
-    cmdArgs.push("--project", '"' + xrayScanConfig.project + '"');
-  } else if (xrayScanConfig.watches != undefined) {
-    cmdArgs.push("--watches", '"' + xrayScanConfig.watches.join(",") + '"');
+  if (config.xrayScanConfig.project != undefined) {
+    cmdArgs.push("--project", '"' + config.xrayScanConfig.project + '"');
+  } else if (config.xrayScanConfig.watches != undefined) {
+    cmdArgs.push("--watches", '"' + config.xrayScanConfig.watches.join(",") + '"');
   }
   let scanResults;
   try {
-    let cmdResult = await window.ddClient.extension.host.cli.exec("runcli.sh", cmdArgs);
+    let cmdResult = await execOnHost("runcli.sh", "runcli.bat", cmdArgs);
     scanResults = JSON.parse(cmdResult.stdout);
   } catch (e) {
     throwErrorAsString(e);
@@ -71,7 +71,7 @@ const testImageNames = [
 ];
 
 const testScanResults = {
-  Vulnerabilities: 
+  Vulnerabilities:
   [
   {
     Severity: "High",
@@ -173,7 +173,6 @@ const testScanResults = {
     ComponentVersion: "1.0.0",
     Cve: "CVE123123",
   },
-
   {
     Severity: "High",
     ImpactedPackage: "log4J",
