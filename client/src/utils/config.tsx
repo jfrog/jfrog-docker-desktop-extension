@@ -58,10 +58,10 @@ const toExtensionConfig = (config: Config): ExtensionConfig => {
 const toJfrogCliConfig = (user: ExtensionConfig): Config => {
   const config = new Config();
   config.jfrogCliConfig.url = user.url;
-  config.jfrogCliConfig.user = user.username || '';
-  config.jfrogCliConfig.password = user.password || '';
-  config.jfrogCliConfig.accessToken = user.accessToken || '';
-  config.xrayScanConfig.project = user.project || '';
-  config.xrayScanConfig.watches = user.watches?.split(',') || [];
+  config.jfrogCliConfig.user = user.username || undefined;
+  config.jfrogCliConfig.password = user.password || undefined;
+  config.jfrogCliConfig.accessToken = user.accessToken || undefined;
+  config.xrayScanConfig.project = user.project || undefined;
+  config.xrayScanConfig.watches = user.watches?.split(',') || undefined;
   return config;
 };

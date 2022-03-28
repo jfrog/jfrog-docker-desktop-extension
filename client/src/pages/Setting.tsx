@@ -42,10 +42,10 @@ export const SettingsPage = () => {
   const HandleSave = async () => {
     setButtonLoading(true);
     if (policy === Policy.Vulnerabilities || policy === Policy.Project) {
-      state.watches = '';
+      state.watches = undefined;
     }
     if (policy === Policy.Vulnerabilities || policy === Policy.Watches) {
-      state.project = '';
+      state.project = undefined;
     }
 
     if (await Save(state)) {
