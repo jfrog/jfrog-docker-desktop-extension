@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 
 import jfrogLogo from '../assets/jfrog_logo.png';
 import box from '../assets/box.png';
-import { Load, Save } from '../utils/config';
+import { isConfigured, Save } from '../utils/config';
 import Loader from '../components/Loader';
 
 import { ExtensionConfig } from '../types';
@@ -28,9 +28,9 @@ export const LoginPage = () => {
 
   useEffect(() => {
     if (isLoading) {
-      Load()
-        .then((config) => {
-          if (config.url !== undefined && config.url !== '') {
+      isConfigured()
+        .then((configured) => {
+          if (configured) {
             history.push('/scan');
           }
         })
