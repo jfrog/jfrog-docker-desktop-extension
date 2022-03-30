@@ -12,10 +12,10 @@ export async function scanImage(imageTag: string): Promise<any> {
 
   let config = await getConfig();
   let cmdArgs: string[] = ["docker", "scan", imageTag, "--format", "simple-json"];
-  if (config.xrayScanConfig.project != undefined) {
-    cmdArgs.push("--project", '"' + config.xrayScanConfig.project + '"');
-  } else if (config.xrayScanConfig.watches != undefined) {
-    cmdArgs.push("--watches", '"' + config.xrayScanConfig.watches.join(",") + '"');
+  if (config.jfrogExtensionConfig.project != undefined) {
+    cmdArgs.push("--project", '"' + config.jfrogExtensionConfig.project + '"');
+  } else if (config.jfrogExtensionConfig.watches != undefined) {
+    cmdArgs.push("--watches", '"' + config.jfrogExtensionConfig.watches.join(",") + '"');
   }
   let scanResults;
   try {

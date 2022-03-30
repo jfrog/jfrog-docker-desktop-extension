@@ -2,11 +2,11 @@ import {execOnHost, isWindows, throwErrorAsString} from "./utils";
 
 export class Config {
   jfrogCliConfig: JfrogCliConfig
-  xrayScanConfig: XrayScanConfig
+  jfrogExtensionConfig: JfrogExtensionConfig
 
   constructor() {
     this.jfrogCliConfig = new JfrogCliConfig()
-    this.xrayScanConfig = new XrayScanConfig()
+    this.jfrogExtensionConfig = new JfrogExtensionConfig()
   }
 }
 
@@ -17,9 +17,14 @@ export class JfrogCliConfig {
   accessToken: string | undefined;
 }
 
-export class XrayScanConfig {
+export class JfrogExtensionConfig {
   project: string | undefined;
   watches: string[] | undefined;
+  jfrogCliConfigured: boolean;
+
+  constructor() {
+    this.jfrogCliConfigured = false;
+  }
 }
 
 export async function importConfigFromHostCli(): Promise<void> {
@@ -33,8 +38,9 @@ export async function importConfigFromHostCli(): Promise<void> {
 }
 
 export async function saveConfig(config: Config): Promise<void> {
-  let xrayScanConfPromise = editXrayScanConfig(config.xrayScanConfig);
-  let savePromises: Promise<any>[] = [xrayScanConfPromise];
+  config.jfrogExtensionConfig.jfrogCliConfigured = true;
+  let editJfrogExtConfPromise = editJfrogExtensionConfig(config.jfrogExtensionConfig);
+  let savePromises: Promise<any>[] = [editJfrogExtConfPromise];
   if (config.jfrogCliConfig?.password != undefined || config.jfrogCliConfig?.accessToken != undefined) {
     let serverId = await getJfrogCliConfigServerId();
     savePromises.push(editCliConfig(config.jfrogCliConfig, serverId));
@@ -47,12 +53,12 @@ export async function saveConfig(config: Config): Promise<void> {
 }
 
 export async function getConfig(): Promise<Config> {
-  let xrayScanConfPromise = getXrayScanConfig();
+  let jfrogExtensionConfPromise = getJfrogExtensionConfig();
   let cliConfPromise = getJfrogCliConfig();
   let config: Config = new Config();
   try {
-    let results = await Promise.all([xrayScanConfPromise, cliConfPromise]);
-    config.xrayScanConfig = results[0];
+    let results = await Promise.all([jfrogExtensionConfPromise, cliConfPromise]);
+    config.jfrogExtensionConfig = results[0];
     config.jfrogCliConfig = results[1];
   } catch (e) {
     throwErrorAsString(e);
@@ -60,29 +66,29 @@ export async function getConfig(): Promise<Config> {
   return config;
 }
 
-async function getXrayScanConfig(): Promise<XrayScanConfig> {
+export async function getJfrogExtensionConfig(): Promise<JfrogExtensionConfig> {
   let cmdResult;
   try {
     cmdResult = await execOnHost("readconf.sh", "readconf.bat");
   } catch (e: any) {
-    if (e.stderr !== undefined && (e.stderr.includes("No such file or directory") || e.stderr.includes("The system cannot find the file specified."))) {
-      await saveConfig(new Config());
+    if (e.stderr !== undefined && (e.stderr.includes("file not found") || e.stderr.includes("The system cannot find the file specified."))) {
+      return new JfrogExtensionConfig();
     }
-    try {
-      cmdResult = await execOnHost("readconf.sh", "readconf.bat");
-    } catch (e: any) {
-      throwErrorAsString(e);
-    }
+    throwErrorAsString(e);
   }
 
-  let xrayScanConfig;
+  let jfrogExtensionConfig: JfrogExtensionConfig;
   try {
-    xrayScanConfig = JSON.parse(cmdResult.stdout);
+    jfrogExtensionConfig = JSON.parse(cmdResult.stdout);
   } catch (e: any) {
     console.log("Failed while parsing configuration file", e);
     throw "Failed while parsing configuration file";
   }
-  return xrayScanConfig;
+  // Backward compatibility: if jfrogExtensionConfig was found on the machine, then JFrog CLI was already configured.
+  if (!jfrogExtensionConfig.jfrogCliConfigured) {
+    jfrogExtensionConfig.jfrogCliConfigured = true;
+  }
+  return jfrogExtensionConfig;
 }
 
 async function getJfrogCliConfig(): Promise<JfrogCliConfig> {
@@ -117,21 +123,21 @@ async function getJfrogCliFullConfig(): Promise<any> {
   return cliConfigRes;
 }
 
-async function editXrayScanConfig(xrayScanConfig: XrayScanConfig): Promise<any> {
-  if (xrayScanConfig.project !== undefined) {
-    xrayScanConfig.project = xrayScanConfig.project.trim();
-    if (!xrayScanConfig.project.match(/^[a-z0-9]+$/)) {
+async function editJfrogExtensionConfig(jfrogExtensionConfig: JfrogExtensionConfig): Promise<any> {
+  if (jfrogExtensionConfig.project !== undefined) {
+    jfrogExtensionConfig.project = jfrogExtensionConfig.project.trim();
+    if (!jfrogExtensionConfig.project.match(/^[a-z0-9]+$/)) {
       throw "Project key supports only lowercase alphanumeric characters";
     }
-  } else if (xrayScanConfig.watches !== undefined) {
-    for (let watchIndex in xrayScanConfig.watches) {
-      xrayScanConfig.watches[watchIndex] = xrayScanConfig.watches[watchIndex].trim();
-      if (xrayScanConfig.watches[watchIndex].includes(" ")) {
+  } else if (jfrogExtensionConfig.watches !== undefined) {
+    for (let watchIndex in jfrogExtensionConfig.watches) {
+      jfrogExtensionConfig.watches[watchIndex] = jfrogExtensionConfig.watches[watchIndex].trim();
+      if (jfrogExtensionConfig.watches[watchIndex].includes(" ")) {
         throw "Watch name cannot contain spaces";
       }
     }
   }
-  let configJson = JSON.stringify(xrayScanConfig).replaceAll(" ", "");
+  let configJson = JSON.stringify(jfrogExtensionConfig).replaceAll(" ", "");
   if (await isWindows()) {
     return window.ddClient.extension.host.cli.exec("writeconf.bat", [configJson]);
   }

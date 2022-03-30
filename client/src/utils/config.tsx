@@ -1,5 +1,4 @@
-import { config } from 'dotenv/types';
-import { Config, getConfig, saveConfig } from '../api/config';
+import {Config, getConfig, getJfrogExtensionConfig, saveConfig} from '../api/config';
 import { ExtensionConfig } from '../types';
 import { BASIC_AUTH, ACCESS_TOKEN } from './constants';
 
@@ -43,6 +42,11 @@ export const Load = async (): Promise<ExtensionConfig> => {
   return toExtensionConfig(config);
 };
 
+export const isConfigured = async (): Promise<boolean> => {
+  const config = await getJfrogExtensionConfig();
+  return config.jfrogCliConfigured;
+};
+
 const toExtensionConfig = (config: Config): ExtensionConfig => {
   return {
     username: config.jfrogCliConfig.user,
@@ -50,8 +54,8 @@ const toExtensionConfig = (config: Config): ExtensionConfig => {
     url: config.jfrogCliConfig.url,
     authType: !config.jfrogCliConfig.user ? ACCESS_TOKEN : BASIC_AUTH,
     accessToken: config.jfrogCliConfig.accessToken,
-    project: config.xrayScanConfig.project,
-    watches: config.xrayScanConfig.watches?.join(','),
+    project: config.jfrogExtensionConfig.project,
+    watches: config.jfrogExtensionConfig.watches?.join(','),
   };
 };
 
@@ -61,7 +65,7 @@ const toJfrogCliConfig = (user: ExtensionConfig): Config => {
   config.jfrogCliConfig.user = user.username || undefined;
   config.jfrogCliConfig.password = user.password || undefined;
   config.jfrogCliConfig.accessToken = user.accessToken || undefined;
-  config.xrayScanConfig.project = user.project || undefined;
-  config.xrayScanConfig.watches = user.watches?.split(',') || undefined;
+  config.jfrogExtensionConfig.project = user.project || undefined;
+  config.jfrogExtensionConfig.watches = user.watches?.split(',') || undefined;
   return config;
 };
