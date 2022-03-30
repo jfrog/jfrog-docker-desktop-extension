@@ -20,16 +20,7 @@ export async function execOnHost(unixCmd: string, windowsCmd: string, args?: str
 
 export async function isWindows(): Promise<boolean> {
   if (windowsSystem === undefined) {
-    try {
-      await window.ddClient.extension.host.cli.exec("iswindows.bat");
-      windowsSystem = true;
-    } catch (e: any) {
-      if (e.stderr !== undefined && e.stderr.includes("No such file or directory")) {
-        windowsSystem = false;
-      } else {
-        throw "Couldn't determine the host operating system";
-      }
-    }
+    windowsSystem = navigator.platform.startsWith("Win");
   }
   return windowsSystem;
 }

@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet';
 import Select from '../components/Select';
 import Table from '../components/Table';
 import { AppContext } from '../contexts';
-import { APP_TITLE, PAGE_TITLE_HOME } from '../utils/constants';
+import { APP_TITLE } from '../utils/constants';
 import { getImages, scanImage } from '../api/image-scan';
 import { JfrogHeadline } from '../components/JfrogHeadline';
 import { useHistory } from 'react-router-dom';
@@ -79,9 +79,7 @@ export const ScanPage = () => {
   return (
     <>
       <Helmet>
-        <title>
-          {PAGE_TITLE_HOME} | {APP_TITLE}
-        </title>
+        <title>{APP_TITLE}</title>
       </Helmet>
       {getSettingsButton()}
 
