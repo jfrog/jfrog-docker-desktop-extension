@@ -6,7 +6,7 @@ export const getAppTheme = (mode: typeof LIGHT_MODE_THEME | typeof DARK_MODE_THE
   let theme = createTheme({
     palette: {
       background: {
-       default: '#f4f4f6'
+        default: '#f4f4f6',
       },
       mode,
     },
@@ -14,12 +14,12 @@ export const getAppTheme = (mode: typeof LIGHT_MODE_THEME | typeof DARK_MODE_THE
       allVariants: {
         fontFamily: 'Open Sans',
       },
-      h6:{
+      h6: {
         fontFamily: 'Roboto',
       },
       h5: {
         fontFamily: 'Roboto',
-      }
+      },
     },
   });
   theme = responsiveFontSizes(theme);
