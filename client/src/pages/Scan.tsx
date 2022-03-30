@@ -55,6 +55,9 @@ export const ScanPage = () => {
       console.log(results);
       setScanResults(results.Vulnerabilities);
       setIsScanning(false);
+      if (results && results.Vulnerabilities.length == 0) {
+        alert('No Vulnerabilities found!');
+      }
     } catch (e) {
       setIsScanning(false);
       alert(e);
