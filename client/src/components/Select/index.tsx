@@ -1,13 +1,8 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import { OutlinedInput, Typography } from '@mui/material';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
+import { Select, SelectChangeEvent, MenuItem, FormControl, OutlinedInput, Box } from '@mui/material';
 
 export type SelectProps = {
   options?: string[];
-  onChange?: (event: SelectChangeEvent<any>) => void;
+  onChange?: (event: SelectChangeEvent<string>) => void;
 };
 
 export default function BasicSelect({ options, onChange }: SelectProps) {
