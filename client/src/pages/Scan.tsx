@@ -1,10 +1,8 @@
 import { Box, styled, Typography, SelectChangeEvent, CircularProgress, Button } from '@mui/material';
 import { useContext, useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet';
 import Select from '../components/Select';
 import Table from '../components/Table';
 import { AppContext } from '../contexts';
-import { APP_TITLE } from '../utils/constants';
 import { getImages, scanImage } from '../api/image-scan';
 import { JfrogHeadline } from '../components/JfrogHeadline';
 import { useHistory } from 'react-router-dom';
@@ -55,6 +53,9 @@ export const ScanPage = () => {
       console.log(results);
       setScanResults(results.Vulnerabilities);
       setIsScanning(false);
+      if (results && results.Vulnerabilities.length == 0) {
+        alert('No Vulnerabilities found!');
+      }
     } catch (e) {
       setIsScanning(false);
       alert(e);
@@ -75,9 +76,6 @@ export const ScanPage = () => {
 
   return (
     <>
-      <Helmet>
-        <title>{APP_TITLE}</title>
-      </Helmet>
       {getSettingsButton()}
 
       <JfrogHeadline headline="JFrog Xray Scan" marginBottom="50px" />

@@ -30,7 +30,7 @@ LABEL org.opencontainers.image.title="JFrog" \
     com.docker.desktop.extension.api.version="0.0.1" \
     com.docker.desktop.extension.icon="https://media.jfrog.com/wp-content/uploads/2022/02/04003536/JFrog_Logo_partner_isv.svg"
 
-COPY --from=client-builder /app/client/build ui
+COPY --from=client-builder /app/client/dist ui
 COPY icon.svg .
 COPY metadata.json .
 VOLUME /config
