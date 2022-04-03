@@ -5,11 +5,16 @@ RUN apt-get install -y nodejs
 RUN npm install -g yarn
 WORKDIR /binaries
 ARG jfrogCliVersion=2.14.2
+ARG TARGETARCH
 RUN curl -XGET "https://releases.jfrog.io/artifactory/jfrog-cli/v2-jf/$jfrogCliVersion/jfrog-cli-mac-386/jf" -L -k -g > jf-darwin
 RUN chmod +x jf-darwin
 RUN curl -XGET "https://releases.jfrog.io/artifactory/jfrog-cli/v2-jf/$jfrogCliVersion/jfrog-cli-windows-amd64/jf.exe" -L -k -g > jf-windows.exe
 RUN chmod +x jf-windows.exe
-RUN curl -XGET "https://releases.jfrog.io/artifactory/jfrog-cli/v2-jf/$jfrogCliVersion/jfrog-cli-linux-amd64/jf" -L -k -g > jf-linux
+RUN if [ "$TARGETARCH" = "arm64" ]; then \
+    curl -XGET "https://releases.jfrog.io/artifactory/jfrog-cli/v2-jf/$jfrogCliVersion/jfrog-cli-linux-arm64/jf" -L -k -g > jf-linux; \
+  else \
+    curl -XGET "https://releases.jfrog.io/artifactory/jfrog-cli/v2-jf/$jfrogCliVersion/jfrog-cli-linux-amd64/jf" -L -k -g > jf-linux; \
+  fi
 RUN chmod +x jf-linux
 WORKDIR /app/client
 # cache packages in layer
@@ -27,7 +32,7 @@ FROM alpine:3.15
 LABEL org.opencontainers.image.title="JFrog" \
     org.opencontainers.image.description="Scan your Docker images for vulnerabilities with JFrog Xray." \
     org.opencontainers.image.vendor="JFrog Ltd." \
-    com.docker.desktop.extension.api.version="0.0.1" \
+    com.docker.desktop.extension.api.version=">=0.2.0" \
     com.docker.desktop.extension.icon="https://media.jfrog.com/wp-content/uploads/2022/02/04003536/JFrog_Logo_partner_isv.svg"
 
 COPY --from=client-builder /app/client/dist ui
