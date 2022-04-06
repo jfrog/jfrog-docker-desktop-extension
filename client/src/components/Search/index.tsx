@@ -15,7 +15,7 @@ export default function Search({
   return (
     <StyledSearch sx={{ width: searchWidth }} onBlur={() => setFocus(false)} onFocus={() => setFocus(true)}>
       <SearchIconWrapper>
-        <SearchIcon sx={{ height: '15px', color: '#556274' }} />
+        <SearchIcon sx={{ height: '15px' }} />
       </SearchIconWrapper>
       <StyledInputBase
         value={searchText}
@@ -30,15 +30,15 @@ export default function Search({
 const StyledSearch = styled('div')(({ theme }) => ({
   position: 'relative',
   borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.5),
+  backgroundColor: alpha(theme.palette.background.default, 0.5),
   '&:hover': {
-    backgroundColor: theme.palette.common.white,
+    backgroundColor: theme.palette.background.default,
   },
   margin: '10px 0',
   marginRight: '10px',
 }));
 
-const SearchIconWrapper = styled('div')(({ theme }) => ({
+const SearchIconWrapper = styled('div')(() => ({
   padding: '5px',
   height: '100%',
   position: 'absolute',

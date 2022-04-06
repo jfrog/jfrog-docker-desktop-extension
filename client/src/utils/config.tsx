@@ -3,7 +3,7 @@ import { ExtensionConfig } from '../types';
 import { BASIC_AUTH, ACCESS_TOKEN } from './constants';
 
 // Save a new JFrog platform configurations
-export const Save = async (user: ExtensionConfig | undefined): Promise<Boolean> => {
+export const Save = async (user: ExtensionConfig | undefined, skipPasswordValidation?: boolean): Promise<Boolean> => {
   if (!user) {
     return false;
   }
@@ -17,12 +17,12 @@ export const Save = async (user: ExtensionConfig | undefined): Promise<Boolean> 
         alert('Please Enter Username');
         return false;
       }
-      if (!user.password) {
+      if (!user.password && !skipPasswordValidation) {
         alert('Please Enter Password');
         return false;
       }
     } else {
-      if (!user.accessToken) {
+      if (!user.accessToken && !skipPasswordValidation) {
         alert('Please Enter  Access Token');
         return false;
       }

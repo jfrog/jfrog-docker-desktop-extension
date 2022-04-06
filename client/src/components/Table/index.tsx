@@ -60,7 +60,7 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Colum
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Box display="flex" alignItems="center">
           <Search searchText={searchText} onSelectChange={(e) => setSearchText(e.target.value)} />
-          <Typography onMouseDown={(e) => setSearchText('')} fontSize="12px" color="#556274" sx={{ cursor: 'pointer' }}>
+          <Typography onMouseDown={(e) => setSearchText('')} fontSize="12px" sx={{ cursor: 'pointer' }}>
             Clear
           </Typography>
         </Box>
@@ -253,6 +253,9 @@ const StyledTable = styled(Table)`
   border-spacing: 0 6px;
   border-radius: 6px;
   padding: 0 10px;
+  @media screen and (prefers-color-scheme: dark) {
+    background-color: #222e33;
+  }
 `;
 
 const StyledCell = styled(TableCell)`
@@ -269,12 +272,18 @@ const StyledCell = styled(TableCell)`
     border-top-right-radius: 6px;
     border-bottom-right-radius: 6px;
   }
+  @media screen and (prefers-color-scheme: dark) {
+    background-color: #293640;
+  }
 `;
 
 const StyledTableHeadline = styled(Typography)`
   color: #8494a9;
   font-weight: 600;
   font-size: 12px;
+  @media screen and (prefers-color-scheme: dark) {
+    color: #f8fafb;
+  }
 `;
 
 const StyledTableCellText = styled(Typography)`
@@ -284,4 +293,7 @@ const StyledTableCellText = styled(Typography)`
   font-size: 12px;
   font-weight: 600;
   max-width: 100%;
+  @media screen and (prefers-color-scheme: dark) {
+    color: #f8fafb;
+  }
 `;

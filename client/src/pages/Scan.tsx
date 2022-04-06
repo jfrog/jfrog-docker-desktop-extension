@@ -1,14 +1,12 @@
 import { Box, styled, Typography, SelectChangeEvent, CircularProgress, Button } from '@mui/material';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Select from '../components/Select';
 import Table from '../components/Table';
-import { AppContext } from '../contexts';
 import { getImages, scanImage } from '../api/image-scan';
 import { JfrogHeadline } from '../components/JfrogHeadline';
 import { useHistory } from 'react-router-dom';
 
 export const ScanPage = () => {
-  const context = useContext(AppContext);
   const [selectedImage, setSelectedImage] = useState('');
   const [dockerImages, setDockerImages] = useState<string[]>([]);
   const [isScanning, setIsScanning] = useState(false);
@@ -65,7 +63,7 @@ export const ScanPage = () => {
   const getSettingsButton = () => {
     return (
       <Button
-        variant="outlined"
+        variant="contained"
         onClick={onSettingsClick}
         sx={{ position: 'absolute', right: '0', top: '0', fontWeight: '700' }}
       >
@@ -93,11 +91,13 @@ export const ScanPage = () => {
       </Box>
 
       {isScanning ? (
-        <Box padding="5px 0" bgcolor="#E5EBF3" alignItems="center" marginTop="20px" display="flex" width={1 / 2}>
-          <CircularProgress size="10px" sx={{ margin: '0 10px' }} />
-          <Typography color="#556274" fontWeight="400" fontSize="12px">
-            scanning {selectedImage}...
-          </Typography>
+        <Box>
+          <ScanningBackground>
+            <CircularProgress size="10px" sx={{ margin: '0 10px' }} />
+            <Typography fontWeight="400" fontSize="12px">
+              scanning {selectedImage}...
+            </Typography>
+          </ScanningBackground>
         </Box>
       ) : (
         ''
@@ -117,10 +117,22 @@ export const ScanPage = () => {
   );
 };
 
+const ScanningBackground = styled(Box)`
+  color: #556274;
+  background: #e5ebf3;
+  padding: 5px;
+  align-items: center;
+  margin-top: 20px;
+  display: flex;
+  width: 50%;
+  @media screen and (prefers-color-scheme: dark) {
+    color: #f8fafb;
+    background: #222e33;
+  }
+`;
 const ScanButton = styled(Button)`
   margin-left: 30px;
   padding: 0 50px;
-  background-color: #4172e8;
 `;
 
 const scanTableColumnsData = [

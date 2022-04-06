@@ -22,12 +22,25 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f4f4f6;
 }
 
 .jf-loader-img {
   animation: heartbeat 1.7s infinite;
   width: 60px;
+}
+
+.jf-welcome {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 34px;
+}
+.jf-env-con-details {
+  font-family: 'Open Sans';
+  font-weight: 600;
+  font-size: 15px;
+  font-weight: bold;
+
 }
 
 @keyframes heartbeat {
