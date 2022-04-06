@@ -1,14 +1,25 @@
-import { styled, TextField, Stack, Box, FormLabel, FormControlLabel, Radio, RadioGroup, Button } from '@mui/material';
+import {
+  styled,
+  TextField,
+  Stack,
+  Box,
+  FormLabel,
+  FormControlLabel,
+  Radio,
+  RadioGroup,
+  Button,
+  Typography,
+} from '@mui/material';
 import { useEffect, useState } from 'react';
 import { ExtensionConfig } from '../types';
 import { useHistory } from 'react-router-dom';
-import { SettingsForm } from '../utils/Settings';
 import { Load, Save } from '../utils/config';
 import { BASIC_AUTH } from '../utils/constants';
 import { Policy } from '../types/policy';
 import { LoadingButton } from '@mui/lab';
 import Loader from '../components/Loader';
 import { JfrogHeadline } from '../components/JfrogHeadline';
+import { SettingsForm } from '../components/Settings/Settings';
 
 export const SettingsPage = () => {
   let history = useHistory();
@@ -48,7 +59,7 @@ export const SettingsPage = () => {
       state.project = undefined;
     }
 
-    if (await Save(state)) {
+    if (await Save(state, true)) {
       history.push('/scan');
     } else {
       setButtonLoading(false);
@@ -67,41 +78,36 @@ export const SettingsPage = () => {
             <Box flexGrow={1} overflow={'auto'}>
               <Box maxWidth={'400px'}>
                 <Box>
-                  {/* <Button variant="text" >
-          <ArrowBackIosNew />
-        </Button> */}
-                  <Box
-                    sx={{
-                      fontFamily: 'Open Sans',
-                      fontStyle: 'normal',
-                      fontWeight: 600,
-                      fontSize: '30px',
-                      color: '#414857',
-                    }}
-                  >
+                  <Box>
                     <JfrogHeadline headline="JFrog Environment Settings" />
                   </Box>
                 </Box>
                 <Stack spacing={1}>
-                  <Box
+                  <Typography
+                    variant="h5"
                     sx={{
-                      fontFamily: 'Roboto',
                       fontStyle: 'normal',
                       fontWeight: 400,
-                      fontSize: '16px',
-                      color: '#414857',
+                      fontSize: '19px',
                       marginTop: '25px',
                     }}
                     id="demo-radio-buttons-group-label"
                   >
                     JFrog Environment Connection Details
-                  </Box>
+                  </Typography>
                   {SettingsForm(state, setValue)}
                 </Stack>
-                {/* <Box marginTop={6}/> */}
                 <Box marginBottom={'30px'}>
-                  <Box marginTop={6}>
-                    <FormLabel id="demo-radio-buttons-group-label">Scanning Policy</FormLabel>
+                  <Box sx={{
+                        fontFamily: 'Roboto',
+                        fontStyle: 'normal',
+                        fontWeight: 400,
+                        fontSize: '19px',
+                        marginTop: '25px',
+
+                      }}marginTop={6}>
+
+                      Scanning Policy
                   </Box>
                   <RadioGroup
                     aria-labelledby="demo-radio-buttons-group-label"
@@ -161,7 +167,7 @@ export const SettingsPage = () => {
               <LoadingButton type="submit" loading={isButtonLoading} onClick={HandleSave} variant="contained">
                 Save
               </LoadingButton>
-              <Button variant="outlined" onClick={HandleCancel}>
+              <Button variant="contained" onClick={HandleCancel}>
                 Cancel
               </Button>
             </Footer>

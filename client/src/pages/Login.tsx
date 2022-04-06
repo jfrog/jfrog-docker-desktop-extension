@@ -9,7 +9,7 @@ import Loader from '../components/Loader';
 
 import { ExtensionConfig } from '../types';
 import { BASIC_AUTH } from '../utils/constants';
-import { SettingsForm } from '../utils/Settings';
+import { SettingsForm } from '../components/Settings/Settings';
 import { LoadingButton } from '@mui/lab';
 
 export const LoginPage = () => {
@@ -42,7 +42,7 @@ export const LoginPage = () => {
 
   return (
     <>
-      <Wrapper className="login-wrapper">
+      <Wrapper>
         {isLoading ? (
           <Loader />
         ) : (
@@ -55,12 +55,8 @@ export const LoginPage = () => {
               <Title>
                 <img src={box} alt="box" />
                 <Box>
-                  <Typography fontSize="34px" fontWeight="600" color="#414857">
-                    Welcome
-                  </Typography>
-                  <Typography fontSize="18px" fontWeight="600" color="#556274">
-                  JFrog Environment Connection Details
-                  </Typography>
+                  <Box className="jf-welcome">Welcome</Box>
+                  <Box sx={{fontSize: '13px',fontWeight: 'bold'}}>Enter Your JFrog Environment Connection Details</Box>
                 </Box>
               </Title>
 
@@ -96,8 +92,11 @@ const LogoWrapper = styled(Box)`
   display: flex;
   align-items: center;
   justify-content: center;
-  border-right: 1px solid var(--light-gray);
+  border-right: 1px solid #c9d0e3;
   height: 370px;
+  @media screen and (prefers-color-scheme: dark) {
+    border-right: 1px solid #4b5356;
+  }
 `;
 
 const StyledLogo = styled('img')`

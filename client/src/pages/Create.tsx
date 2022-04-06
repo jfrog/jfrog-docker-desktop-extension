@@ -41,25 +41,8 @@ export const CreatePage = () => {
       <Box>
         <Title>
           <Box>
-            <Stack
-              sx={{
-                fontFamily: 'Open Sans',
-                fontStyle: 'normal',
-                fontWeight: 600,
-                fontSize: '30px',
-                color: '#414857',
-              }}
-            >
+            <Stack>
               <JfrogHeadline headline="Create a FREE JFrog Environment" />
-
-              <Box
-                sx={{
-                  fontSize: '18px',
-                  color: '#556274',
-                  marginLeft: '41px',
-                  marginTop: '14px',
-                }}
-              ></Box>
             </Stack>
           </Box>
         </Title>
@@ -74,9 +57,8 @@ export const CreatePage = () => {
           </Box>
           <Stack direction="column" justifyContent="flex-start" alignItems="flex-start" spacing={2}>
             <Box mt={4}>
-              <TextField
-                sx={{ width: '712px', height: '40px' }}
-                size="small"
+              <Text
+                size="medium"
                 id="outlined-basic"
                 value={copyText}
                 focused={isCopied}
@@ -125,4 +107,11 @@ const DoneButton = styled(Box)`
   gap: 16px;
   bottom: 0;
   right: 0;
+`;
+const Text = styled(TextField)`
+  width: 812px;
+  background: #ffffff;
+  @media screen and (prefers-color-scheme: dark) {
+    background: #323740;
+  }
 `;
