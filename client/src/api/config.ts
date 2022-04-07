@@ -31,7 +31,11 @@ export async function importConfigFromHostCli(): Promise<void> {
   try {
     let exportResponse = await execOnHost("jf", "jf.exe", ["config", "export"]);
     let serverToken = exportResponse.stdout;
-    await execOnHost("runcli.sh", "runcli.bat", ["config", "import", serverToken]);
+    let importPromise = execOnHost("runcli.sh", "runcli.bat", ["config", "import", serverToken]);
+    let jfrogExtensionConf = new JfrogExtensionConfig();
+    jfrogExtensionConf.jfrogCliConfigured = true;
+    let saveExtensionPromise = editJfrogExtensionConfig(jfrogExtensionConf);
+    await Promise.all([importPromise, saveExtensionPromise]);
   } catch (e) {
     throwErrorAsString(e);
   }
@@ -72,7 +76,14 @@ export async function getJfrogExtensionConfig(): Promise<JfrogExtensionConfig> {
     cmdResult = await execOnHost("readconf.sh", "readconf.bat");
   } catch (e: any) {
     if (e.stderr !== undefined && (e.stderr.includes("file not found") || e.stderr.includes("The system cannot find the file specified."))) {
-      return new JfrogExtensionConfig();
+      try {
+        await importConfigFromHostCli();
+        let jfrogExtensionConf = new JfrogExtensionConfig();
+        jfrogExtensionConf.jfrogCliConfigured = true;
+        return jfrogExtensionConf;
+      } catch (e) {
+        return new JfrogExtensionConfig();
+      }
     }
     throwErrorAsString(e);
   }
@@ -96,8 +107,12 @@ async function getJfrogCliConfig(): Promise<JfrogCliConfig> {
   try {
     cliConfigRes = await getJfrogCliFullConfig();
   } catch (e) {
-    await importConfigFromHostCli();
-    cliConfigRes = await getJfrogCliFullConfig();
+    try {
+      await importConfigFromHostCli();
+      cliConfigRes = await getJfrogCliFullConfig();
+    } catch (e) {
+      throw "Your JFrog environment is not configured."
+    }
   }
   return {url: cliConfigRes.url, user: cliConfigRes.user, password: undefined, accessToken: undefined}
 }
