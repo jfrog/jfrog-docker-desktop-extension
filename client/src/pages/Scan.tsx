@@ -12,12 +12,19 @@ export const ScanPage = () => {
   const [dockerImages, setDockerImages] = useState<string[]>([]);
   const [isScanningMap, setIsScanningMap] = useState<any>({});
   const [scanResultsMap, setScanResultsMap] = useState<any>({});
+  const [runningScanId, setRunningScanId] = useState(0);
+
   let history = useHistory();
 
   const handleChange = (event: SelectChangeEvent<any>) => {
     setSelectedImage(event.target.value);
-    setScanResultsMap({ ...scanResultsMap, [event.target.value]: undefined });
-    setIsScanningMap({ ...isScanningMap, [event.target.value]: false });
+    handleCancelScan();
+  };
+
+  const handleCancelScan = () => {
+    setIsScanningMap({});
+    setScanResultsMap({});
+    setRunningScanId(0);
   };
 
   useEffect(() => {
@@ -44,17 +51,17 @@ export const ScanPage = () => {
     history.push('/settings');
   };
 
-  const onScanClick = async () => {
-    const image = selectedImage;
+  const onScanClick = async (scanId: number) => {
     try {
-      setScanResultsMap({ ...scanResultsMap, [image]: undefined });
-      setIsScanningMap({ ...isScanningMap, [image]: true });
-      let results = await scanImage(image);
+      setScanResultsMap({});
+      setRunningScanId(scanId);
+      setIsScanningMap({ [scanId]: true });
+      let results = await scanImage(selectedImage);
       console.log(results);
-      setScanResultsMap({ ...scanResultsMap, [image]: [] });
-      setIsScanningMap({ ...isScanningMap, [image]: false });
+      setScanResultsMap({ ...scanResultsMap, [scanId]: results.Vulnerabilities });
+      setIsScanningMap({ ...isScanningMap, [scanId]: false });
     } catch (e) {
-      setIsScanningMap({ ...isScanningMap, [image]: false });
+      setIsScanningMap({ ...isScanningMap, [scanId]: false });
       alert(e);
     }
   };
@@ -83,14 +90,14 @@ export const ScanPage = () => {
         <ScanButton
           variant="contained"
           sx={{ width: '120px', fontSize: '16px', fontWeight: '700' }}
-          disabled={isScanningMap[selectedImage]}
-          onClick={onScanClick}
+          disabled={selectedImage == '' || isScanningMap[runningScanId]}
+          onClick={() => onScanClick(Math.random())}
         >
           Scan
         </ScanButton>
       </Box>
 
-      {isScanningMap[selectedImage] ? (
+      {isScanningMap[runningScanId] ? (
         <Box>
           <ProgressBox>
             <Box display="flex" alignItems="center">
@@ -99,22 +106,19 @@ export const ScanPage = () => {
                 scanning {selectedImage}...
               </Typography>
             </Box>
-            <CloseIcon
-              sx={{ cursor: 'pointer', fontSize: '18px' }}
-              onClick={() => setIsScanningMap({ ...isScanningMap, [selectedImage]: false })}
-            />
+            <CloseIcon sx={{ cursor: 'pointer', fontSize: '18px' }} onClick={handleCancelScan} />
           </ProgressBox>
         </Box>
       ) : (
         ''
       )}
 
-      {scanResultsMap[selectedImage] ? (
+      {scanResultsMap[runningScanId] ? (
         <Box sx={{ marginTop: '50px' }}>
           <Typography variant="h6" fontWeight="500" fontSize="18px">
             Image Scan Results
           </Typography>
-          <Table columnsData={scanTableColumnsData} rows={scanResultsMap[selectedImage]} />
+          <Table columnsData={scanTableColumnsData} rows={scanResultsMap[runningScanId]} />
         </Box>
       ) : (
         ''
