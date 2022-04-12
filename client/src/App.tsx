@@ -86,7 +86,21 @@ function App() {
               '.MuiOutlinedInput-root': {
                 borderRadius: '4px',
               },
-              scrollbarColor: '#6b6b6b #2b2b2b',
+            },
+          },
+          MuiTableContainer: {
+            styleOverrides: {
+              root: {
+                '&::-webkit-scrollbar': {
+                  width: 7,
+                },
+                '&::-webkit-scrollbar-track': {
+                  background: prefersDarkMode ? '#222e33' : '#e6e6ed',
+                },
+                '&::-webkit-scrollbar-thumb': {
+                  backgroundColor: prefersDarkMode ? '#293640' : '#D8D8DF',
+                },
+              },
             },
           },
         },

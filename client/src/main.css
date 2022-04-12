@@ -14,10 +14,6 @@ body {
   position: relative;
 }
 
-::-webkit-scrollbar-track {
-  background: blue;
-}
-
 .jf-loader {
   display: flex;
   align-items: center;
@@ -40,7 +36,6 @@ body {
   font-weight: 600;
   font-size: 15px;
   font-weight: bold;
-
 }
 
 @keyframes heartbeat {
