@@ -19,6 +19,15 @@ function App() {
       createTheme({
         palette: {
           mode: prefersDarkMode ? 'dark' : 'light',
+          background: {
+            default: prefersDarkMode ? '#1D272D' : '#F4F4F6',
+          },
+          primary: {
+            main: '#4172E8',
+          },
+          secondary: {
+            main: '#00FF00',
+          },
         },
         typography: {
           fontFamily: 'Open Sans',
@@ -30,33 +39,29 @@ function App() {
             color: prefersDarkMode ? '#fff' : '#17191E',
           },
           button: {
+            color: prefersDarkMode ? '#fff' : '#17191E',
             textTransform: 'none',
             fontSize: '16px',
             fontWeight: '700',
+            width: '120px',
+            height: '40px',
           },
         },
-
         components: {
           MuiButton: {
             styleOverrides: {
               root: {
-                backgroundColor: '#4172E8',
-                color: '#fff',
-                width: '120px',
-                height: '40px',
-                  '&:hover': {
-                    backgroundColor:  prefersDarkMode ?'#0069d9' :'#0069d9',
-                    borderColor: '#0062cc',
-                    boxShadow: 'none',
-                  },
-                  '&:active': {
-                    boxShadow: 'none',
-                    backgroundColor: prefersDarkMode ? '#0069d9': '#7ea0ff',
-                    borderColor: '#005cbf',
-                  },
-                  '&:focus': {
-                    boxShadow: '0 0 0 0.2rem rgba(0,123,255,.5)',
-                  },
+                '&:hover': {
+                  borderColor: '#0062cc',
+                  boxShadow: 'none',
+                },
+                '&:active': {
+                  boxShadow: 'none',
+                  borderColor: '#005cbf',
+                },
+                '&:focus': {
+                  boxShadow: '0 0 0 0.2rem rgba(0,123,255,.5)',
+                },
               },
             },
           },
@@ -73,7 +78,6 @@ function App() {
                 fontFamily: 'Open Sans',
                 height: '100vh',
                 padding: '40px 40px',
-                backgroundColor: prefersDarkMode ? '#1D272D' : '#F4F4F6',
               },
               '.MuiFormLabel-root > .MuiFormControl-root': {
                 marginTop: '3px',

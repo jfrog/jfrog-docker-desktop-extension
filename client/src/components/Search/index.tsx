@@ -5,9 +5,11 @@ import { useState, ChangeEventHandler } from 'react';
 
 export default function Search({
   searchText,
+  disabled,
   onSelectChange,
 }: {
   searchText: string;
+  disabled?: boolean;
   onSelectChange: ChangeEventHandler<HTMLInputElement>;
 }) {
   const [focus, setFocus] = useState(false);
@@ -18,6 +20,7 @@ export default function Search({
         <SearchIcon sx={{ height: '15px' }} />
       </SearchIconWrapper>
       <StyledInputBase
+        disabled={disabled}
         value={searchText}
         onChange={onSelectChange}
         placeholder="Search"

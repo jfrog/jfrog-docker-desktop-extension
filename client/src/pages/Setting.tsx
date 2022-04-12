@@ -98,16 +98,17 @@ export const SettingsPage = () => {
                   {SettingsForm(state, setValue)}
                 </Stack>
                 <Box marginBottom={'30px'}>
-                  <Box sx={{
-                        fontFamily: 'Roboto',
-                        fontStyle: 'normal',
-                        fontWeight: 400,
-                        fontSize: '19px',
-                        marginTop: '25px',
-
-                      }}marginTop={6}>
-
-                      Scanning Policy
+                  <Box
+                    sx={{
+                      fontFamily: 'Roboto',
+                      fontStyle: 'normal',
+                      fontWeight: 400,
+                      fontSize: '19px',
+                      marginTop: '25px',
+                    }}
+                    marginTop={6}
+                  >
+                    Scanning Policy
                   </Box>
                   <RadioGroup
                     aria-labelledby="demo-radio-buttons-group-label"
@@ -167,7 +168,7 @@ export const SettingsPage = () => {
               <LoadingButton type="submit" loading={isButtonLoading} onClick={HandleSave} variant="contained">
                 Save
               </LoadingButton>
-              <Button variant="contained" onClick={HandleCancel}>
+              <Button variant="outlined" onClick={HandleCancel}>
                 Cancel
               </Button>
             </Footer>

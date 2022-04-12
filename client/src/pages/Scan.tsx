@@ -5,18 +5,19 @@ import Table from '../components/Table';
 import { getImages, scanImage } from '../api/image-scan';
 import { JfrogHeadline } from '../components/JfrogHeadline';
 import { useHistory } from 'react-router-dom';
+import CloseIcon from '@mui/icons-material/Close';
 
 export const ScanPage = () => {
   const [selectedImage, setSelectedImage] = useState('');
   const [dockerImages, setDockerImages] = useState<string[]>([]);
-  const [isScanning, setIsScanning] = useState(false);
-  const [scanResults, setScanResults] = useState<any[]>([]);
+  const [isScanningMap, setIsScanningMap] = useState<any>({});
+  const [scanResultsMap, setScanResultsMap] = useState<any>({});
   let history = useHistory();
 
   const handleChange = (event: SelectChangeEvent<any>) => {
     setSelectedImage(event.target.value);
-    setScanResults([]);
-    setIsScanning(false);
+    setScanResultsMap({ ...scanResultsMap, [event.target.value]: undefined });
+    setIsScanningMap({ ...isScanningMap, [event.target.value]: false });
   };
 
   useEffect(() => {
@@ -44,18 +45,16 @@ export const ScanPage = () => {
   };
 
   const onScanClick = async () => {
+    const image = selectedImage;
     try {
-      setIsScanning(true);
-      setScanResults([]);
-      let results = await scanImage(selectedImage);
+      setScanResultsMap({ ...scanResultsMap, [image]: undefined });
+      setIsScanningMap({ ...isScanningMap, [image]: true });
+      let results = await scanImage(image);
       console.log(results);
-      setScanResults(results.Vulnerabilities);
-      setIsScanning(false);
-      if (results && results.Vulnerabilities.length == 0) {
-        alert('No Vulnerabilities found!');
-      }
+      setScanResultsMap({ ...scanResultsMap, [image]: [] });
+      setIsScanningMap({ ...isScanningMap, [image]: false });
     } catch (e) {
-      setIsScanning(false);
+      setIsScanningMap({ ...isScanningMap, [image]: false });
       alert(e);
     }
   };
@@ -63,7 +62,7 @@ export const ScanPage = () => {
   const getSettingsButton = () => {
     return (
       <Button
-        variant="contained"
+        variant="outlined"
         onClick={onSettingsClick}
         sx={{ position: 'absolute', right: '0', top: '0', fontWeight: '700' }}
       >
@@ -77,38 +76,45 @@ export const ScanPage = () => {
       {getSettingsButton()}
 
       <JfrogHeadline headline="JFrog Xray Scan" marginBottom="50px" />
+
       <Typography variant="subtitle1">Select local image for scanning</Typography>
       <Box display="flex" width={1 / 2}>
         <Select onChange={handleChange} options={dockerImages} />
         <ScanButton
           variant="contained"
           sx={{ width: '120px', fontSize: '16px', fontWeight: '700' }}
-          disabled={isScanning}
+          disabled={isScanningMap[selectedImage]}
           onClick={onScanClick}
         >
           Scan
         </ScanButton>
       </Box>
 
-      {isScanning ? (
+      {isScanningMap[selectedImage] ? (
         <Box>
-          <ScanningBackground>
-            <CircularProgress size="10px" sx={{ margin: '0 10px' }} />
-            <Typography fontWeight="400" fontSize="12px">
-              scanning {selectedImage}...
-            </Typography>
-          </ScanningBackground>
+          <ProgressBox>
+            <Box display="flex" alignItems="center">
+              <CircularProgress size="10px" sx={{ margin: '0 10px' }} />
+              <Typography fontWeight="400" fontSize="14px">
+                scanning {selectedImage}...
+              </Typography>
+            </Box>
+            <CloseIcon
+              sx={{ cursor: 'pointer', fontSize: '18px' }}
+              onClick={() => setIsScanningMap({ ...isScanningMap, [selectedImage]: false })}
+            />
+          </ProgressBox>
         </Box>
       ) : (
         ''
       )}
 
-      {scanResults.length > 0 ? (
+      {scanResultsMap[selectedImage] ? (
         <Box sx={{ marginTop: '50px' }}>
           <Typography variant="h6" fontWeight="500" fontSize="18px">
             Image Scan Results
           </Typography>
-          {scanResults.length > 0 ? <Table columnsData={scanTableColumnsData} rows={scanResults} /> : ''}
+          <Table columnsData={scanTableColumnsData} rows={scanResultsMap[selectedImage]} />
         </Box>
       ) : (
         ''
@@ -117,13 +123,14 @@ export const ScanPage = () => {
   );
 };
 
-const ScanningBackground = styled(Box)`
+const ProgressBox = styled(Box)`
   color: #556274;
   background: #e5ebf3;
   padding: 5px;
   align-items: center;
   margin-top: 20px;
   display: flex;
+  justify-content: space-between;
   width: 50%;
   @media screen and (prefers-color-scheme: dark) {
     color: #f8fafb;
