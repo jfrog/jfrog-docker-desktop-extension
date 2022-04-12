@@ -79,7 +79,7 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Colum
         </ExportCsvBox>
       </Box>
 
-      <TableContainer sx={{ overflow: 'hidden auto', maxHeight: '400px' }}>
+      <TableContainer sx={{ overflow: 'hidden auto' }}>
         <StyledTable aria-labelledby="tableTitle">
           <TableHead>
             <TableRow>

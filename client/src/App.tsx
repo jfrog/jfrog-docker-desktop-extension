@@ -91,6 +91,7 @@ function App() {
           MuiTableContainer: {
             styleOverrides: {
               root: {
+                maxHeight: 'calc(100vh - 350px)',
                 '&::-webkit-scrollbar': {
                   width: 7,
                 },
