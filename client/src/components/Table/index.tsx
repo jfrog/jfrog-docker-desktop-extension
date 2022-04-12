@@ -11,6 +11,9 @@ import {
   TableSortLabel,
   styled,
 } from '@mui/material';
+import Search from '../Search';
+import { visuallyHidden } from '@mui/utils';
+
 import criticalSeverity from '../../assets/severityIcons/critical.png';
 import highSeverity from '../../assets/severityIcons/high.png';
 import mediumSeverity from '../../assets/severityIcons/medium.png';
@@ -25,9 +28,8 @@ import composer from '../../assets/techIcons/composer.png';
 import go from '../../assets/techIcons/go.png';
 import alpine from '../../assets/techIcons/alpine.png';
 import debian from '../../assets/techIcons/debian.png';
-import exportcsv from '../../assets/exportcsv.svg';
-import Search from '../Search';
-import { visuallyHidden } from '@mui/utils';
+import exportCsv from '../../assets/csv.png';
+import noIssuesIcon from '../../assets/no-issues.png';
 
 export type ColumnsDataProps = {
   id: string;
@@ -39,7 +41,7 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Colum
   const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] = React.useState<string>(columnsData[0].id);
   const [searchText, setSearchText] = React.useState('');
-
+  const isEmptyTable = rows.length == 0;
   const includesSearchText = (row: any) => {
     for (let col of columnsData) {
       if (row[col.id] && row[col.id].toLowerCase().includes(searchText.toLowerCase())) {
@@ -59,14 +61,22 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Colum
     <Box sx={{ width: '100%' }}>
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Box display="flex" alignItems="center">
-          <Search searchText={searchText} onSelectChange={(e) => setSearchText(e.target.value)} />
-          <Typography onMouseDown={(e) => setSearchText('')} fontSize="12px" sx={{ cursor: 'pointer' }}>
+          <Search
+            disabled={isEmptyTable}
+            searchText={searchText}
+            onSelectChange={(e) => setSearchText(e.target.value)}
+          />
+          <Typography
+            onMouseDown={(e) => setSearchText('')}
+            fontSize="12px"
+            sx={{ cursor: isEmptyTable ? 'default' : 'pointer' }}
+          >
             Clear
           </Typography>
         </Box>
-        {
-          //exportButton()}
-        }
+        <ExportCsvBox>
+          <img src={exportCsv} width="18px" height="18px" alt={'export csv'} />
+        </ExportCsvBox>
       </Box>
 
       <TableContainer sx={{ overflow: 'hidden auto', maxHeight: '400px' }}>
@@ -102,42 +112,66 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Colum
           </TableHead>
 
           <TableBody>
-            {rows
-              .slice()
-              .sort(getComparator(order, orderBy))
-              .filter((row) => searchText == '' || includesSearchText(row))
-              .map((row, i) => {
-                return (
-                  <TableRow hover role="row" tabIndex={-1} key={i} sx={{ padding: '0 10px' }}>
-                    {columnsData.map((col, j) => {
-                      return (
-                        <StyledCell
-                          sx={{ minWidth: '70px', maxWidth: col.maxWidth }}
-                          scope="row"
-                          role="cell"
-                          key={col.id + i + j}
-                        >
-                          {row[col.id] && (
-                            <Box
-                              display="flex"
-                              flexDirection="column"
-                              alignItems="center"
-                              sx={{ float: col.maxWidth ? 'center' : 'left', width: 'inherit' }}
+            {isEmptyTable
+              ? noIssuesDetected()
+              : rows
+                  .slice()
+                  .sort(getComparator(order, orderBy))
+                  .filter((row) => searchText == '' || includesSearchText(row))
+                  .map((row, i) => {
+                    return (
+                      <TableRow hover role="row" tabIndex={-1} key={i} sx={{ padding: '0 10px' }}>
+                        {columnsData.map((col, j) => {
+                          return (
+                            <StyledCell
+                              sx={{ minWidth: '70px', maxWidth: col.maxWidth }}
+                              scope="row"
+                              role="cell"
+                              key={col.id + i + j}
                             >
-                              {addIconIfNeeded(col.id, row[col.id])}
-                              <StyledTableCellText title={row[col.id]}>{row[col.id]}</StyledTableCellText>
-                            </Box>
-                          )}
-                        </StyledCell>
-                      );
-                    })}
-                  </TableRow>
-                );
-              })}
+                              {row[col.id] && (
+                                <Box
+                                  display="flex"
+                                  flexDirection="column"
+                                  alignItems="center"
+                                  sx={{ float: col.maxWidth ? 'center' : 'left', width: 'inherit' }}
+                                >
+                                  {addIconIfNeeded(col.id, row[col.id])}
+                                  <StyledTableCellText title={row[col.id]}>{row[col.id]}</StyledTableCellText>
+                                </Box>
+                              )}
+                            </StyledCell>
+                          );
+                        })}
+                      </TableRow>
+                    );
+                  })}
           </TableBody>
         </StyledTable>
       </TableContainer>
     </Box>
+  );
+}
+
+function noIssuesDetected() {
+  return (
+    <TableRow
+      sx={{
+        backgroundColor: (theme) => theme.palette.background.default,
+      }}
+    >
+      <TableCell colSpan={100}>
+        <Box alignItems="center" height="300px" display="flex" flexDirection="column" justifyContent="center">
+          <img src={noIssuesIcon} width="90px" height="90px" alt={'no issues'} />
+          <Typography fontSize="24px" fontWeight="600" textTransform="capitalize">
+            The scan was completed successfully
+          </Typography>
+          <Typography fontSize="18px" fontWeight="600" textTransform="capitalize">
+            no issues were detected
+          </Typography>
+        </Box>
+      </TableCell>
+    </TableRow>
   );
 }
 
@@ -229,22 +263,19 @@ function getComparator(order: Order, orderBy: string): (a: any, b: any) => numbe
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
-function exportButton() {
-  return (
-    <Box
-      width="28px"
-      height="28px"
-      bgcolor="#E6E6ED"
-      alignItems="center"
-      display="flex"
-      justifyContent="center"
-      borderRadius="3px"
-      sx={{ cursor: 'pointer' }}
-    >
-      <img src={exportcsv} width="18px" height="18px" alt={'export csv'} />
-    </Box>
-  );
-}
+const ExportCsvBox = styled(Box)`
+  background-color: #e6e6ed;
+  width: 28px;
+  height: 28px;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  border-radius: 3px;
+  cursor: pointer;
+  @media screen and (prefers-color-scheme: dark) {
+    background-color: #222e33;
+  }
+`;
 
 const StyledTable = styled(Table)`
   background-color: #e6e6ed;

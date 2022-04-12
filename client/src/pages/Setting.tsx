@@ -162,7 +162,7 @@ export const SettingsPage = () => {
               <LoadingButton type="submit" loading={isButtonLoading} onClick={HandleSave} variant="contained">
                 Save
               </LoadingButton>
-              <Button variant="contained" onClick={HandleCancel}>
+              <Button variant="outlined" onClick={HandleCancel}>
                 Cancel
               </Button>
             </Footer>
