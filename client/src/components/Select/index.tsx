@@ -21,7 +21,7 @@ export default function BasicSelect({ options, onChange }: SelectProps) {
           defaultValue=""
         >
           <MenuItem disabled value="">
-            <em>Select</em>
+            Select
           </MenuItem>
           {options?.map((option, index) => {
             return (
