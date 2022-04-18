@@ -20,7 +20,7 @@ export async function execOnHost(unixCmd: string, windowsCmd: string, args?: str
 
 export async function isWindows(): Promise<boolean> {
   if (windowsSystem === undefined) {
-    windowsSystem = navigator.platform.startsWith("Win");
+    windowsSystem = navigator.platform.startsWith('Win');
   }
   return windowsSystem;
 }

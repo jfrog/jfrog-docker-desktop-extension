@@ -6,6 +6,18 @@ import { getImages, scanImage } from '../api/image-scan';
 import { JfrogHeadline } from '../components/JfrogHeadline';
 import { useHistory } from 'react-router-dom';
 import CloseIcon from '@mui/icons-material/Close';
+import { Severity } from '../types/severity';
+import { VulnerabilityKeys, Vulnerability } from '../types/Vulnerability';
+import { SeverityIcons } from '../assets/severityIcons/SeverityIcons';
+import { TechIcons } from '../assets/techIcons/TechIcons';
+
+type ScanResults = {
+  vulnerabilities: Array<Vulnerability>;
+  licenses: Array<any>;
+  securityViolations: Array<any>;
+  licensesViolations: Array<any>;
+  operationalRiskViolations: Array<any>;
+};
 
 export const ScanPage = () => {
   const [selectedImage, setSelectedImage] = useState('');
@@ -56,14 +68,37 @@ export const ScanPage = () => {
       setScanResultsMap({});
       setRunningScanId(scanId);
       setIsScanningMap({ [scanId]: true });
-      let results = await scanImage(selectedImage);
-      console.log(results);
-      setScanResultsMap({ ...scanResultsMap, [scanId]: results.Vulnerabilities });
+      let results: ScanResults = await scanImage(selectedImage);
+      console.log('scan results for ' + selectedImage, results);
+      saveScanResults(scanId, results);
       setIsScanningMap({ ...isScanningMap, [scanId]: false });
     } catch (e) {
       setIsScanningMap({ ...isScanningMap, [scanId]: false });
       alert(e);
     }
+  };
+
+  const saveScanResults = (scanId: number, results: ScanResults) => {
+    let vulns = results.vulnerabilities ?? [];
+
+    vulns.forEach((vuln: Vulnerability) => {
+      // Update CVE's field
+      vuln.cveIds = [];
+      vuln.cvssV2 = [];
+      vuln.cvssV3 = [];
+      vuln[VulnerabilityKeys.cves]?.forEach((cve: any) => {
+        vuln.cveIds?.push(cve.id);
+        vuln.cvssV2?.push(cve.cvssV2);
+        vuln.cvssV3?.push(cve.cvssV3);
+      });
+
+      // Update Fix versions field
+      if (!vuln[VulnerabilityKeys.fixedVersions]) {
+        vuln[VulnerabilityKeys.fixedVersions] = ['N/A'];
+      }
+    });
+
+    setScanResultsMap({ ...scanResultsMap, [scanId]: vulns });
   };
 
   const getSettingsButton = () => {
@@ -127,6 +162,60 @@ export const ScanPage = () => {
   );
 };
 
+export type VulnsColumnData = {
+  id: Partial<VulnerabilityKeys>;
+  label?: string;
+  sortOrder?: string[];
+  maxWidth?: string;
+  copyIcon?: boolean;
+  iconList?: { [key: string]: string };
+};
+
+const scanTableColumnsData: Array<VulnsColumnData> = [
+  {
+    id: VulnerabilityKeys.severity,
+    sortOrder: [Severity.Critical, Severity.High, Severity.Medium, Severity.Low, Severity.Unknown],
+    maxWidth: '70px',
+    iconList: SeverityIcons,
+  },
+  {
+    id: VulnerabilityKeys.impactedPackageName,
+    label: 'Impacted Package',
+    copyIcon: true,
+  },
+  {
+    id: VulnerabilityKeys.impactedPackageVersion,
+    label: 'Version',
+  },
+  {
+    id: VulnerabilityKeys.impactedPackageType,
+    label: 'Type',
+    maxWidth: '60px',
+    iconList: TechIcons,
+  },
+  {
+    id: VulnerabilityKeys.fixedVersions,
+    label: 'Fix Versions',
+    copyIcon: true,
+  },
+  {
+    id: VulnerabilityKeys.cveIds,
+    label: 'CVE',
+    maxWidth: '120px',
+    copyIcon: true,
+  },
+  {
+    id: VulnerabilityKeys.cvssV3,
+    label: 'CVSS 3.0',
+    maxWidth: '70px',
+  },
+  {
+    id: VulnerabilityKeys.cvssV2,
+    label: 'CVSS 2.0',
+    maxWidth: '70px',
+  },
+];
+
 const ProgressBox = styled(Box)`
   color: #556274;
   background: #e5ebf3;
@@ -145,36 +234,3 @@ const ScanButton = styled(Button)`
   margin-left: 30px;
   padding: 0 50px;
 `;
-
-const scanTableColumnsData = [
-  {
-    id: 'Severity',
-    maxWidth: '70px',
-  },
-  {
-    id: 'ImpactedPackage',
-  },
-  {
-    id: 'ImpactedPackageVersion',
-    label: 'Version',
-  },
-  {
-    id: 'Type',
-    maxWidth: '60px',
-  },
-  {
-    id: 'FixedVersions',
-  },
-  {
-    id: 'CVE',
-    maxWidth: '120px',
-  },
-  {
-    id: 'CVSSv2',
-    maxWidth: '70px',
-  },
-  {
-    id: 'CVSSv3',
-    maxWidth: '70px',
-  },
-];

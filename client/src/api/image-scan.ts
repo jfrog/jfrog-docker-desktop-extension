@@ -1,25 +1,25 @@
-import {getConfig} from "./config";
-import {execOnHost, throwErrorAsString} from "./utils";
+import { getConfig } from './config';
+import { execOnHost, throwErrorAsString } from './utils';
 
 const development: boolean = !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
 
 export async function scanImage(imageTag: string): Promise<any> {
-  console.log("Running scanImage command on: " + imageTag);
+  console.log('Running scanImage command on: ' + imageTag);
   if (development) {
-    console.log("Dev environment. Getting sample results");
+    console.log('Dev environment. Getting sample results');
     return testScanResults;
   }
 
   let config = await getConfig();
-  let cmdArgs: string[] = ["docker", "scan", imageTag, "--format", "simple-json"];
+  let cmdArgs: string[] = ['docker', 'scan', imageTag, '--format', 'simple-json'];
   if (config.jfrogExtensionConfig.project != undefined) {
-    cmdArgs.push("--project", '"' + config.jfrogExtensionConfig.project + '"');
+    cmdArgs.push('--project', '"' + config.jfrogExtensionConfig.project + '"');
   } else if (config.jfrogExtensionConfig.watches != undefined) {
-    cmdArgs.push("--watches", '"' + config.jfrogExtensionConfig.watches.join(",") + '"');
+    cmdArgs.push('--watches', '"' + config.jfrogExtensionConfig.watches.join(',') + '"');
   }
   let scanResults;
   try {
-    let cmdResult = await execOnHost("runcli.sh", "runcli.bat", cmdArgs);
+    let cmdResult = await execOnHost('runcli.sh', 'runcli.bat', cmdArgs);
     scanResults = JSON.parse(cmdResult.stdout);
   } catch (e) {
     throwErrorAsString(e);
@@ -28,10 +28,10 @@ export async function scanImage(imageTag: string): Promise<any> {
 }
 
 export async function getImages(): Promise<any> {
-  console.log("Running getImages command")
+  console.log('Running getImages command');
   if (development) {
-    console.log("Dev environment. Getting sample results")
-    return testImageNames
+    console.log('Dev environment. Getting sample results');
+    return testImageNames;
   }
 
   return window.ddClient.docker.listImages();
@@ -39,348 +39,129 @@ export async function getImages(): Promise<any> {
 
 const testImageNames = [
   {
-    RepoTags : ["releases-docker.jfrog.io/jfrog/jfrog-cli-v2"]
+    RepoTags: ['releases-docker.jfrog.io/jfrog/jfrog-cli-v2'],
   },
   {
-    RepoTags : ["registry.access.redhat.com/rhel-minimal"]
+    RepoTags: ['registry.access.redhat.com/rhel-minimal'],
   },
   {
-    RepoTags : ["rbusybox:1"]
+    RepoTags: ['rbusybox:1'],
   },
   {
-    RepoTags : ["busybox:2"]
+    RepoTags: ['busybox:2'],
   },
   {
-    RepoTags : ["busybox:3"]
+    RepoTags: ['busybox:3'],
   },
   {
-    RepoTags : ["busybox:4"]
+    RepoTags: ['busybox:4'],
   },
   {
-    RepoTags : ["busybox:5"]
+    RepoTags: ['busybox:5'],
   },
   {
-    RepoTags : ["<none>:<none>"]
+    RepoTags: ['<none>:<none>'],
   },
   {
-    RepoTags : []
+    RepoTags: [],
   },
-  {
-
-  }
+  {},
 ];
 
 const testScanResults = {
-  Vulnerabilities:
-  [
-  {
-    Severity: "High",
-    ImpactedPackage: "pip",
-    ImpactedPackageVersion: "21.2.3",
-    Type: "Python",
-    FixedVersions: "",
-    Component: "tgagor/centostgagor/centostgagor/centostgagor/centostgagor/centostgagor/centostgagor/centostgagor/centostgagor/centos",
-    ComponentVersion: "stream9",
-    Cve: "cve-2018-20225",
-  },
-  {
-    Severity: "High",
-    ImpactedPackage: "pip",
-    ImpactedPackageVersion: "21.2.3",
-    Type: "Python",
-    FixedVersions: "",
-    Component: "tgagor/centos",
-    ComponentVersion: "stream9",
-    Cve: "cve-2018-20225",
-  },
-  {
-    Severity: "High",
-    ImpactedPackage: "pip",
-    ImpactedPackageVersion: "21.2.3",
-    Type: "Python",
-    FixedVersions: "",
-    Component: "tgagor/centos",
-    ComponentVersion: "stream9",
-    Cve: "cve-2018-20225",
-  },
-  {
-    Severity: "High",
-    ImpactedPackage: "pip",
-    ImpactedPackageVersion: "21.2.3",
-    Type: "Python",
-    FixedVersions: "",
-    Component: "tgagor/centos",
-    ComponentVersion: "stream9",
-    Cve: "cve-2018-20225",
-  },
-  {
-    Severity: "High",
-    ImpactedPackage: "pip",
-    ImpactedPackageVersion: "21.2.3",
-    Type: "Python",
-    FixedVersions: "",
-    Component: "tgagor/centos",
-    ComponentVersion: "stream9",
-    Cve: "cve-2018-20225",
-  },
-  {
-    Severity: "High",
-    ImpactedPackage: "pip",
-    ImpactedPackageVersion: "21.2.3",
-    Type: "Python",
-    FixedVersions: "",
-    Component: "tgagor/centos",
-    ComponentVersion: "stream9",
-    Cve: "cve-2018-20225",
-  },
-  {
-    Severity: "High",
-    ImpactedPackage: "pip",
-    ImpactedPackageVersion: "21.2.3",
-    Type: "Python",
-    FixedVersions: "",
-    Component: "tgagor/centos",
-    ComponentVersion: "stream9",
-    Cve: "cve-2018-20225",
-  },
-  {
-    Severity: "High",
-    ImpactedPackage: "log4J",
-    ImpactedPackageVersion: "2",
-    Type: "maven",
-    FixedVersions: "1.15.10",
-    Component: "myproj",
-    ComponentVersion: "1.0.0",
-    Cve: "CVE123123",
-  },
-  {
-    Severity: "Medium",
-    ImpactedPackage: "log4J",
-    ImpactedPackageVersion: "3",
-    Type: "rpm",
-    FixedVersions: "1.15.10",
-    Component: "myproj",
-    ComponentVersion: "1.0.0",
-    Cve: "CVE123123",
-  },
-  {
-    Severity: "Low",
-    ImpactedPackage: "log4Jlog4Jlog4J",
-    ImpactedPackageVersion: "4",
-    Type: "alpine",
-    FixedVersions: "1.15.10",
-    Component: "myproj",
-    ComponentVersion: "1.0.0",
-    Cve: "CVE123123",
-  },
-  {
-    Severity: "High",
-    ImpactedPackage: "log4J",
-    ImpactedPackageVersion: "23213",
-    Type: "composer",
-    FixedVersions: "1.15.10",
-    Component: "myproj",
-    ComponentVersion: "1.0.0",
-    Cve: "CVE123123",
-  },
-  {
-    Severity: "High",
-    ImpactedPackage: "log4J",
-    ImpactedPackageVersion: "23213",
-    Type: "debian",
-    FixedVersions: "1.15.10",
-    Component: "myproj",
-    ComponentVersion: "1.0.0",
-    Cve: "CVE123123",
-  },
-  {
-    Severity: "High",
-    ImpactedPackage: "log4J",
-    ImpactedPackageVersion: "23213",
-    Type: "generic",
-    FixedVersions: "1.15.10",
-    Component: "myproj",
-    ComponentVersion: "1.0.0",
-    Cve: "CVE123123",
-  },
-  {
-    Severity: "Medium",
-    ImpactedPackage: "log4Jlog4Jlog4J",
-    ImpactedPackageVersion: "",
-    Type: "docker",
-    FixedVersions: "1.15.10",
-    Component: "myproj",
-    ComponentVersion: "1.0.0",
-    Cve: "CVE123123",
-  },
-  {
-    Severity: "Low",
-    ImpactedPackage: "dasd",
-    ImpactedPackageVersion: "",
-    Type: "npm",
-    FixedVersions: "1.15.10",
-    Component: "myproj",
-    ComponentVersion: "1.0.0",
-    Cve: "CVE123123",
-  },
-  {
-    Severity: "High",
-    ImpactedPackage: "log4J",
-    ImpactedPackageVersion: "",
-    Type: "GO",
-    FixedVersions: "1.15.10",
-    Component: "myproj",
-    ComponentVersion: "1.0.0",
-    Cve: "CVE123123",
-  },
-  {
-    Severity: "High",
-    ImpactedPackage: "log4J",
-    ImpactedPackageVersion: "",
-    Type: "Go",
-    FixedVersions: "1.15.10",
-    Component: "myproj",
-    ComponentVersion: "1.0.0",
-    Cve: "CVE123123",
-  },
-  {
-    Severity: "High",
-    ImpactedPackage: "log4J",
-    ImpactedPackageVersion: "",
-    Type: "Go",
-    FixedVersions: "1.15.10",
-    Component: "myproj",
-    ComponentVersion: "1.0.0",
-    Cve: "CVE123123",
-  },
-  {
-    Severity: "Medium",
-    ImpactedPackage: "log4Jlog4Jlog4J",
-    ImpactedPackageVersion: "",
-    Type: "Go",
-    FixedVersions: "1.15.10",
-    Component: "myproj",
-    ComponentVersion: "1.0.0",
-    Cve: "CVE123123",
-  },
-  {
-    Severity: "Low",
-    ImpactedPackage: "dasd",
-    ImpactedPackageVersion: "",
-    Type: "GO",
-    FixedVersions: "1.15.10",
-    Component: "myproj",
-    ComponentVersion: "1.0.0",
-    Cve: "CVE123123",
-  },
-  {
-    Severity: "High",
-    ImpactedPackage: "log4J",
-    ImpactedPackageVersion: "",
-    Type: "Go",
-    FixedVersions: "1.15.10",
-    Component: "myproj",
-    ComponentVersion: "1.0.0",
-    Cve: "CVE123123",
-  },
-  {
-    Severity: "High",
-    ImpactedPackage: "log4J",
-    ImpactedPackageVersion: "",
-    Type: "Go",
-    FixedVersions: "1.15.10",
-    Component: "myproj",
-    ComponentVersion: "1.0.0",
-    Cve: "CVE123123",
-  },
-  {
-    Severity: "High",
-    ImpactedPackage: "log4J",
-    ImpactedPackageVersion: "",
-    Type: "Go",
-    FixedVersions: "1.15.10",
-    Component: "myproj",
-    ComponentVersion: "1.0.0",
-    Cve: "CVE123123",
-  },
-  {
-    Severity: "Medium",
-    ImpactedPackage: "log4Jlog4Jlog4J",
-    ImpactedPackageVersion: "",
-    Type: "GO",
-    FixedVersions: "1.15.10",
-    Component: "myproj",
-    ComponentVersion: "1.0.0",
-    Cve: "CVE123123",
-  },
-  {
-    Severity: "Low",
-    ImpactedPackage: "dasd",
-    ImpactedPackageVersion: "",
-    Type: "GO",
-    FixedVersions: "1.15.10",
-    Component: "myproj",
-    ComponentVersion: "1.0.0",
-    Cve: "CVE123123",
-  },
-  {
-    Severity: "High",
-    ImpactedPackage: "log4J",
-    ImpactedPackageVersion: "",
-    Type: "Go",
-    FixedVersions: "1.15.10",
-    Component: "myproj",
-    ComponentVersion: "1.0.0",
-    Cve: "CVE123123",
-  },
-  {
-    Severity: "High",
-    ImpactedPackage: "log4J",
-    ImpactedPackageVersion: "",
-    Type: "Go",
-    FixedVersions: "1.15.10",
-    Component: "myproj",
-    ComponentVersion: "1.0.0",
-    Cve: "CVE123123",
-  },
-  {
-    Severity: "High",
-    ImpactedPackage: "log4J",
-    ImpactedPackageVersion: "",
-    Type: "Go",
-    FixedVersions: "1.15.10",
-    Component: "myproj",
-    ComponentVersion: "1.0.0",
-    Cve: "CVE123123",
-  },
-  {
-    Severity: "Medium",
-    ImpactedPackage: "log4Jlog4Jlog4J",
-    ImpactedPackageVersion: "",
-    Type: "Go",
-    FixedVersions: "1.15.10",
-    Component: "myproj",
-    ComponentVersion: "1.0.0",
-    Cve: "CVE123123",
-  },
-  {
-    Severity: "Low",
-    ImpactedPackage: "dasd",
-    ImpactedPackageVersion: "",
-    Type: "GO",
-    FixedVersions: "1.15.10",
-    Component: "myproj",
-    ComponentVersion: "1.0.0",
-    Cve: "CVE123123",
-  },
-  {
-    Severity: "High",
-    ImpactedPackage: "log4J",
-    ImpactedPackageVersion: "",
-    Type: "GO",
-    FixedVersions: "1.15.10",
-    Component: "myproj",
-    ComponentVersion: "1.0.0",
-    Cve: "CVE123123",
-  },
-]};
+  vulnerabilities: [
+    {
+      severity: 'Critical',
+      impactedPackageName: 'github.com/golang/go',
+      impactedPackageVersion: '1.17.7',
+      impactedPackageType: 'RPM',
+      fixedVersions: null,
+      components: [
+        {
+          name: 'jfrog/jfrog-docker-desktop-extension',
+          version: 'latest',
+        },
+      ],
+      cves: [
+        {
+          id: '',
+          cvssV2: '10.0',
+          cvssV3: '9.8',
+        },
+        {
+          id: 'CVE-2022-24675',
+          cvssV2: '',
+          cvssV3: '',
+        },
+      ],
+      issueId: 'XRAY-203335',
+    },
+    {
+      severity: 'High',
+      impactedPackageName: 'golang.org/x/crypto',
+      impactedPackageVersion: '0.0.0-20220307211146-efcb8507fb70',
+      impactedPackageType: 'NuGet',
+      fixedVersions: ['[0.0.0-20220314234659-1baeb1ce4c0b]'],
+      components: [
+        {
+          name: 'jfrog/jfrog-docker-desktop-extension',
+          version: 'latest',
+        },
+      ],
+      cves: [
+        {
+          id: 'CVE-2022-27191',
+          cvssV2: '4.3',
+          cvssV3: '7.5',
+        },
+      ],
+      issueId: 'XRAY-200208',
+    },
+    {
+      severity: 'High',
+      impactedPackageName: 'github.com/mholt/archiver/v3',
+      impactedPackageVersion: '3.5.1',
+      impactedPackageType: 'Go',
+      fixedVersions: null,
+      components: [
+        {
+          name: 'jfrog/jfrog-docker-desktop-extension',
+          version: 'latest',
+        },
+      ],
+      cves: [
+        {
+          id: '',
+          cvssV2: '9.3',
+          cvssV3: '7.8',
+        },
+      ],
+      issueId: 'XRAY-138878',
+    },
+    {
+      severity: 'High',
+      impactedPackageName: 'github.com/golang/go',
+      impactedPackageVersion: '1.17.7',
+      impactedPackageType: 'Go',
+      fixedVersions: ['[1.16.15]', '[1.17.8]', '[1.18rc1]'],
+      components: [
+        {
+          name: 'jfrog/jfrog-docker-desktop-extension',
+          version: 'latest',
+        },
+      ],
+      cves: [
+        {
+          id: 'CVE-2022-24921',
+          cvssV2: '5.0',
+          cvssV3: '7.5',
+        },
+      ],
+      issueId: 'XRAY-199345',
+    },
+  ],
+  securityViolations: null,
+  licensesViolations: null,
+  licenses: null,
+  operationalRiskViolations: null,
+};

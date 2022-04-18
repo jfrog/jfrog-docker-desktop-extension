@@ -1,4 +1,4 @@
 import { Route } from './Route';
 import { ExtensionConfig } from './ExtensionConfig';
-
-export type { Route,  ExtensionConfig };
+import { Vulnerability } from './Vulnerability';
+export type { Route, ExtensionConfig, Vulnerability };

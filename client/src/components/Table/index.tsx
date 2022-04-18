@@ -13,35 +13,27 @@ import {
 } from '@mui/material';
 import Search from '../Search';
 import { visuallyHidden } from '@mui/utils';
-
-import criticalSeverity from '../../assets/severityIcons/critical.png';
-import highSeverity from '../../assets/severityIcons/high.png';
-import mediumSeverity from '../../assets/severityIcons/medium.png';
-import lowSeverity from '../../assets/severityIcons/low.png';
-import maven from '../../assets/techIcons/maven.png';
-import docker from '../../assets/techIcons/docker.png';
-import rpm from '../../assets/techIcons/rpm.png';
-import generic from '../../assets/techIcons/generic.png';
-import npm from '../../assets/techIcons/npm.png';
-import python from '../../assets/techIcons/python.png';
-import composer from '../../assets/techIcons/composer.png';
-import go from '../../assets/techIcons/go.png';
-import alpine from '../../assets/techIcons/alpine.png';
-import debian from '../../assets/techIcons/debian.png';
+import { VulnsColumnData } from '../../pages/Scan';
 import exportCsv from '../../assets/csv.png';
 import noIssuesIcon from '../../assets/no-issues.png';
+import { ContentCopy } from '@mui/icons-material';
 
-export type ColumnsDataProps = {
-  id: string;
-  label?: string;
-  maxWidth?: string;
-};
-
-export default function DynamicTable({ columnsData, rows }: { columnsData: ColumnsDataProps[]; rows: any[] }) {
+export default function DynamicTable({ columnsData, rows }: { columnsData: Array<VulnsColumnData>; rows: any[] }) {
   const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] = React.useState<string>(columnsData[0].id);
   const [searchText, setSearchText] = React.useState('');
+  const [rowHover, setRowHover] = React.useState(-1);
+  const [colHover, setColHover] = React.useState(-1);
   const isEmptyTable = rows.length == 0;
+
+  const getSortOrderIfExists = () => {
+    for (let col of columnsData) {
+      if (col.id == orderBy) {
+        return col.sortOrder;
+      }
+    }
+  };
+
   const includesSearchText = (row: any) => {
     for (let col of columnsData) {
       if (row[col.id] && row[col.id].toLowerCase().includes(searchText.toLowerCase())) {
@@ -101,7 +93,9 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Colum
                     direction={orderBy === col.id ? order : 'asc'}
                     onClick={createSortHandler(col.id)}
                   >
-                    <StyledTableHeadline variant="subtitle2">{splitCamelCase(col.label || col.id)}</StyledTableHeadline>
+                    <StyledTableHeadline variant="subtitle2" textTransform="capitalize">
+                      {col.label || col.id}
+                    </StyledTableHeadline>
                     {orderBy === col.id ? (
                       <span style={visuallyHidden}>{order === 'desc' ? 'sorted descending' : 'sorted ascending'}</span>
                     ) : null}
@@ -116,30 +110,42 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Colum
               ? noIssuesDetected()
               : rows
                   .slice()
-                  .sort(getComparator(order, orderBy))
+                  .sort(getComparator(order, orderBy, getSortOrderIfExists()))
                   .filter((row) => searchText == '' || includesSearchText(row))
-                  .map((row, i) => {
+                  .map((row, rowIndex) => {
                     return (
-                      <TableRow hover role="row" tabIndex={-1} key={i} sx={{ padding: '0 10px' }}>
-                        {columnsData.map((col, j) => {
+                      <TableRow
+                        onMouseEnter={() => setRowHover(rowIndex)}
+                        onMouseLeave={() => setRowHover(-1)}
+                        role="row"
+                        tabIndex={-1}
+                        key={rowIndex}
+                        sx={{ padding: '0 10px' }}
+                      >
+                        {columnsData.map((col, colIndex) => {
+                          let isRowHover = rowHover == rowIndex;
+                          let isColHover = colHover == colIndex;
                           return (
                             <StyledCell
-                              sx={{ minWidth: '70px', maxWidth: col.maxWidth }}
+                              ishover={+isRowHover}
+                              sx={{ maxWidth: col.maxWidth }}
                               scope="row"
                               role="cell"
-                              key={col.id + i + j}
+                              key={colIndex}
+                              onMouseEnter={() => setColHover(colIndex)}
+                              onMouseLeave={() => setColHover(-1)}
                             >
-                              {row[col.id] && (
+                              {
                                 <Box
                                   display="flex"
                                   flexDirection="column"
                                   alignItems="center"
-                                  sx={{ float: col.maxWidth ? 'center' : 'left', width: 'inherit' }}
+                                  width="inherit"
+                                  sx={{ float: col.maxWidth ? 'center' : 'left' }}
                                 >
-                                  {addIconIfNeeded(col.id, row[col.id])}
-                                  <StyledTableCellText title={row[col.id]}>{row[col.id]}</StyledTableCellText>
+                                  {createCell(col, row[col.id], rowIndex, isRowHover && isColHover)}
                                 </Box>
-                              )}
+                              }
                             </StyledCell>
                           );
                         })}
@@ -151,6 +157,27 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Colum
       </TableContainer>
     </Box>
   );
+}
+
+function createCell(col: VulnsColumnData, cellItem: string | string[], rowIndex: number, isHover?: boolean) {
+  let cellBody: any = [];
+  // Add icon if needed
+  if (col.iconList && typeof cellItem == 'string' && col.iconList[cellItem]) {
+    cellBody.push(<img src={col.iconList[cellItem]} height="22px" alt={cellItem} key={cellItem + rowIndex + col.id} />);
+  }
+  // Add text lines
+  let stringLines = Array.isArray(cellItem) ? cellItem : [cellItem];
+  stringLines.forEach((line: string) => {
+    cellBody.push(
+      <Box width={!col.maxWidth ? 1 : 'inherit'} textAlign="left" display="flex" alignItems="center" key={line}>
+        <StyledTableCellText title={line}>{line}</StyledTableCellText>
+        {line && col.copyIcon && (
+          <CopyIcon onClick={() => navigator.clipboard.writeText(line)} visibility={isHover ? 'visible' : 'hidden'} />
+        )}
+      </Box>
+    );
+  });
+  return cellBody;
 }
 
 function noIssuesDetected() {
@@ -175,73 +202,13 @@ function noIssuesDetected() {
   );
 }
 
-function addIconIfNeeded(columnName: string, rowItem: string) {
-  let icon = '';
-  const lowerCasedItem = rowItem.toLowerCase();
-  if (columnName == 'Severity') {
-    switch (lowerCasedItem) {
-      case 'critical':
-        icon = criticalSeverity;
-        break;
-      case 'high':
-        icon = highSeverity;
-        break;
-      case 'medium':
-        icon = mediumSeverity;
-        break;
-      case 'low':
-        icon = lowSeverity;
-        break;
-    }
-  } else if (columnName == 'Type') {
-    switch (lowerCasedItem) {
-      case 'maven':
-        icon = maven;
-        break;
-      case 'docker':
-        icon = docker;
-        break;
-      case 'rpm':
-        icon = rpm;
-        break;
-      case 'generic':
-        icon = generic;
-        break;
-      case 'npm':
-        icon = npm;
-        break;
-      case 'python':
-        icon = python;
-        break;
-      case 'composer':
-        icon = composer;
-        break;
-      case 'go':
-        icon = go;
-        break;
-      case 'alpine':
-        icon = alpine;
-        break;
-      case 'debian':
-        icon = debian;
-        break;
-    }
-  }
-  return icon && <img src={icon} height="22px" alt={rowItem} />;
-}
-
-function splitCamelCase(name: string) {
-  return name.replace(/([a-z](?=[A-Z]))/g, '$1 ');
-}
-
-function descendingComparator(a: any, b: any, orderBy: string) {
-  const aValue: string = a[orderBy];
-  const bValue: string = b[orderBy];
-  if (orderBy == 'Severity') {
-    const sevirityOrder = ['Critical', 'High', 'Medium', 'Low', 'Unknown'];
-    if (sevirityOrder.indexOf(bValue) < sevirityOrder.indexOf(aValue)) {
+function descendingComparator(a: any, b: any, orderBy: string, sortOrder?: string[]) {
+  const aValue: string = Array.isArray(a[orderBy]) ? a[orderBy][0] : a[orderBy];
+  const bValue: string = Array.isArray(b[orderBy]) ? b[orderBy][0] : b[orderBy];
+  if (sortOrder && sortOrder.length > 0) {
+    if (sortOrder.indexOf(bValue) < sortOrder.indexOf(aValue)) {
       return -1;
-    } else if (sevirityOrder.indexOf(bValue) > sevirityOrder.indexOf(aValue)) {
+    } else if (sortOrder.indexOf(bValue) > sortOrder.indexOf(aValue)) {
       return 1;
     }
   } else {
@@ -257,10 +224,10 @@ function descendingComparator(a: any, b: any, orderBy: string) {
 
 type Order = 'asc' | 'desc';
 
-function getComparator(order: Order, orderBy: string): (a: any, b: any) => number {
+function getComparator(order: Order, orderBy: string, sortOrder?: string[]): (a: any, b: any) => number {
   return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
+    ? (a, b) => descendingComparator(a, b, orderBy, sortOrder)
+    : (a, b) => -descendingComparator(a, b, orderBy, sortOrder);
 }
 
 const ExportCsvBox = styled(Box)`
@@ -289,11 +256,12 @@ const StyledTable = styled(Table)`
   }
 `;
 
-const StyledCell = styled(TableCell)`
+const StyledCell = styled(TableCell)<{ ishover: number }>`
   overflow-wrap: anywhere;
   padding: 5px 10px;
+  min-width: 70px;
   max-width: 100%;
-  background-color: #fcfcfe;
+  background-color: ${({ ishover }) => (ishover ? '#f4f4fe' : '#fcfcfe')};
   border-right: 1px solid rgba(111, 111, 111, 0.1);
   &:first-of-type {
     border-top-left-radius: 6px;
@@ -304,7 +272,7 @@ const StyledCell = styled(TableCell)`
     border-bottom-right-radius: 6px;
   }
   @media screen and (prefers-color-scheme: dark) {
-    background-color: #293640;
+    background-color: ${({ ishover }) => (ishover ? '#2f3e49' : '#293640')};
   }
 `;
 
@@ -326,5 +294,15 @@ const StyledTableCellText = styled(Typography)`
   max-width: 100%;
   @media screen and (prefers-color-scheme: dark) {
     color: #f8fafb;
+  }
+`;
+
+const CopyIcon = styled(ContentCopy)`
+  margin-left: 5px;
+  font-size: 12px;
+  fill-opacity: 0.5;
+  cursor: pointer;
+  &:hover {
+    fill-opacity: 1;
   }
 `;
