@@ -6,10 +6,9 @@ import { AppContext } from './contexts';
 import { AppClient } from './clients';
 import { routes } from './config';
 import { Route as AppRoute } from './types';
-import { createTheme, styled } from '@mui/material/styles';
+import { createTheme } from '@mui/material/styles';
 import './main.css';
 import { useMemo } from 'react';
-import { amber, grey } from '@mui/material/colors';
 
 function App() {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
