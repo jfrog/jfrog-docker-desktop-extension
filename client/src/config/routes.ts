@@ -1,11 +1,9 @@
-import {
-  Home as HomeIcon,
-} from '@mui/icons-material';
+import { Home as HomeIcon } from '@mui/icons-material';
 
 import { ScanPage } from '../pages/Scan';
 import { LoginPage } from '../pages/Login';
 import { CreatePage } from '../pages/Create';
-import {  SettingsPage } from '../pages/Setting';
+import { SettingsPage } from '../pages/Setting';
 
 import { Route } from '../types/Route';
 

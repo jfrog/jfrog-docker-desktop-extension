@@ -123,9 +123,11 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Array
                         sx={{ padding: '0 10px' }}
                       >
                         {columnsData.map((col, colIndex) => {
+                          let isRowHover = rowHover == rowIndex;
+                          let isColHover = colHover == colIndex;
                           return (
                             <StyledCell
-                              ishover={+(rowHover == rowIndex)}
+                              ishover={+isRowHover}
                               sx={{ maxWidth: col.maxWidth }}
                               scope="row"
                               role="cell"
@@ -133,16 +135,17 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Array
                               onMouseEnter={() => setColHover(colIndex)}
                               onMouseLeave={() => setColHover(-1)}
                             >
-                              {row[col.id] && (
+                              {
                                 <Box
                                   display="flex"
                                   flexDirection="column"
                                   alignItems="center"
-                                  sx={{ float: col.maxWidth ? 'center' : 'left', width: 'inherit' }}
+                                  width="inherit"
+                                  sx={{ float: col.maxWidth ? 'center' : 'left' }}
                                 >
-                                  {createCell(col, row, rowHover == rowIndex && colHover == colIndex)}
+                                  {createCell(col, row[col.id], rowIndex, isRowHover && isColHover)}
                                 </Box>
-                              )}
+                              }
                             </StyledCell>
                           );
                         })}
@@ -156,16 +159,14 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Array
   );
 }
 
-function createCell(col: VulnsColumnData, row: any, isHover?: boolean) {
+function createCell(col: VulnsColumnData, cellItem: string | string[], rowIndex: number, isHover?: boolean) {
   let cellBody: any = [];
-
   // Add icon if needed
-  if (col.iconList && col.iconList[row[col.id]]) {
-    cellBody.push(<img src={col.iconList[row[col.id]]} height="22px" alt={row[col.id]} />);
+  if (col.iconList && typeof cellItem == 'string' && col.iconList[cellItem]) {
+    cellBody.push(<img src={col.iconList[cellItem]} height="22px" alt={cellItem} key={cellItem + rowIndex + col.id} />);
   }
-
   // Add text lines
-  let stringLines = Array.isArray(row[col.id]) ? row[col.id] : [row[col.id]];
+  let stringLines = Array.isArray(cellItem) ? cellItem : [cellItem];
   stringLines.forEach((line: string) => {
     cellBody.push(
       <Box width={!col.maxWidth ? 1 : 'inherit'} textAlign="left" display="flex" alignItems="center" key={line}>

@@ -1,12 +1,12 @@
-import {execOnHost, isWindows, throwErrorAsString} from "./utils";
+import { execOnHost, isWindows, throwErrorAsString } from './utils';
 
 export class Config {
-  jfrogCliConfig: JfrogCliConfig
-  jfrogExtensionConfig: JfrogExtensionConfig
+  jfrogCliConfig: JfrogCliConfig;
+  jfrogExtensionConfig: JfrogExtensionConfig;
 
   constructor() {
-    this.jfrogCliConfig = new JfrogCliConfig()
-    this.jfrogExtensionConfig = new JfrogExtensionConfig()
+    this.jfrogCliConfig = new JfrogCliConfig();
+    this.jfrogExtensionConfig = new JfrogExtensionConfig();
   }
 }
 
@@ -29,9 +29,9 @@ export class JfrogExtensionConfig {
 
 export async function importConfigFromHostCli(): Promise<void> {
   try {
-    let exportResponse = await execOnHost("jf", "jf.exe", ["config", "export"]);
+    let exportResponse = await execOnHost('jf', 'jf.exe', ['config', 'export']);
     let serverToken = exportResponse.stdout;
-    let importPromise = execOnHost("runcli.sh", "runcli.bat", ["config", "import", serverToken]);
+    let importPromise = execOnHost('runcli.sh', 'runcli.bat', ['config', 'import', serverToken]);
     let jfrogExtensionConf = new JfrogExtensionConfig();
     jfrogExtensionConf.jfrogCliConfigured = true;
     let saveExtensionPromise = editJfrogExtensionConfig(jfrogExtensionConf);
@@ -73,9 +73,12 @@ export async function getConfig(): Promise<Config> {
 export async function getJfrogExtensionConfig(): Promise<JfrogExtensionConfig> {
   let cmdResult;
   try {
-    cmdResult = await execOnHost("readconf.sh", "readconf.bat");
+    cmdResult = await execOnHost('readconf.sh', 'readconf.bat');
   } catch (e: any) {
-    if (e.stderr !== undefined && (e.stderr.includes("file not found") || e.stderr.includes("The system cannot find the file specified."))) {
+    if (
+      e.stderr !== undefined &&
+      (e.stderr.includes('file not found') || e.stderr.includes('The system cannot find the file specified.'))
+    ) {
       try {
         await importConfigFromHostCli();
         let jfrogExtensionConf = new JfrogExtensionConfig();
@@ -92,8 +95,8 @@ export async function getJfrogExtensionConfig(): Promise<JfrogExtensionConfig> {
   try {
     jfrogExtensionConfig = JSON.parse(cmdResult.stdout);
   } catch (e: any) {
-    console.log("Failed while parsing configuration file", e);
-    throw "Failed while parsing configuration file";
+    console.log('Failed while parsing configuration file', e);
+    throw 'Failed while parsing configuration file';
   }
   // Backward compatibility: if jfrogExtensionConfig was found on the machine, then JFrog CLI was already configured.
   if (!jfrogExtensionConfig.jfrogCliConfigured) {
@@ -111,10 +114,10 @@ async function getJfrogCliConfig(): Promise<JfrogCliConfig> {
       await importConfigFromHostCli();
       cliConfigRes = await getJfrogCliFullConfig();
     } catch (e) {
-      throw "Your JFrog environment is not configured."
+      throw 'Your JFrog environment is not configured.';
     }
   }
-  return {url: cliConfigRes.url, user: cliConfigRes.user, password: undefined, accessToken: undefined}
+  return { url: cliConfigRes.url, user: cliConfigRes.user, password: undefined, accessToken: undefined };
 }
 
 async function getJfrogCliConfigServerId(): Promise<string | undefined> {
@@ -130,7 +133,7 @@ async function getJfrogCliConfigServerId(): Promise<string | undefined> {
 async function getJfrogCliFullConfig(): Promise<any> {
   let cliConfigRes;
   try {
-    let cliConfResult = await execOnHost("runcli.sh", "runcli.bat", ["config", "export"]);
+    let cliConfResult = await execOnHost('runcli.sh', 'runcli.bat', ['config', 'export']);
     cliConfigRes = JSON.parse(window.atob(cliConfResult.stdout));
   } catch (e) {
     throwErrorAsString(e);
@@ -142,46 +145,46 @@ async function editJfrogExtensionConfig(jfrogExtensionConfig: JfrogExtensionConf
   if (jfrogExtensionConfig.project !== undefined) {
     jfrogExtensionConfig.project = jfrogExtensionConfig.project.trim();
     if (!jfrogExtensionConfig.project.match(/^[a-z0-9]+$/)) {
-      throw "Project key supports only lowercase alphanumeric characters";
+      throw 'Project key supports only lowercase alphanumeric characters';
     }
   } else if (jfrogExtensionConfig.watches !== undefined) {
     for (let watchIndex in jfrogExtensionConfig.watches) {
       jfrogExtensionConfig.watches[watchIndex] = jfrogExtensionConfig.watches[watchIndex].trim();
-      if (jfrogExtensionConfig.watches[watchIndex].includes(" ")) {
-        throw "Watch name cannot contain spaces";
+      if (jfrogExtensionConfig.watches[watchIndex].includes(' ')) {
+        throw 'Watch name cannot contain spaces';
       }
     }
   }
-  let configJson = JSON.stringify(jfrogExtensionConfig).replaceAll(" ", "");
+  let configJson = JSON.stringify(jfrogExtensionConfig).replaceAll(' ', '');
   if (await isWindows()) {
-    return window.ddClient.extension.host.cli.exec("writeconf.bat", [configJson]);
+    return window.ddClient.extension.host.cli.exec('writeconf.bat', [configJson]);
   }
-  return window.ddClient.extension.host.cli.exec("writeconf.sh", ['"' + configJson.replaceAll('"', '\\"') + '"']);
+  return window.ddClient.extension.host.cli.exec('writeconf.sh', ['"' + configJson.replaceAll('"', '\\"') + '"']);
 }
 
 async function editCliConfig(cliConfig: JfrogCliConfig, serverId?: string) {
-  const validationServerId = "validation";
+  const validationServerId = 'validation';
   let validationConfigAddArgs = buildConfigImportCmd(cliConfig, validationServerId);
   let curlResult;
   try {
-    await execOnHost("runcli.sh", "runcli.bat", validationConfigAddArgs);
-    curlResult = await execOnHost("scanpermissions.sh", "scanpermissions.bat");
+    await execOnHost('runcli.sh', 'runcli.bat', validationConfigAddArgs);
+    curlResult = await execOnHost('scanpermissions.sh', 'scanpermissions.bat');
   } catch (e) {
     throwErrorAsString(e);
   }
-  let statusCode = curlResult.stdout
-  if (statusCode !== "200") {
-    if (statusCode === "401") {
-      throw "Wrong credentials"
-    } else if (statusCode === "403") {
-      throw "Missing permissions"
+  let statusCode = curlResult.stdout;
+  if (statusCode !== '200') {
+    if (statusCode === '401') {
+      throw 'Wrong credentials';
+    } else if (statusCode === '403') {
+      throw 'Missing permissions';
     }
-    throw "Error occurred: " + statusCode
+    throw 'Error occurred: ' + statusCode;
   }
   try {
-    await execOnHost("runcli.sh", "runcli.bat", ["c", "rm", "--quiet", validationServerId])
-    let configAddArgs = buildConfigImportCmd(cliConfig, serverId)
-    await execOnHost("runcli.sh", "runcli.bat", configAddArgs)
+    await execOnHost('runcli.sh', 'runcli.bat', ['c', 'rm', '--quiet', validationServerId]);
+    let configAddArgs = buildConfigImportCmd(cliConfig, serverId);
+    await execOnHost('runcli.sh', 'runcli.bat', configAddArgs);
   } catch (e) {
     throwErrorAsString(e);
   }
@@ -189,14 +192,14 @@ async function editCliConfig(cliConfig: JfrogCliConfig, serverId?: string) {
 
 function buildConfigImportCmd(cliConfig: JfrogCliConfig, serverId?: string): string[] {
   if (cliConfig.url == undefined) {
-    throw "You must provide JFrog Platform URL";
+    throw 'You must provide JFrog Platform URL';
   }
   if ((cliConfig.user == undefined || cliConfig.password == undefined) && cliConfig.accessToken == undefined) {
-    throw "You must provide username and password OR an access token";
+    throw 'You must provide username and password OR an access token';
   }
   let conf: any = cliConfig;
   conf.version = 2;
   conf.serverId = serverId;
   let confToken = window.btoa(JSON.stringify(conf));
-  return ["config", "import", confToken];
+  return ['config', 'import', confToken];
 }

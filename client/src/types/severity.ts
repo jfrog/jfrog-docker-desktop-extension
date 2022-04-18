@@ -1,7 +1,7 @@
 export const enum Severity {
-  Critical = 'Critical', 
+  Critical = 'Critical',
   High = 'High',
   Medium = 'Medium',
   Low = 'Low',
-  Unknown = 'Unknown'
+  Unknown = 'Unknown',
 }

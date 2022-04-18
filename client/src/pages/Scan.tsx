@@ -69,8 +69,8 @@ export const ScanPage = () => {
       setRunningScanId(scanId);
       setIsScanningMap({ [scanId]: true });
       let results: ScanResults = await scanImage(selectedImage);
+      console.log('scan results for ' + selectedImage, results);
       saveScanResults(scanId, results);
-
       setIsScanningMap({ ...isScanningMap, [scanId]: false });
     } catch (e) {
       setIsScanningMap({ ...isScanningMap, [scanId]: false });
@@ -79,22 +79,23 @@ export const ScanPage = () => {
   };
 
   const saveScanResults = (scanId: number, results: ScanResults) => {
-    let vulns = results.vulnerabilities;
+    let vulns = results.vulnerabilities ?? [];
+
     vulns.forEach((vuln: Vulnerability) => {
-      Object.values(VulnerabilityKeys).forEach((key) => {
-        switch (key) {
-          case VulnerabilityKeys.cves:
-            vuln.cveIds = [];
-            vuln.cvssV2 = [];
-            vuln.cvssV3 = [];
-            vuln[key]?.forEach((cve: any) => {
-              vuln.cveIds?.push(cve.id);
-              vuln.cvssV2?.push(cve.cvssV2);
-              vuln.cvssV3?.push(cve.cvssV3);
-            });
-            break;
-        }
+      // Update CVE's field
+      vuln.cveIds = [];
+      vuln.cvssV2 = [];
+      vuln.cvssV3 = [];
+      vuln[VulnerabilityKeys.cves]?.forEach((cve: any) => {
+        vuln.cveIds?.push(cve.id);
+        vuln.cvssV2?.push(cve.cvssV2);
+        vuln.cvssV3?.push(cve.cvssV3);
       });
+
+      // Update Fix versions field
+      if (!vuln[VulnerabilityKeys.fixedVersions]) {
+        vuln[VulnerabilityKeys.fixedVersions] = ['N/A'];
+      }
     });
 
     setScanResultsMap({ ...scanResultsMap, [scanId]: vulns });
