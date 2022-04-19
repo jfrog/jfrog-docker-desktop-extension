@@ -7,6 +7,7 @@ import { JfrogHeadline } from '../components/JfrogHeadline';
 import { useHistory } from 'react-router-dom';
 import CloseIcon from '@mui/icons-material/Close';
 import { Severity } from '../types/severity';
+import { ImageData } from '../types/ImageData';
 import { VulnerabilityKeys, Vulnerability } from '../types/Vulnerability';
 import { SeverityIcons } from '../assets/severityIcons/SeverityIcons';
 import { TechIcons } from '../assets/techIcons/TechIcons';
@@ -42,16 +43,17 @@ export const ScanPage = () => {
   useEffect(() => {
     const getDockerImages = async () => {
       try {
-        let res = await getImages();
-        let images: string[] = res
-          .filter(
-            (image: { RepoTags?: string[] }) =>
-              image.RepoTags && image.RepoTags.length > 0 && image.RepoTags[0] != '<none>:<none>'
-          )
-          .map((image: { RepoTags?: string[] }) => {
-            return image.RepoTags ? image.RepoTags[0] : '';
+        let imagesData: ImageData[] = await getImages();
+        console.log(imagesData);
+        let imagesList: string[] = [];
+        imagesData.forEach((image) => {
+          image.RepoTags?.forEach((repoTag) => {
+            if (repoTag != '<none>:<none>') {
+              imagesList.push(repoTag);
+            }
           });
-        setDockerImages(images);
+        });
+        setDockerImages(imagesList);
       } catch (e) {
         alert(e);
       }
