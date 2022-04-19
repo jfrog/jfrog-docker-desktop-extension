@@ -35,12 +35,20 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Array
   };
 
   const includesSearchText = (row: any) => {
+    let found = false;
     for (let col of columnsData) {
-      if (row[col.id] && row[col.id].toLowerCase().includes(searchText.toLowerCase())) {
-        return true;
+      let stringLines: string[] = Array.isArray(row[col.id]) ? row[col.id] : [row[col.id]];
+      for (let line of stringLines) {
+        if (line.toLowerCase().includes(searchText.toLowerCase())) {
+          found = true;
+          break;
+        }
+      }
+      if (found) {
+        break;
       }
     }
-    return false;
+    return found;
   };
 
   const createSortHandler = (columnName: string) => (event: React.MouseEvent<unknown>) => {
