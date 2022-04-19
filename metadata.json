@@ -14,53 +14,53 @@
       {
         "darwin": [
           {
-            "path": "/binaries/darwin/jf"
+            "path": "/host/darwin/jf"
           },
           {
-            "path": "/binaries/unix/runcli.sh"
+            "path": "/host/unix/runcli.sh"
           },
           {
-            "path": "/binaries/unix/readconf.sh"
+            "path": "/host/unix/readconf.sh"
           },
           {
-            "path": "/binaries/unix/writeconf.sh"
+            "path": "/host/unix/writeconf.sh"
           },
           {
-            "path": "/binaries/unix/scanpermissions.sh"
+            "path": "/host/unix/scanpermissions.sh"
           }
         ],
         "linux": [
           {
-            "path": "/binaries/linux/jf"
+            "path": "/host/linux/jf"
           },
           {
-            "path": "/binaries/unix/runcli.sh"
+            "path": "/host/unix/runcli.sh"
           },
           {
-            "path": "/binaries/unix/readconf.sh"
+            "path": "/host/unix/readconf.sh"
           },
           {
-            "path": "/binaries/unix/writeconf.sh"
+            "path": "/host/unix/writeconf.sh"
           },
           {
-            "path": "/binaries/unix/scanpermissions.sh"
+            "path": "/host/unix/scanpermissions.sh"
           }
         ],
         "windows": [
           {
-            "path": "/binaries/windows/jf.exe"
+            "path": "/host/windows/jf.exe"
           },
           {
-            "path": "/binaries/windows/runcli.bat"
+            "path": "/host/windows/runcli.bat"
           },
           {
-            "path": "/binaries/windows/readconf.bat"
+            "path": "/host/windows/readconf.bat"
           },
           {
-            "path": "/binaries/windows/writeconf.bat"
+            "path": "/host/windows/writeconf.bat"
           },
           {
-            "path": "/binaries/windows/scanpermissions.bat"
+            "path": "/host/windows/scanpermissions.bat"
           }
         ]
       }

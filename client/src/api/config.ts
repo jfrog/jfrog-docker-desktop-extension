@@ -42,15 +42,17 @@ export async function importConfigFromHostCli(): Promise<void> {
 }
 
 export async function saveConfig(config: Config): Promise<void> {
-  config.jfrogExtensionConfig.jfrogCliConfigured = true;
-  let editJfrogExtConfPromise = editJfrogExtensionConfig(config.jfrogExtensionConfig);
-  let savePromises: Promise<any>[] = [editJfrogExtConfPromise];
   if (config.jfrogCliConfig?.password != undefined || config.jfrogCliConfig?.accessToken != undefined) {
     let serverId = await getJfrogCliConfigServerId();
-    savePromises.push(editCliConfig(config.jfrogCliConfig, serverId));
+    try {
+      await editCliConfig(config.jfrogCliConfig, serverId);
+    } catch (e) {
+      throwErrorAsString(e);
+    }
   }
+  config.jfrogExtensionConfig.jfrogCliConfigured = true;
   try {
-    await Promise.all(savePromises);
+    await editJfrogExtensionConfig(config.jfrogExtensionConfig);
   } catch (e) {
     throwErrorAsString(e);
   }
@@ -75,10 +77,7 @@ export async function getJfrogExtensionConfig(): Promise<JfrogExtensionConfig> {
   try {
     cmdResult = await execOnHost('readconf.sh', 'readconf.bat');
   } catch (e: any) {
-    if (
-      e.stderr !== undefined &&
-      (e.stderr.includes('file not found') || e.stderr.includes('The system cannot find the file specified.'))
-    ) {
+    if (e.stderr !== undefined && (e.stderr.includes('file not found') || e.stderr.includes('The system cannot find the file specified.'))) {
       try {
         await importConfigFromHostCli();
         let jfrogExtensionConf = new JfrogExtensionConfig();
@@ -141,7 +140,7 @@ async function getJfrogCliFullConfig(): Promise<any> {
   return cliConfigRes;
 }
 
-async function editJfrogExtensionConfig(jfrogExtensionConfig: JfrogExtensionConfig): Promise<any> {
+async function editJfrogExtensionConfig(jfrogExtensionConfig: JfrogExtensionConfig): Promise<void> {
   if (jfrogExtensionConfig.project !== undefined) {
     jfrogExtensionConfig.project = jfrogExtensionConfig.project.trim();
     if (!jfrogExtensionConfig.project.match(/^[a-z0-9]+$/)) {
@@ -164,25 +163,53 @@ async function editJfrogExtensionConfig(jfrogExtensionConfig: JfrogExtensionConf
 
 async function editCliConfig(cliConfig: JfrogCliConfig, serverId?: string) {
   const validationServerId = 'validation';
+  if (cliConfig.url == undefined) {
+    throw "Please enter URL";
+  }
+
+  // In case of unsupported protocol in the URL, add default protocol
+  let url: string = cliConfig.url.trim();
+  if (!url.startsWith("https://") && !url.startsWith("http://")) {
+    cliConfig.url = "https://" + url;
+  }
+
   let validationConfigAddArgs = buildConfigImportCmd(cliConfig, validationServerId);
   let curlResult;
   try {
     await execOnHost('runcli.sh', 'runcli.bat', validationConfigAddArgs);
-    curlResult = await execOnHost('scanpermissions.sh', 'scanpermissions.bat');
   } catch (e) {
     throwErrorAsString(e);
   }
-  let statusCode = curlResult.stdout;
+
+  let errorCode: string, statusCode: string;
+  try {
+    curlResult = await execOnHost('scanpermissions.sh', 'scanpermissions.bat');
+    [errorCode, statusCode] = curlResult.stdout.split(",", 2);
+  } catch (e: any) {
+    [errorCode, statusCode] = e.stdout.split(",", 2);
+    if (errorCode !== "6") {
+      throwErrorAsString(e);
+    }
+  }
+
+  try {
+    await execOnHost('runcli.sh', 'runcli.bat', ['c', 'rm', '--quiet', validationServerId]);
+  } catch (e) {
+    if (statusCode === '200' && errorCode === '0') {
+      throwErrorAsString(e);
+    }
+  }
   if (statusCode !== '200') {
     if (statusCode === '401') {
       throw 'Wrong credentials';
     } else if (statusCode === '403') {
       throw 'Missing permissions';
+    } else if (statusCode === '404' || errorCode === '6') {
+      throw 'JFrog environment not found at this URL';
     }
     throw 'Error occurred: ' + statusCode;
   }
   try {
-    await execOnHost('runcli.sh', 'runcli.bat', ['c', 'rm', '--quiet', validationServerId]);
     let configAddArgs = buildConfigImportCmd(cliConfig, serverId);
     await execOnHost('runcli.sh', 'runcli.bat', configAddArgs);
   } catch (e) {
