@@ -3,7 +3,7 @@ RUN apt-get update && apt-get install -y curl
 RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
 RUN apt-get install -y nodejs
 RUN npm install -g yarn
-WORKDIR /binaries
+WORKDIR /host
 ARG jfrogCliVersion=2.16.0
 ARG TARGETARCH
 RUN curl -XGET "https://releases.jfrog.io/artifactory/jfrog-cli/v2-jf/$jfrogCliVersion/jfrog-cli-mac-386/jf" -L -k -g > jf-darwin
@@ -36,12 +36,12 @@ LABEL org.opencontainers.image.title="JFrog" \
     com.docker.desktop.extension.icon="https://media.jfrog.com/wp-content/uploads/2022/02/04003536/JFrog_Logo_partner_isv.svg"
 
 COPY --from=client-builder /app/client/dist ui
-COPY icon.svg .
+COPY resources/icon.svg .
 COPY metadata.json .
 VOLUME /config
-COPY binaries ./binaries
-COPY --from=client-builder binaries/jf-darwin binaries/darwin/jf
-COPY --from=client-builder binaries/jf-windows.exe binaries/windows/jf.exe
-COPY --from=client-builder binaries/jf-linux binaries/linux/jf
+COPY host ./host
+COPY --from=client-builder host/jf-darwin host/darwin/jf
+COPY --from=client-builder host/jf-windows.exe host/windows/jf.exe
+COPY --from=client-builder host/jf-linux host/linux/jf
 
 CMD [ "sleep", "infinity" ]
