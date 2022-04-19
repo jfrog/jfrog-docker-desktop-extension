@@ -57,8 +57,73 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Array
     setOrderBy(columnName);
   };
 
-  return (
-    <Box sx={{ width: '100%' }}>
+  const createCell = (col: VulnsColumnData, cellItem: string | string[], rowIndex: number, colIndex: number) => {
+    let cellBody: any = [];
+    // Add icon if needed
+    if (col.iconList && typeof cellItem == 'string' && col.iconList[cellItem]) {
+      cellBody.push(
+        <img src={col.iconList[cellItem]} height="22px" alt={cellItem} key={cellItem + rowIndex + colIndex} />
+      );
+    }
+    // Add text lines
+    let stringLines = Array.isArray(cellItem) ? cellItem : [cellItem];
+    stringLines.forEach((line: string, index: number) => {
+      cellBody.push(
+        <Box width={!col.maxWidth ? 1 : 'inherit'} textAlign="left" display="flex" alignItems="center" key={index}>
+          <StyledTableCellText>{line}</StyledTableCellText>
+          {line && col.copyIcon && (
+            <CopyIcon
+              onClick={(e) => {
+                e.preventDefault();
+                navigator.clipboard.writeText(line);
+              }}
+              visibility={rowHover == rowIndex && colHover == colIndex ? 'visible' : 'hidden'}
+            />
+          )}
+        </Box>
+      );
+    });
+    return (
+      <StyledCellWrapper
+        ishover={+(rowHover == rowIndex)}
+        sx={{ maxWidth: col.maxWidth }}
+        scope="row"
+        role="cell"
+        key={colIndex}
+        onMouseEnter={() => setColHover(colIndex)}
+        onMouseLeave={() => setColHover(-1)}
+      >
+        {<StyledCell sx={{ float: col.maxWidth ? 'center' : 'left' }}>{cellBody}</StyledCell>}
+      </StyledCellWrapper>
+    );
+  };
+
+  const createHeadCell = (col: VulnsColumnData) => {
+    return (
+      <StyledTableHeadCellWrapper
+        align="left"
+        key={col.id}
+        sortDirection={orderBy === col.id ? order : false}
+        sx={{ maxWidth: col.maxWidth }}
+      >
+        <TableSortLabel
+          active={orderBy === col.id}
+          direction={orderBy === col.id ? order : 'asc'}
+          onClick={createSortHandler(col.id)}
+        >
+          <StyledTableHeadCell variant="subtitle2" textTransform="capitalize">
+            {col.label || col.id}
+          </StyledTableHeadCell>
+          {orderBy === col.id ? (
+            <span style={visuallyHidden}>{order === 'desc' ? 'sorted descending' : 'sorted ascending'}</span>
+          ) : null}
+        </TableSortLabel>
+      </StyledTableHeadCellWrapper>
+    );
+  };
+
+  const createTableButtons = () => {
+    return (
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Box display="flex" alignItems="center">
           <Search
@@ -78,39 +143,17 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Array
           <img src={exportCsv} width="18px" height="18px" alt={'export csv'} />
         </ExportCsvBox>
       </Box>
+    );
+  };
+
+  return (
+    <Box sx={{ width: '100%' }}>
+      {createTableButtons()}
 
       <TableContainer sx={{ overflow: 'hidden auto' }}>
         <StyledTable aria-labelledby="tableTitle">
           <TableHead>
-            <TableRow>
-              {columnsData.map((col) => (
-                <TableCell
-                  align="left"
-                  key={col.id}
-                  sortDirection={orderBy === col.id ? order : false}
-                  sx={{
-                    backgroundColor: 'transparent',
-                    padding: '10px',
-                    paddingRight: 0,
-                    minWidth: '70px',
-                    maxWidth: col.maxWidth,
-                  }}
-                >
-                  <TableSortLabel
-                    active={orderBy === col.id}
-                    direction={orderBy === col.id ? order : 'asc'}
-                    onClick={createSortHandler(col.id)}
-                  >
-                    <StyledTableHeadline variant="subtitle2" textTransform="capitalize">
-                      {col.label || col.id}
-                    </StyledTableHeadline>
-                    {orderBy === col.id ? (
-                      <span style={visuallyHidden}>{order === 'desc' ? 'sorted descending' : 'sorted ascending'}</span>
-                    ) : null}
-                  </TableSortLabel>
-                </TableCell>
-              ))}
-            </TableRow>
+            <TableRow>{columnsData.map((col) => createHeadCell(col))}</TableRow>
           </TableHead>
 
           <TableBody>
@@ -131,33 +174,7 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Array
                         key={rowIndex}
                         sx={{ padding: '0 10px' }}
                       >
-                        {columnsData.map((col, colIndex) => {
-                          let isRowHover = rowHover == rowIndex;
-                          let isColHover = colHover == colIndex;
-                          return (
-                            <StyledCell
-                              ishover={+isRowHover}
-                              sx={{ maxWidth: col.maxWidth }}
-                              scope="row"
-                              role="cell"
-                              key={colIndex}
-                              onMouseEnter={() => setColHover(colIndex)}
-                              onMouseLeave={() => setColHover(-1)}
-                            >
-                              {
-                                <Box
-                                  display="flex"
-                                  flexDirection="column"
-                                  alignItems="center"
-                                  width="inherit"
-                                  sx={{ float: col.maxWidth ? 'center' : 'left' }}
-                                >
-                                  {createCell(col, row[col.id], rowIndex, isRowHover && isColHover)}
-                                </Box>
-                              }
-                            </StyledCell>
-                          );
-                        })}
+                        {columnsData.map((col, colIndex) => createCell(col, row[col.id], rowIndex, colIndex))}
                       </TableRow>
                     );
                   })}
@@ -166,27 +183,6 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Array
       </TableContainer>
     </Box>
   );
-}
-
-function createCell(col: VulnsColumnData, cellItem: string | string[], rowIndex: number, isHover?: boolean) {
-  let cellBody: any = [];
-  // Add icon if needed
-  if (col.iconList && typeof cellItem == 'string' && col.iconList[cellItem]) {
-    cellBody.push(<img src={col.iconList[cellItem]} height="22px" alt={cellItem} key={cellItem + rowIndex + col.id} />);
-  }
-  // Add text lines
-  let stringLines = Array.isArray(cellItem) ? cellItem : [cellItem];
-  stringLines.forEach((line: string, index: number) => {
-    cellBody.push(
-      <Box width={!col.maxWidth ? 1 : 'inherit'} textAlign="left" display="flex" alignItems="center" key={index}>
-        <StyledTableCellText>{line}</StyledTableCellText>
-        {line && col.copyIcon && (
-          <CopyIcon onClick={() => navigator.clipboard.writeText(line)} visibility={isHover ? 'visible' : 'hidden'} />
-        )}
-      </Box>
-    );
-  });
-  return cellBody;
 }
 
 function noIssuesDetected() {
@@ -265,7 +261,14 @@ const StyledTable = styled(Table)`
   }
 `;
 
-const StyledCell = styled(TableCell)<{ ishover: number }>`
+const StyledCell = styled(Box)`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: inherit;
+`;
+
+const StyledCellWrapper = styled(TableCell)<{ ishover: number }>`
   overflow-wrap: anywhere;
   padding: 5px 10px;
   min-width: 70px;
@@ -285,13 +288,20 @@ const StyledCell = styled(TableCell)<{ ishover: number }>`
   }
 `;
 
-const StyledTableHeadline = styled(Typography)`
+const StyledTableHeadCell = styled(Typography)`
   color: #8494a9;
   font-weight: 600;
   font-size: 12px;
   @media screen and (prefers-color-scheme: dark) {
     color: #f8fafb;
   }
+`;
+
+const StyledTableHeadCellWrapper = styled(TableCell)`
+  background-color: transparent,
+  padding: 10px,
+  padding-right: 0,
+  min-width: 70px,
 `;
 
 const StyledTableCellText = styled(Typography)`
