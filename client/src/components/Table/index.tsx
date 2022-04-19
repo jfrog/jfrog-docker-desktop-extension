@@ -115,6 +115,7 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Array
                   .map((row, rowIndex) => {
                     return (
                       <TableRow
+                        title={row.summary}
                         onMouseEnter={() => setRowHover(rowIndex)}
                         onMouseLeave={() => setRowHover(-1)}
                         role="row"
@@ -167,10 +168,10 @@ function createCell(col: VulnsColumnData, cellItem: string | string[], rowIndex:
   }
   // Add text lines
   let stringLines = Array.isArray(cellItem) ? cellItem : [cellItem];
-  stringLines.forEach((line: string) => {
+  stringLines.forEach((line: string, index: number) => {
     cellBody.push(
-      <Box width={!col.maxWidth ? 1 : 'inherit'} textAlign="left" display="flex" alignItems="center" key={line}>
-        <StyledTableCellText title={line}>{line}</StyledTableCellText>
+      <Box width={!col.maxWidth ? 1 : 'inherit'} textAlign="left" display="flex" alignItems="center" key={index}>
+        <StyledTableCellText>{line}</StyledTableCellText>
         {line && col.copyIcon && (
           <CopyIcon onClick={() => navigator.clipboard.writeText(line)} visibility={isHover ? 'visible' : 'hidden'} />
         )}

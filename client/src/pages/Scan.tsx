@@ -91,6 +91,9 @@ export const ScanPage = () => {
         vuln.cvssV2?.push(cve.cvssV2);
         vuln.cvssV3?.push(cve.cvssV3);
       });
+      if (vuln.cveIds.join('') == '') {
+        vuln.cveIds = [vuln.issueId];
+      }
 
       // Update Fix versions field
       if (!vuln[VulnerabilityKeys.fixedVersions]) {
@@ -190,7 +193,7 @@ const scanTableColumnsData: Array<VulnsColumnData> = [
   {
     id: VulnerabilityKeys.impactedPackageType,
     label: 'Type',
-    maxWidth: '60px',
+    maxWidth: '75px',
     iconList: TechIcons,
   },
   {
@@ -201,18 +204,17 @@ const scanTableColumnsData: Array<VulnsColumnData> = [
   {
     id: VulnerabilityKeys.cveIds,
     label: 'CVE',
-    maxWidth: '120px',
     copyIcon: true,
   },
   {
     id: VulnerabilityKeys.cvssV3,
     label: 'CVSS 3.0',
-    maxWidth: '70px',
+    maxWidth: '60px',
   },
   {
     id: VulnerabilityKeys.cvssV2,
     label: 'CVSS 2.0',
-    maxWidth: '70px',
+    maxWidth: '60px',
   },
 ];
 
