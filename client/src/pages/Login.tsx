@@ -21,7 +21,8 @@ export const LoginPage = () => {
   const HandleConnect = async () => {
     setButtonLoading(true);
     if (await Save(state)) {
-      history.push('/settings');
+      history.push('/scan');
+      window.ddClient.desktopUI.toast.success("You're all set!")
     }
     setButtonLoading(false);
   };

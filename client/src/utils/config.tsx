@@ -9,21 +9,21 @@ export const Save = async (user: ExtensionConfig | undefined, skipPasswordValida
   }
   try {
     if (!user.url) {
-      alert('Please Enter Url');
+      window.ddClient.desktopUI.toast.warning("Please enter URL")
       return false;
     }
     if (!user.authType || user.authType === BASIC_AUTH) {
       if (!user.username) {
-        alert('Please Enter Username');
+        window.ddClient.desktopUI.toast.warning('Please enter username');
         return false;
       }
       if (!user.password && !skipPasswordValidation) {
-        alert('Please Enter Password');
+        window.ddClient.desktopUI.toast.warning('Please enter password');
         return false;
       }
     } else {
       if (!user.accessToken && !skipPasswordValidation) {
-        alert('Please Enter  Access Token');
+        window.ddClient.desktopUI.toast.warning('Please enter access token');
         return false;
       }
     }
@@ -31,7 +31,7 @@ export const Save = async (user: ExtensionConfig | undefined, skipPasswordValida
     await saveConfig(toJfrogCliConfig(user));
     return true;
   } catch (error) {
-    alert('error while login:' + error);
+    window.ddClient.desktopUI.toast.error(error);
     return false;
   }
 };

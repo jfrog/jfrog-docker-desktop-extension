@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Prints the extension configuration to stdout (in JSON format).
+
 HOME_DIR=~/.jfrog-docker-desktop-extension
 CONF_FILE=$HOME_DIR/jfrog-docker-desktop-extension.conf
 
