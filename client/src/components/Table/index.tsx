@@ -14,7 +14,6 @@ import {
 import Search from '../Search';
 import { visuallyHidden } from '@mui/utils';
 import { VulnsColumnData } from '../../pages/Scan';
-import exportCsv from '../../assets/csv.png';
 import noIssuesIcon from '../../assets/no-issues.png';
 import { ContentCopy } from '@mui/icons-material';
 
@@ -139,9 +138,6 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Array
             Clear
           </Typography>
         </Box>
-        <ExportCsvBox>
-          <img src={exportCsv} width="18px" height="18px" alt={'export csv'} />
-        </ExportCsvBox>
       </Box>
     );
   };
