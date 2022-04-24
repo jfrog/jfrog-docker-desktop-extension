@@ -10,6 +10,7 @@ import {
   TableRow,
   TableSortLabel,
   styled,
+  Tooltip,
 } from '@mui/material';
 import Search from '../Search';
 import { visuallyHidden } from '@mui/utils';
@@ -71,13 +72,14 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Array
         <Box width={!col.maxWidth ? 1 : 'inherit'} textAlign="left" display="flex" alignItems="center" key={index}>
           <StyledTableCellText>{line}</StyledTableCellText>
           {line && col.copyIcon && (
-            <CopyIcon
-              onClick={(e) => {
-                e.preventDefault();
-                navigator.clipboard.writeText(line);
-              }}
-              visibility={rowHover == rowIndex && colHover == colIndex ? 'visible' : 'hidden'}
-            />
+            <Tooltip title={'click to copy'} arrow>
+              <CopyIcon
+                onClick={() => {
+                  navigator.clipboard.writeText(line);
+                }}
+                visibility={rowHover == rowIndex && colHover == colIndex ? 'visible' : 'hidden'}
+              />
+            </Tooltip>
           )}
         </Box>
       );
@@ -161,17 +163,18 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Array
                   .filter((row) => searchText == '' || includesSearchText(row))
                   .map((row, rowIndex) => {
                     return (
-                      <TableRow
-                        title={row.summary}
-                        onMouseEnter={() => setRowHover(rowIndex)}
-                        onMouseLeave={() => setRowHover(-1)}
-                        role="row"
-                        tabIndex={-1}
-                        key={rowIndex}
-                        sx={{ padding: '0 10px' }}
-                      >
-                        {columnsData.map((col, colIndex) => createCell(col, row[col.id], rowIndex, colIndex))}
-                      </TableRow>
+                      <Tooltip key={rowIndex} title={row.summary} arrow followCursor>
+                        <TableRow
+                          onMouseEnter={() => setRowHover(rowIndex)}
+                          onMouseLeave={() => setRowHover(-1)}
+                          role="row"
+                          tabIndex={-1}
+                          key={rowIndex}
+                          sx={{ padding: '0 10px' }}
+                        >
+                          {columnsData.map((col, colIndex) => createCell(col, row[col.id], rowIndex, colIndex))}
+                        </TableRow>
+                      </Tooltip>
                     );
                   })}
           </TableBody>

@@ -11,6 +11,7 @@ import { ImageData } from '../types/ImageData';
 import { VulnerabilityKeys, Vulnerability } from '../types/Vulnerability';
 import { SeverityIcons } from '../assets/severityIcons/SeverityIcons';
 import { TechIcons } from '../assets/techIcons/TechIcons';
+import PieChartBox, { ChartItemProps } from '../components/PieChart';
 
 type ScanResults = {
   vulnerabilities: Array<Vulnerability>;
@@ -23,21 +24,21 @@ type ScanResults = {
 export const ScanPage = () => {
   const [selectedImage, setSelectedImage] = useState('');
   const [dockerImages, setDockerImages] = useState<string[]>([]);
-  const [isScanningMap, setIsScanningMap] = useState<any>({});
-  const [scanResultsMap, setScanResultsMap] = useState<any>({});
   const [runningScanId, setRunningScanId] = useState(0);
+
+  const [scanData, setScanData] = useState<{
+    [scanId: string]: {
+      isScanning: boolean;
+      scanResults: any;
+      severityCount: { [key: string]: number };
+    };
+  }>({});
 
   let history = useHistory();
 
   const handleChange = (event: SelectChangeEvent<any>) => {
     setSelectedImage(event.target.value);
-    handleCancelScan();
-  };
-
-  const handleCancelScan = () => {
-    setIsScanningMap({});
-    setScanResultsMap({});
-    setRunningScanId(0);
+    setScanData({});
   };
 
   useEffect(() => {
@@ -67,28 +68,32 @@ export const ScanPage = () => {
 
   const onScanClick = async (scanId: number) => {
     try {
-      setScanResultsMap({});
       setRunningScanId(scanId);
-      setIsScanningMap({ [scanId]: true });
+      setScanData({ [scanId]: { ...scanData[scanId], scanResults: null, isScanning: true } });
       let results: ScanResults = await scanImage(selectedImage);
       console.log('scan results for ' + selectedImage, results);
       saveScanResults(scanId, results);
-      setIsScanningMap({ ...isScanningMap, [scanId]: false });
     } catch (e) {
-      setIsScanningMap({ ...isScanningMap, [scanId]: false });
+      setScanData({ ...scanData, [scanId]: {} });
       alert(e);
     }
   };
 
   const saveScanResults = (scanId: number, results: ScanResults) => {
     let vulns = results.vulnerabilities ?? [];
-
+    let counter: { [key: string]: number } = {
+      [Severity.Critical]: 0,
+      [Severity.High]: 0,
+      [Severity.Medium]: 0,
+      [Severity.Low]: 0,
+      [Severity.Unknown]: 0,
+    };
     vulns.forEach((vuln: Vulnerability) => {
       // Update CVE's field
       vuln.cveIds = [];
       vuln.cvssV2 = [];
       vuln.cvssV3 = [];
-      vuln[VulnerabilityKeys.cves]?.forEach((cve: any) => {
+      vuln.cves?.forEach((cve: any) => {
         vuln.cveIds?.push(cve.id);
         vuln.cvssV2?.push(cve.cvssV2);
         vuln.cvssV3?.push(cve.cvssV3);
@@ -98,12 +103,12 @@ export const ScanPage = () => {
       }
 
       // Update Fix versions field
-      if (!vuln[VulnerabilityKeys.fixedVersions]) {
-        vuln[VulnerabilityKeys.fixedVersions] = ['N/A'];
+      if (!vuln.fixedVersions) {
+        vuln.fixedVersions = ['N/A'];
       }
+      counter[vuln.severity.toString()]++;
     });
-
-    setScanResultsMap({ ...scanResultsMap, [scanId]: vulns });
+    setScanData({ [scanId]: { ...scanData[scanId], scanResults: vulns, severityCount: counter, isScanning: false } });
   };
 
   const getSettingsButton = () => {
@@ -118,47 +123,53 @@ export const ScanPage = () => {
     );
   };
 
+  const isScanning = scanData[runningScanId]?.isScanning;
+  const scanResults = scanData[runningScanId]?.scanResults;
+  const severityCount = scanData[runningScanId]?.severityCount;
+  console.log(scanData);
   return (
     <>
       {getSettingsButton()}
 
       <JfrogHeadline headline="JFrog Xray Scan" marginBottom="50px" />
 
-      <Typography variant="subtitle1">Select local image for scanning</Typography>
-      <Box display="flex" width={1 / 2}>
-        <Select onChange={handleChange} options={dockerImages} />
-        <ScanButton
-          variant="contained"
-          sx={{ width: '120px', fontSize: '16px', fontWeight: '700' }}
-          disabled={selectedImage == '' || isScanningMap[runningScanId]}
-          onClick={() => onScanClick(Math.random())}
-        >
-          Scan
-        </ScanButton>
+      <Box display="flex" justifyContent="space-between">
+        <Box width="calc(100% - 350px)" maxWidth="1000px">
+          <Typography variant="subtitle1">Select local image for scanning</Typography>
+          <Box display="flex" width={3 / 4}>
+            <Select onChange={handleChange} options={dockerImages} />
+            <ScanButton
+              variant="contained"
+              sx={{ width: '120px', fontSize: '16px', fontWeight: '700' }}
+              disabled={selectedImage == '' || isScanning}
+              onClick={() => onScanClick(Math.random())}
+            >
+              Scan
+            </ScanButton>
+          </Box>
+          {isScanning && (
+            <Box>
+              <ProgressBox>
+                <Box display="flex" alignItems="center">
+                  <CircularProgress size="10px" sx={{ margin: '0 10px' }} />
+                  <Typography fontWeight="400" fontSize="14px">
+                    scanning {selectedImage}...
+                  </Typography>
+                </Box>
+                <CloseIcon sx={{ cursor: 'pointer', fontSize: '18px' }} onClick={() => setScanData({})} />
+              </ProgressBox>
+            </Box>
+          )}
+        </Box>
+        {scanResults && severityCount && getSeverityPieChart(severityCount)}
       </Box>
 
-      {isScanningMap[runningScanId] ? (
+      {scanResults ? (
         <Box>
-          <ProgressBox>
-            <Box display="flex" alignItems="center">
-              <CircularProgress size="10px" sx={{ margin: '0 10px' }} />
-              <Typography fontWeight="400" fontSize="14px">
-                scanning {selectedImage}...
-              </Typography>
-            </Box>
-            <CloseIcon sx={{ cursor: 'pointer', fontSize: '18px' }} onClick={handleCancelScan} />
-          </ProgressBox>
-        </Box>
-      ) : (
-        ''
-      )}
-
-      {scanResultsMap[runningScanId] ? (
-        <Box sx={{ marginTop: '50px' }}>
           <Typography variant="h6" fontWeight="500" fontSize="18px">
             Image Scan Results
           </Typography>
-          <Table columnsData={scanTableColumnsData} rows={scanResultsMap[runningScanId]} />
+          <Table columnsData={scanTableColumnsData} rows={scanResults} />
         </Box>
       ) : (
         ''
@@ -166,6 +177,37 @@ export const ScanPage = () => {
     </>
   );
 };
+
+function getSeverityPieChart(severityCount: { [key: string]: number }) {
+  let chartItems: ChartItemProps[] = [
+    {
+      title: Severity.Critical,
+      value: severityCount[Severity.Critical],
+      color: '#FB515B',
+      icon: SeverityIcons.Critical,
+    },
+    {
+      title: Severity.High,
+      value: severityCount[Severity.High],
+      color: '#FB515B',
+      icon: SeverityIcons.High,
+    },
+    {
+      title: Severity.Medium,
+      value: severityCount[Severity.Medium],
+      color: '#F97E3A',
+      icon: SeverityIcons.Medium,
+    },
+    {
+      title: Severity.Low,
+      value: severityCount[Severity.Low],
+      color: '#FCD95C',
+      icon: SeverityIcons.Low,
+    },
+    { title: Severity.Unknown, value: severityCount[Severity.Unknown], color: '#818385' },
+  ];
+  return <PieChartBox chartName="Vulnerabilities" chartItems={chartItems} />;
+}
 
 export type VulnsColumnData = {
   id: Partial<VulnerabilityKeys>;
@@ -228,7 +270,7 @@ const ProgressBox = styled(Box)`
   margin-top: 20px;
   display: flex;
   justify-content: space-between;
-  width: 50%;
+  width: 75%;
   @media screen and (prefers-color-scheme: dark) {
     color: #f8fafb;
     background: #222e33;
