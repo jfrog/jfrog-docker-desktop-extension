@@ -24,3 +24,24 @@ export async function isWindows(): Promise<boolean> {
   }
   return windowsSystem;
 }
+
+export class Versions {
+  xrayVersion?: string;
+  jfrogCliVersion?: string;
+}
+
+export async function getVersions(): Promise<Versions> {
+  let xrayVersionPromise = execOnHost('runcli.sh', 'runcli.bat', ['xr', 'curl', 'api/v1/system/version']);
+  let jfrogCliVersionPromise = execOnHost('runcli.sh', 'runcli.bat', ['-v']);
+  let versions: Versions = new Versions();
+  try {
+    let results = await Promise.all([xrayVersionPromise, jfrogCliVersionPromise]);
+    let xrayResult = JSON.parse(results[0].stdout);
+    let jfrogCliResult = results[1].stdout.trim().split(" ");
+    versions.xrayVersion = xrayResult.xray_version;
+    versions.jfrogCliVersion = jfrogCliResult[jfrogCliResult.length - 1];
+  } catch (e) {
+    throwErrorAsString(e);
+  }
+  return versions;
+}
