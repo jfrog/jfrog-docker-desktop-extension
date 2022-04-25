@@ -204,8 +204,10 @@ function getSeverityPieChart(severityCount: { [key: string]: number }) {
       color: '#FCD95C',
       icon: SeverityIcons.Low,
     },
-    { title: Severity.Unknown, value: severityCount[Severity.Unknown], color: '#818385' },
   ];
+  if (severityCount[Severity.Unknown] > 0) {
+    chartItems.push({ title: Severity.Unknown, value: severityCount[Severity.Unknown], color: '#818385' });
+  }
   return <PieChartBox chartName="Vulnerabilities" chartItems={chartItems} />;
 }
 

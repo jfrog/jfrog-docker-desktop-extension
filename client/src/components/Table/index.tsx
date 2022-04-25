@@ -11,19 +11,23 @@ import {
   TableSortLabel,
   styled,
   Tooltip,
+  Collapse,
+  Link,
 } from '@mui/material';
 import Search from '../Search';
 import { visuallyHidden } from '@mui/utils';
 import { VulnsColumnData } from '../../pages/Scan';
 import noIssuesIcon from '../../assets/no-issues.png';
 import { ContentCopy } from '@mui/icons-material';
+import { useState } from 'react';
 
 export default function DynamicTable({ columnsData, rows }: { columnsData: Array<VulnsColumnData>; rows: any[] }) {
-  const [order, setOrder] = React.useState<Order>('asc');
-  const [orderBy, setOrderBy] = React.useState<string>(columnsData[0].id);
-  const [searchText, setSearchText] = React.useState('');
-  const [rowHover, setRowHover] = React.useState(-1);
-  const [colHover, setColHover] = React.useState(-1);
+  const [order, setOrder] = useState<Order>('asc');
+  const [orderBy, setOrderBy] = useState<string>(columnsData[0].id);
+  const [searchText, setSearchText] = useState('');
+  const [rowHover, setRowHover] = useState<number | undefined>(undefined);
+  const [colHover, setColHover] = useState<number | undefined>(undefined);
+  const [rowOpen, setRowOpen] = useState<number | undefined>(undefined);
   const isEmptyTable = rows.length == 0;
 
   const getSortOrderIfExists = () => {
@@ -72,30 +76,28 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Array
         <Box width={!col.maxWidth ? 1 : 'inherit'} textAlign="left" display="flex" alignItems="center" key={index}>
           <StyledTableCellText>{line}</StyledTableCellText>
           {line && col.copyIcon && (
-            <Tooltip title={'click to copy'} arrow>
-              <CopyIcon
-                onClick={() => {
-                  navigator.clipboard.writeText(line);
-                }}
-                visibility={rowHover == rowIndex && colHover == colIndex ? 'visible' : 'hidden'}
-              />
-            </Tooltip>
+            <CopyIcon
+              onClick={() => {
+                navigator.clipboard.writeText(line);
+              }}
+              visibility={rowHover == rowIndex && colHover == colIndex ? 'visible' : 'hidden'}
+            />
           )}
         </Box>
       );
     });
     return (
-      <StyledCellWrapper
+      <StyledTableCellWrapper
         ishover={+(rowHover == rowIndex)}
         sx={{ maxWidth: col.maxWidth }}
         scope="row"
         role="cell"
         key={colIndex}
         onMouseEnter={() => setColHover(colIndex)}
-        onMouseLeave={() => setColHover(-1)}
+        onMouseLeave={() => setColHover(undefined)}
       >
         {<StyledCell sx={{ float: col.maxWidth ? 'center' : 'left' }}>{cellBody}</StyledCell>}
-      </StyledCellWrapper>
+      </StyledTableCellWrapper>
     );
   };
 
@@ -149,7 +151,7 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Array
       {createTableButtons()}
 
       <TableContainer sx={{ overflow: 'hidden auto' }}>
-        <StyledTable aria-labelledby="tableTitle">
+        <StyledTable aria-label="collapsible table">
           <TableHead>
             <TableRow>{columnsData.map((col) => createHeadCell(col))}</TableRow>
           </TableHead>
@@ -163,18 +165,73 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Array
                   .filter((row) => searchText == '' || includesSearchText(row))
                   .map((row, rowIndex) => {
                     return (
-                      <Tooltip key={rowIndex} title={row.summary} arrow followCursor>
-                        <TableRow
-                          onMouseEnter={() => setRowHover(rowIndex)}
-                          onMouseLeave={() => setRowHover(-1)}
-                          role="row"
-                          tabIndex={-1}
-                          key={rowIndex}
-                          sx={{ padding: '0 10px' }}
-                        >
-                          {columnsData.map((col, colIndex) => createCell(col, row[col.id], rowIndex, colIndex))}
+                      <>
+                        <Tooltip key={rowIndex} title={row.summary} arrow followCursor>
+                          <TableRow
+                            onClick={rowIndex == rowOpen ? () => setRowOpen(undefined) : () => setRowOpen(rowIndex)}
+                            onMouseEnter={() => setRowHover(rowIndex)}
+                            onMouseLeave={() => setRowHover(undefined)}
+                            role="row"
+                            tabIndex={-1}
+                            key={rowIndex}
+                            sx={{ padding: '0 10px', cursor: 'pointer' }}
+                          >
+                            {columnsData.map((col, colIndex) => createCell(col, row[col.id], rowIndex, colIndex))}
+                          </TableRow>
+                        </Tooltip>
+
+                        <TableRow role="row" key={'collapse' + rowIndex}>
+                          <TableCell
+                            colSpan={100}
+                            style={{
+                              border: rowOpen == rowIndex ? '1px solid #345b79' : 'none',
+                              padding: rowOpen == rowIndex ? '20px' : '0',
+                            }}
+                          >
+                            <Collapse in={rowOpen == rowIndex} timeout="auto" unmountOnExit>
+                              <Box width="1" display="flex" justifyContent="space-between">
+                                <Box paddingRight="20px" display="flex" flexDirection="column" maxWidth={1 / 3}>
+                                  <Typography fontWeight="600" fontSize="12px">
+                                    Summary:
+                                  </Typography>
+                                  <Typography fontSize="12px">{row.summary}</Typography>
+                                </Box>
+
+                                <Box
+                                  padding="0 10px"
+                                  overflow="hidden"
+                                  display="flex"
+                                  flexDirection="column"
+                                  maxWidth={1 / 3}
+                                >
+                                  <Typography fontWeight="600" fontSize="12px">
+                                    Xray ID:
+                                  </Typography>
+                                  <Typography fontSize="12px">{row.issueId}</Typography>
+                                </Box>
+                                <Box
+                                  paddingRight="10px"
+                                  overflow="hidden"
+                                  display="flex"
+                                  flexDirection="column"
+                                  maxWidth={1 / 3}
+                                >
+                                  <Typography fontWeight="600" fontSize="12px">
+                                    References:
+                                  </Typography>
+                                  {row.references?.map((ref: string, index: number) => {
+                                    return (
+                                      <Link key={index} variant="subtitle2">
+                                        {ref}
+                                      </Link>
+                                    );
+                                  })}
+                                </Box>
+                              </Box>
+                            </Collapse>
+                          </TableCell>
                         </TableRow>
-                      </Tooltip>
+                      </>
                     );
                   })}
           </TableBody>
@@ -267,13 +324,14 @@ const StyledCell = styled(Box)`
   width: inherit;
 `;
 
-const StyledCellWrapper = styled(TableCell)<{ ishover: number }>`
+const StyledTableCellWrapper = styled(TableCell)<{ ishover: number }>`
   overflow-wrap: anywhere;
   padding: 5px 10px;
   min-width: 70px;
   max-width: 100%;
   background-color: ${({ ishover }) => (ishover ? '#f4f4fe' : '#fcfcfe')};
   border-right: 1px solid rgba(111, 111, 111, 0.1);
+  border-bottom: none;
   &:first-of-type {
     border-top-left-radius: 6px;
     border-bottom-left-radius: 6px;

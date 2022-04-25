@@ -45,10 +45,10 @@ export default function PieChartBox({ chartName, chartItems }: ChartProps) {
       </Typography>
       <Box display="flex" alignItems="center" justifyContent="space-evenly">
         <PieChart
+          rounded
           style={{ height: '130px', width: '130px' }}
           lineWidth={20}
           onMouseOver={(dsds, index) => {
-            console.log(dsds);
             setHovered(index);
           }}
           onMouseOut={() => {
@@ -62,8 +62,11 @@ export default function PieChartBox({ chartName, chartItems }: ChartProps) {
                   .reduce(function (a, b) {
                     return a + b;
                   })
-              : ''
+              : undefined
           }
+          labelStyle={{
+            fill: isDarkMode ? '#fff' : '#000',
+          }}
           labelPosition={0}
           data={chartItems}
         />
