@@ -10,7 +10,6 @@ import {
   TableRow,
   TableSortLabel,
   styled,
-  Tooltip,
   Collapse,
   Link,
 } from '@mui/material';
@@ -20,6 +19,7 @@ import { VulnsColumnData } from '../../pages/Scan';
 import noIssuesIcon from '../../assets/no-issues.png';
 import { ContentCopy } from '@mui/icons-material';
 import { useState } from 'react';
+import CircularChart from '../CircularChart';
 
 export default function DynamicTable({ columnsData, rows }: { columnsData: Array<VulnsColumnData>; rows: any[] }) {
   const [order, setOrder] = useState<Order>('asc');
@@ -166,19 +166,17 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Array
                   .map((row, rowIndex) => {
                     return (
                       <>
-                        <Tooltip key={rowIndex} title={row.summary} arrow followCursor>
-                          <TableRow
-                            onClick={rowIndex == rowOpen ? () => setRowOpen(undefined) : () => setRowOpen(rowIndex)}
-                            onMouseEnter={() => setRowHover(rowIndex)}
-                            onMouseLeave={() => setRowHover(undefined)}
-                            role="row"
-                            tabIndex={-1}
-                            key={rowIndex}
-                            sx={{ padding: '0 10px', cursor: 'pointer' }}
-                          >
-                            {columnsData.map((col, colIndex) => createCell(col, row[col.id], rowIndex, colIndex))}
-                          </TableRow>
-                        </Tooltip>
+                        <TableRow
+                          onClick={rowIndex == rowOpen ? () => setRowOpen(undefined) : () => setRowOpen(rowIndex)}
+                          onMouseEnter={() => setRowHover(rowIndex)}
+                          onMouseLeave={() => setRowHover(undefined)}
+                          role="row"
+                          tabIndex={-1}
+                          key={rowIndex}
+                          sx={{ padding: '0 10px', cursor: 'pointer' }}
+                        >
+                          {columnsData.map((col, colIndex) => createCell(col, row[col.id], rowIndex, colIndex))}
+                        </TableRow>
 
                         <TableRow role="row" key={'collapse' + rowIndex}>
                           <TableCell
@@ -197,18 +195,14 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Array
                                   <Typography fontSize="12px">{row.summary}</Typography>
                                 </Box>
 
-                                <Box
-                                  padding="0 10px"
-                                  overflow="hidden"
-                                  display="flex"
-                                  flexDirection="column"
-                                  maxWidth={1 / 3}
-                                >
-                                  <Typography fontWeight="600" fontSize="12px">
-                                    Xray ID:
-                                  </Typography>
-                                  <Typography fontSize="12px">{row.issueId}</Typography>
-                                </Box>
+                                <CircularChart
+                                  items={[
+                                    'github.com/mholt/archiver/v3',
+                                    'binaries/darwin/jf',
+                                    'sha256-12312312312312312331',
+                                    'sha256__624c34a83f43667ca04be5409e57f73f321d8e41e19a7dbe2249d4a9afafa134.tar',
+                                  ]}
+                                />
                                 <Box
                                   paddingRight="10px"
                                   overflow="hidden"
