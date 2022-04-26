@@ -1,6 +1,7 @@
 import { Box, styled, Typography, useTheme } from '@mui/material';
 import { useState } from 'react';
 import { PieChart } from 'react-minimal-pie-chart';
+import vulnIcon from '../../assets/vuln.png';
 
 export type ChartProps = {
   chartName: string;
@@ -40,12 +41,14 @@ export default function PieChartBox({ chartName, chartItems }: ChartProps) {
 
   return (
     <PieChartWrapper sx={{ backgroundColor: isDarkMode ? '#222e33' : '#e6e6ed' }}>
-      <Typography fontWeight="600" fontSize="14px" marginLeft="20px" marginBottom="10px">
-        {chartName}
-      </Typography>
+      <Box display="flex" alignItems="center" marginLeft="20px" marginBottom="10px">
+        <img src={vulnIcon} alt="" height="16px" />
+        <Typography fontWeight="600" fontSize="14px" marginLeft="5px">
+          {chartName}
+        </Typography>
+      </Box>
       <Box display="flex" alignItems="center" justifyContent="space-evenly">
         <PieChart
-          rounded
           style={{ height: '130px', width: '130px' }}
           lineWidth={20}
           onMouseOver={(dsds, index) => {
