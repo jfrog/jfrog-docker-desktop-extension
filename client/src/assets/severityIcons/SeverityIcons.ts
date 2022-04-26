@@ -9,4 +9,4 @@ export const SeverityIcons = {
   [Severity.High]: highSeverity,
   [Severity.Medium]: mediumSeverity,
   [Severity.Low]: lowSeverity,
-}
+};
