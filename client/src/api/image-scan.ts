@@ -17,7 +17,6 @@ export async function scanImage(imageTag: string): Promise<any> {
   } else if (config.jfrogExtensionConfig.watches != undefined) {
     cmdArgs.push('--watches', '"' + config.jfrogExtensionConfig.watches.join(',') + '"', '--fail=false');
   }
-
   let scanResults;
   try {
     let cmdResult = await execOnHost('runcli.sh', 'runcli.bat', cmdArgs);
