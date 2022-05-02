@@ -200,14 +200,16 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Array
                                   <Typography fontWeight="600" fontSize="12px">
                                     Summary:
                                   </Typography>
-                                  <Box marginBottom="10px" minHeight="30px" overflow="hidden auto">
-                                    <Typography fontSize="12px">{row.summary}</Typography>
+                                  <Box marginBottom="10px" maxHeight="60%" overflow="hidden auto">
+                                    <Typography fontSize="12px" marginRight="10px">
+                                      {row.summary}
+                                    </Typography>
                                   </Box>
                                   <Typography fontWeight="600" fontSize="12px">
                                     References:
                                   </Typography>
-                                  <Box display="flex" flexDirection="column" overflow="hidden auto">
-                                    {row.references?.map((ref: string, index: number) => {
+                                  <Box display="flex" flexDirection="column" flex="1" overflow="hidden auto">
+                                    {row.references?.map((link: string, index: number) => {
                                       return (
                                         <Link
                                           key={'link' + index}
@@ -216,8 +218,9 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Array
                                           sx={{
                                             cursor: 'pointer',
                                           }}
+                                          title={link}
                                         >
-                                          {ref}
+                                          {link}
                                         </Link>
                                       );
                                     })}
