@@ -4,7 +4,7 @@ RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
 RUN apt-get install -y nodejs
 RUN npm install -g yarn
 WORKDIR /host
-ARG jfrogCliVersion=2.16.0
+ARG jfrogCliVersion=2.16.2
 ARG TARGETARCH
 RUN curl -XGET "https://releases.jfrog.io/artifactory/jfrog-cli/v2-jf/$jfrogCliVersion/jfrog-cli-mac-386/jf" -L -k -g > jf-darwin
 RUN chmod +x jf-darwin
