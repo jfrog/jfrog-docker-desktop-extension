@@ -21,8 +21,21 @@ export async function scanImage(imageTag: string): Promise<any> {
   try {
     let cmdResult = await execOnHost('runcli.sh', 'runcli.bat', cmdArgs);
     scanResults = JSON.parse(cmdResult.stdout);
-  } catch (e) {
-    throwErrorAsString(e);
+  } catch (e: any) {
+    try {
+      scanResults = JSON.parse(e.stdout);
+      if (!scanResults.errors || scanResults.errors.length === 0) {
+        throwErrorAsString(e);
+      }
+    } catch (e1) {
+      // If the response from JFrog CLI couldn't be parsed, the error 'e' is thrown.
+      throwErrorAsString(e);
+    }
+  }
+  if (scanResults.errors && scanResults.errors.length > 0) {
+    let errorMessage: string = scanResults.errors[0].errorMessage;
+    // The error will always start with an uppercase letter.
+    throw errorMessage[0].toUpperCase() + errorMessage.substring(1);
   }
   return scanResults;
 }

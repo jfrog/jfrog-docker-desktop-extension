@@ -17,6 +17,13 @@ export async function execOnHost(unixCmd: string, windowsCmd: string, args?: str
   return window.ddClient.extension.host.cli.exec(unixCmd, args);
 }
 
+export async function execOnHostAndStreamResult(unixCmd: string, windowsCmd: string, args: string[], options: any): Promise<any> {
+  if (await isWindows()) {
+    return window.ddClient.extension.host.cli.exec(windowsCmd, args, options);
+  }
+  return window.ddClient.extension.host.cli.exec(unixCmd, args, options);
+}
+
 export async function isWindows(): Promise<boolean> {
   if (windowsSystem === undefined) {
     windowsSystem = navigator.platform.startsWith('Win');
