@@ -12,6 +12,7 @@ import {
   styled,
   Collapse,
   Link,
+  Tooltip,
 } from '@mui/material';
 import Search from '../Search';
 import { visuallyHidden } from '@mui/utils';
@@ -26,7 +27,6 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Array
   const [orderBy, setOrderBy] = useState<string>(columnsData[0].id);
   const [searchText, setSearchText] = useState('');
   const [rowHover, setRowHover] = useState<number | undefined>(undefined);
-  const [colHover, setColHover] = useState<number | undefined>(undefined);
   const [rowOpen, setRowOpen] = useState<number | undefined>(undefined);
   const isEmptyTable = rows.length == 0;
 
@@ -73,15 +73,26 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Array
     let stringLines = Array.isArray(cellItem) ? cellItem : [cellItem];
     stringLines.forEach((line: string, index: number) => {
       cellBody.push(
-        <Box width={!col.maxWidth ? 1 : 'inherit'} textAlign="left" display="flex" alignItems="center" key={index}>
+        <Box
+          width={!col.maxWidth ? 1 : 'inherit'}
+          textAlign="left"
+          display="flex"
+          alignItems="center"
+          key={line + index}
+        >
           <StyledTableCellText>{line}</StyledTableCellText>
           {line && col.copyIcon && (
-            <CopyIcon
-              onClick={() => {
-                navigator.clipboard.writeText(line);
-              }}
-              visibility={rowHover == rowIndex && colHover == colIndex ? 'visible' : 'hidden'}
-            />
+            <Tooltip title="Click to Copy" key={'copy tooltip' + index}>
+              <CopyIcon
+                key={'copy' + index}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  navigator.clipboard.writeText(line);
+                }}
+                style={rowHover == rowIndex ? { visibility: 'visible' } : undefined}
+              />
+            </Tooltip>
           )}
         </Box>
       );
@@ -92,9 +103,7 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Array
         sx={{ maxWidth: col.maxWidth }}
         scope="row"
         role="cell"
-        key={colIndex}
-        onMouseEnter={() => setColHover(colIndex)}
-        onMouseLeave={() => setColHover(undefined)}
+        key={rowIndex + colIndex + ''}
       >
         {<StyledCell sx={{ float: col.maxWidth ? 'center' : 'left' }}>{cellBody}</StyledCell>}
       </StyledTableCellWrapper>
@@ -117,9 +126,9 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Array
           <StyledTableHeadCell variant="subtitle2" textTransform="capitalize">
             {col.label || col.id}
           </StyledTableHeadCell>
-          {orderBy === col.id ? (
+          {orderBy === col.id && (
             <span style={visuallyHidden}>{order === 'desc' ? 'sorted descending' : 'sorted ascending'}</span>
-          ) : null}
+          )}
         </TableSortLabel>
       </StyledTableHeadCellWrapper>
     );
@@ -146,11 +155,12 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Array
     );
   };
 
+  const filteredRow = searchText == '' ? rows.slice() : rows.slice().filter((row) => includesSearchText(row));
   return (
     <Box sx={{ width: '100%' }}>
       {createTableButtons()}
 
-      <TableContainer sx={{ overflow: 'hidden auto' }}>
+      <TableContainer sx={{ overflow: 'hidden auto', maxHeight: 'calc(100vh - 430px)' }}>
         <StyledTable aria-label="collapsible table">
           <TableHead>
             <TableRow>{columnsData.map((col) => createHeadCell(col))}</TableRow>
@@ -159,75 +169,78 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Array
           <TableBody>
             {isEmptyTable
               ? noIssuesDetected()
-              : rows
-                  .slice()
-                  .sort(getComparator(order, orderBy, getSortOrderIfExists()))
-                  .filter((row) => searchText == '' || includesSearchText(row))
-                  .map((row, rowIndex) => {
-                    return (
-                      <>
-                        <TableRow
-                          onClick={rowIndex == rowOpen ? () => setRowOpen(undefined) : () => setRowOpen(rowIndex)}
-                          onMouseEnter={() => setRowHover(rowIndex)}
-                          onMouseLeave={() => setRowHover(undefined)}
-                          role="row"
-                          tabIndex={-1}
-                          key={rowIndex}
-                          sx={{ padding: '0 10px', cursor: 'pointer' }}
-                        >
-                          {columnsData.map((col, colIndex) => createCell(col, row[col.id], rowIndex, colIndex))}
-                        </TableRow>
+              : filteredRow.sort(getComparator(order, orderBy, getSortOrderIfExists())).map((row, rowIndex) => {
+                  const isRowOpen = rowOpen == rowIndex;
+                  return (
+                    <React.Fragment key={'fragment' + rowIndex}>
+                      <TableRow
+                        key={'row' + rowIndex}
+                        onClick={rowIndex == rowOpen ? () => setRowOpen(undefined) : () => setRowOpen(rowIndex)}
+                        onMouseEnter={() => setRowHover(rowIndex)}
+                        onMouseLeave={() => setRowHover(undefined)}
+                        role="row"
+                        tabIndex={-1}
+                        sx={{ padding: '0 10px', cursor: 'pointer' }}
+                      >
+                        {columnsData.map((col, colIndex) => createCell(col, row[col.id], rowIndex, colIndex))}
+                      </TableRow>
 
+                      {isRowOpen && (
                         <TableRow role="row" key={'collapse' + rowIndex}>
                           <TableCell
                             colSpan={100}
                             style={{
-                              border: rowOpen == rowIndex ? '1px solid #345b79' : 'none',
-                              padding: rowOpen == rowIndex ? '20px' : '0',
+                              border: isRowOpen ? '1px solid #345b79' : 'none',
+                              padding: isRowOpen ? '20px' : '0',
                             }}
                           >
-                            <Collapse in={rowOpen == rowIndex} timeout="auto" unmountOnExit>
-                              <Box width="1" display="flex" justifyContent="space-between">
-                                <Box paddingRight="20px" display="flex" flexDirection="column" maxWidth={1 / 3}>
+                            <Collapse in={isRowOpen} timeout="auto" unmountOnExit>
+                              <Box width="1" display="flex" justifyContent="space-between" maxHeight="250px">
+                                <Box paddingRight="20px" display="flex" flexDirection="column" maxWidth={2 / 3}>
                                   <Typography fontWeight="600" fontSize="12px">
                                     Summary:
                                   </Typography>
-                                  <Typography fontSize="12px">{row.summary}</Typography>
-                                </Box>
-
-                                <CircularChart
-                                  items={[
-                                    'github.com/mholt/archiver/v3',
-                                    'binaries/darwin/jf',
-                                    'sha256-12312312312312312331',
-                                    'sha256__624c34a83f43667ca04be5409e57f73f321d8e41e19a7dbe2249d4a9afafa134.tar',
-                                  ]}
-                                />
-                                <Box
-                                  paddingRight="10px"
-                                  overflow="hidden"
-                                  display="flex"
-                                  flexDirection="column"
-                                  maxWidth={1 / 3}
-                                >
+                                  <Box marginBottom="10px" minHeight="30px" overflow="hidden auto">
+                                    <Typography fontSize="12px">{row.summary}</Typography>
+                                  </Box>
                                   <Typography fontWeight="600" fontSize="12px">
                                     References:
                                   </Typography>
-                                  {row.references?.map((ref: string, index: number) => {
-                                    return (
-                                      <Link key={index} variant="subtitle2">
-                                        {ref}
-                                      </Link>
-                                    );
-                                  })}
+                                  <Box display="flex" flexDirection="column" overflow="hidden auto">
+                                    {row.references?.map((ref: string, index: number) => {
+                                      return (
+                                        <Link
+                                          key={'link' + index}
+                                          variant="subtitle2"
+                                          whiteSpace="nowrap"
+                                          sx={{
+                                            cursor: 'pointer',
+                                          }}
+                                        >
+                                          {ref}
+                                        </Link>
+                                      );
+                                    })}
+                                  </Box>
                                 </Box>
+                                <CircularChart
+                                  items={
+                                    row.impactPaths.length > 0 &&
+                                    row.impactPaths[0].length > 0 &&
+                                    row.impactPaths[0]
+                                      .slice()
+                                      .reverse()
+                                      .map((path: any) => path.name)
+                                  }
+                                />
                               </Box>
                             </Collapse>
                           </TableCell>
                         </TableRow>
-                      </>
-                    );
-                  })}
+                      )}
+                    </React.Fragment>
+                  );
+                })}
           </TableBody>
         </StyledTable>
       </TableContainer>
@@ -301,13 +314,13 @@ const ExportCsvBox = styled(Box)`
 
 const StyledTable = styled(Table)`
   background-color: #e6e6ed;
-  min-width: 750;
+  min-width: 750px;
   border-collapse: separate;
   border-spacing: 0 6px;
   border-radius: 6px;
   padding: 0 10px;
   @media screen and (prefers-color-scheme: dark) {
-    background-color: #222e33;
+    background-color: #18222b;
   }
 `;
 
@@ -368,6 +381,7 @@ const StyledTableCellText = styled(Typography)`
 `;
 
 const CopyIcon = styled(ContentCopy)`
+  visibility: hidden;
   margin-left: 5px;
   font-size: 12px;
   fill-opacity: 0.5;

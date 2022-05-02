@@ -22,7 +22,7 @@ export const LoginPage = () => {
     setButtonLoading(true);
     if (await Save(state)) {
       history.push('/scan');
-      window.ddClient.desktopUI.toast.success("You're all set!")
+      window.ddClient.desktopUI.toast.success("You're all set!");
     }
     setButtonLoading(false);
   };
@@ -56,8 +56,12 @@ export const LoginPage = () => {
               <Title>
                 <img src={box} alt="box" />
                 <Box>
-                  <Box className="jf-welcome">Welcome</Box>
-                  <Box sx={{fontSize: '13px',fontWeight: 'bold'}}>Enter Your JFrog Environment Connection Details</Box>
+                  <Typography fontSize="34px" fontWeight="600">
+                    Welcome
+                  </Typography>
+                  <Box sx={{ fontSize: '13px', fontWeight: 'bold' }}>
+                    Enter Your JFrog Environment Connection Details
+                  </Box>
                 </Box>
               </Title>
 
