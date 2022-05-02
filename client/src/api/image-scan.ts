@@ -22,6 +22,7 @@ export async function scanImage(imageTag: string): Promise<any> {
     let cmdResult = await execOnHost('runcli.sh', 'runcli.bat', cmdArgs);
     scanResults = JSON.parse(cmdResult.stdout);
   } catch (e) {
+    console.log(e);
     throwErrorAsString(e);
   }
   return scanResults;

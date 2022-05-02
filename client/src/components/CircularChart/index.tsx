@@ -1,7 +1,8 @@
-import { Box, styled, Typography, useTheme } from '@mui/material';
+import { Box, styled, Typography, useTheme, Tooltip } from '@mui/material';
 import { useState } from 'react';
-import packageIcon from '../../assets/package.png';
-const chartColors = ['#fb515b', '#c9d0e3', '#d8ddea', '#eef0f6'];
+import { TechIcons } from '../../assets/techIcons/TechIcons';
+
+const chartColors = ['#fb515b', '#c9d0e3', '#d8ddea', '#e0e3eb'];
 const CORE_CIRCLE_SIZE = 35;
 
 export default function CircularChart({ items }: { items: string[] }) {
@@ -34,10 +35,18 @@ export default function CircularChart({ items }: { items: string[] }) {
             zIndex={1999 - index}
           >
             <StyledCircleTextWrapper top={`${45 + 15 * (items.length - 1) + index * 45}px`}>
-              <img src={packageIcon} alt="" height="24px" width="auto" style={{ marginRight: '5px' }} />
-              <StyledCircleText fontSize="14px" color={isCoreItem ? '#fb515b' : 'inherit'}>
-                {item}
-              </StyledCircleText>
+              <img
+                src={TechIcons[index == items.length - 1 ? 'Docker' : 'Generic']}
+                alt=""
+                height="24px"
+                width="auto"
+                style={{ marginRight: '5px' }}
+              />
+              <Tooltip title={item}>
+                <StyledCircleText fontSize="14px" color={isCoreItem ? '#fb515b' : 'inherit'}>
+                  {item}
+                </StyledCircleText>
+              </Tooltip>
             </StyledCircleTextWrapper>
           </StyledCircle>
         );
@@ -82,7 +91,7 @@ const StyledCircleTextWrapper = styled(Box)`
 `;
 
 const StyledCircleText = styled(Typography)`
-  max-width: 250px;
+  max-width: 200px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
