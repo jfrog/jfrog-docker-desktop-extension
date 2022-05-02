@@ -1,127 +1,80 @@
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
-
+import { DockerMuiThemeProvider } from '@docker/docker-mui-theme';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import { AppContext } from './contexts';
 import { AppClient } from './clients';
 import { routes } from './config';
 import { Route as AppRoute } from './types';
 import { createTheme } from '@mui/material/styles';
-import './main.css';
-import { useMemo } from 'react';
+import { DefaultTheme } from '@mui/system';
 
 function App() {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
-
-  const theme = useMemo(
-    () =>
-      createTheme({
-        palette: {
-          mode: prefersDarkMode ? 'dark' : 'light',
-          background: {
-            default: prefersDarkMode ? '#1D272D' : '#F4F4F6',
-          },
-          primary: {
-            main: '#4172E8',
-          },
-          secondary: {
-            main: '#00FF00',
-          },
-        },
-        typography: {
-          fontFamily: 'Open Sans',
-          h6: {
-            fontFamily: 'Roboto',
-          },
-          h5: {
-            fontFamily: 'Roboto',
-            color: prefersDarkMode ? '#fff' : '#17191E',
-          },
-          button: {
-            color: prefersDarkMode ? '#fff' : '#17191E',
-            textTransform: 'none',
-            fontSize: '16px',
-            fontWeight: '700',
-            width: '120px',
-            height: '40px',
-          },
-        },
-        components: {
-          MuiButton: {
-            styleOverrides: {
-              root: {
-                '&:hover': {
-                  borderColor: '#0062cc',
-                  boxShadow: 'none',
-                },
-                '&:active': {
-                  boxShadow: 'none',
-                  borderColor: '#005cbf',
-                },
-                '&:focus': {
-                  boxShadow: '0 0 0 0.2rem rgba(0,123,255,.5)',
-                },
-              },
-            },
-          },
-          MuiTextField: {
-            defaultProps: {
-              sx: {
-                background: prefersDarkMode ? '#1D272D' : '#FFFFFF',
-              },
-            },
-          },
-          MuiCssBaseline: {
-            styleOverrides: {
-              body: {
-                fontFamily: 'Open Sans',
-                height: '100vh',
-                padding: '40px 40px',
-              },
-              '.MuiFormLabel-root > .MuiFormControl-root': {
-                marginTop: '3px',
-                background: '#fff',
-              },
-              '.MuiOutlinedInput-root': {
-                borderRadius: '4px',
-              },
-            },
-          },
-          MuiTableContainer: {
-            styleOverrides: {
-              root: {
-                maxHeight: 'calc(100vh - 350px)',
-                '&::-webkit-scrollbar': {
-                  width: 7,
-                },
-                '&::-webkit-scrollbar-track': {
-                  background: prefersDarkMode ? '#222e33' : '#e6e6ed',
-                },
-                '&::-webkit-scrollbar-thumb': {
-                  backgroundColor: prefersDarkMode ? '#293640' : '#D8D8DF',
-                },
-              },
-            },
-          },
-        },
-      }),
-    [prefersDarkMode]
-  );
   const appClient = new AppClient();
+
+  const mergeDockerTheme = (dockerTheme: DefaultTheme) => {
+    const appTheme = createTheme({
+      ...dockerTheme,
+      typography: {
+        fontFamily: 'Open Sans',
+        h1: {
+          fontFamily: 'Roboto',
+          lineHeight: 'unset',
+          letterSpacing: '0',
+        },
+      },
+      components: {
+        MuiButton: {
+          styleOverrides: {
+            root: {
+              textTransform: 'none',
+              width: '120px',
+              height: '40px',
+            },
+          },
+        },
+        MuiCssBaseline: {
+          styleOverrides: {
+            '#root': { position: 'relative', height: '100vh', padding: '40px 40px' },
+            '.MuiFormLabel-root > .MuiFormControl-root': {
+              marginTop: '3px',
+              background: '#fff',
+            },
+            '.MuiOutlinedInput-root': {
+              borderRadius: '4px',
+            },
+            '&::-webkit-scrollbar': {
+              width: 7,
+            },
+            '&::-webkit-scrollbar-track': {
+              background: prefersDarkMode ? '#222e33' : '#e6e6ed',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              backgroundColor: prefersDarkMode ? '#515557' : '#D8D8DF',
+            },
+          },
+        },
+      },
+    });
+    return appTheme;
+  };
 
   return (
     <AppContext.Provider value={appClient}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <BrowserRouter>
-          <Switch>
-            {routes.map((route: AppRoute) => (
-              <Route key={route.key} path={route.path} component={route.component} exact />
-            ))}
-            <Redirect to="/login" />
-          </Switch>
-        </BrowserRouter>
-      </ThemeProvider>
+      <DockerMuiThemeProvider>
+        <ThemeProvider theme={(dockerTheme) => mergeDockerTheme(dockerTheme)}>
+          <CssBaseline />
+          <BrowserRouter>
+            <Switch>
+              {routes.map((route: AppRoute) => (
+                <Route key={route.key} path={route.path} component={route.component} exact />
+              ))}
+              <Redirect to="/login" />
+            </Switch>
+          </BrowserRouter>
+        </ThemeProvider>
+      </DockerMuiThemeProvider>
     </AppContext.Provider>
   );
 }

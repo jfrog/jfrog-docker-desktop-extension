@@ -40,7 +40,7 @@ export default function PieChartBox({ chartName, chartItems }: ChartProps) {
   };
 
   return (
-    <PieChartWrapper sx={{ backgroundColor: isDarkMode ? '#222e33' : '#e6e6ed' }}>
+    <PieChartWrapper sx={{ backgroundColor: isDarkMode ? '#18222b' : '#e6e6ed' }}>
       <Box display="flex" alignItems="center" marginLeft="20px" marginBottom="10px">
         <img src={vulnIcon} alt="" height="16px" />
         <Typography fontWeight="600" fontSize="14px" marginLeft="5px">

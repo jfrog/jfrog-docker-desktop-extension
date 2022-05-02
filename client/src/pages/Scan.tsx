@@ -12,6 +12,7 @@ import { VulnerabilityKeys, Vulnerability } from '../types/Vulnerability';
 import { SeverityIcons } from '../assets/severityIcons/SeverityIcons';
 import { TechIcons } from '../assets/techIcons/TechIcons';
 import PieChartBox, { ChartItemProps } from '../components/PieChart';
+import { setConstantValue } from 'typescript';
 
 type ScanResults = {
   vulnerabilities: Array<Vulnerability>;
@@ -71,7 +72,7 @@ export const ScanPage = () => {
       setRunningScanId(scanId);
       setScanData({ [scanId]: { ...scanData[scanId], scanResults: null, isScanning: true } });
       let results: ScanResults = await scanImage(selectedImage);
-      console.log('scan results for ' + selectedImage, results);
+      console.log(`[${scanId}] scan results for ${selectedImage}`, results);
       saveScanResults(scanId, results);
     } catch (e) {
       setScanData({ ...scanData, [scanId]: {} });
@@ -80,7 +81,7 @@ export const ScanPage = () => {
   };
 
   const saveScanResults = (scanId: number, results: ScanResults) => {
-    let vulns = results.vulnerabilities ?? [];
+    let vulns = results.vulnerabilities ?? results.securityViolations ?? [];
     let counter: { [key: string]: number } = {
       [Severity.Critical]: 0,
       [Severity.High]: 0,
@@ -108,7 +109,12 @@ export const ScanPage = () => {
       }
       counter[vuln.severity.toString()]++;
     });
-    setScanData({ [scanId]: { ...scanData[scanId], scanResults: vulns, severityCount: counter, isScanning: false } });
+    setScanData((data) => {
+      return {
+        ...data,
+        [scanId]: { scanResults: vulns, severityCount: counter, isScanning: false },
+      };
+    });
   };
 
   const getSettingsButton = () => {
@@ -116,17 +122,15 @@ export const ScanPage = () => {
       <Button
         variant="outlined"
         onClick={onSettingsClick}
-        sx={{ position: 'absolute', right: '0', top: '0', fontWeight: '700' }}
+        sx={{ position: 'absolute', right: '40px', top: '40px', fontWeight: '700' }}
       >
         Settings
       </Button>
     );
   };
-
   const isScanning = scanData[runningScanId]?.isScanning;
   const scanResults = scanData[runningScanId]?.scanResults;
   const severityCount = scanData[runningScanId]?.severityCount;
-  console.log(scanData);
   return (
     <>
       {getSettingsButton()}
@@ -161,12 +165,12 @@ export const ScanPage = () => {
             </Box>
           )}
         </Box>
-        {scanResults && severityCount && getSeverityPieChart(severityCount)}
+        {scanResults && scanResults.length > 0 && severityCount && getSeverityPieChart(severityCount)}
       </Box>
 
       {scanResults ? (
         <Box>
-          <Typography variant="h6" fontWeight="500" fontSize="18px">
+          <Typography variant="h1" fontWeight="500" fontSize="18px">
             Image Scan Results
           </Typography>
           <Table columnsData={scanTableColumnsData} rows={scanResults} />
@@ -275,7 +279,7 @@ const ProgressBox = styled(Box)`
   width: 75%;
   @media screen and (prefers-color-scheme: dark) {
     color: #f8fafb;
-    background: #222e33;
+    background: #18222b;
   }
 `;
 const ScanButton = styled(Button)`

@@ -1248,6 +1248,13 @@
   dependencies:
     "@date-io/core" "^2.13.1"
 
+"@docker/docker-mui-theme@^0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@docker/docker-mui-theme/-/docker-mui-theme-0.0.4.tgz#b72cf8e108e040cb43fbce0dc5a69279d2bb53f2"
+  integrity sha512-+hO/HAZgGDPca4sDsu6a7ZLwKWKnakz8D0Vcw/xjKrgA8ZS60+eHg6XMUtj59KbQSq2rVKHA3a7gORZIHVL/cw==
+  dependencies:
+    "@fontsource/open-sans" "^4.5.1"
+
 "@emotion/babel-plugin@^11.7.1":
   version "11.7.2"
   resolved "https://registry.npmjs.org/@emotion/babel-plugin/-/babel-plugin-11.7.2.tgz"
@@ -1379,7 +1386,7 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@fontsource/open-sans@^4.5.8":
+"@fontsource/open-sans@^4.5.1", "@fontsource/open-sans@^4.5.8":
   version "4.5.8"
   resolved "https://registry.npmjs.org/@fontsource/open-sans/-/open-sans-4.5.8.tgz"
   integrity sha512-3b94XDdRLqL7OlE7OjWg/4pgG825Juw8PLVEDm6h5pio0gMU89ICxfatGxHsBxMGfqad+wnvdmUweZWlELDFpQ==

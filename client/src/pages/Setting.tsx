@@ -1,15 +1,4 @@
-import {
-  styled,
-  TextField,
-  Stack,
-  Box,
-  FormLabel,
-  FormControlLabel,
-  Radio,
-  RadioGroup,
-  Button,
-  Typography,
-} from '@mui/material';
+import { styled, TextField, Stack, Box, FormControlLabel, Radio, RadioGroup, Button, Typography } from '@mui/material';
 import { useEffect, useState, useCallback } from 'react';
 import { ExtensionConfig } from '../types';
 import { useHistory } from 'react-router-dom';
@@ -20,7 +9,6 @@ import { LoadingButton } from '@mui/lab';
 import Loader from '../components/Loader';
 import { JfrogHeadline } from '../components/JfrogHeadline';
 import { SettingsForm } from '../components/Settings/Settings';
-import { isAwaitExpression } from 'typescript';
 
 export const SettingsPage = () => {
   let history = useHistory();
@@ -84,32 +72,20 @@ export const SettingsPage = () => {
                 </Box>
                 <Stack spacing={1}>
                   <Typography
-                    variant="h5"
-                    sx={{
-                      fontStyle: 'normal',
-                      fontWeight: 400,
-                      fontSize: '19px',
-                      marginTop: '25px',
-                    }}
-                    id="demo-radio-buttons-group-label"
+                    variant="h1"
+                    fontWeight="400"
+                    fontSize="19px"
+                    marginTop="25px"
+                    id="JFrog Environment Connection Details"
                   >
                     JFrog Environment Connection Details
                   </Typography>
                   {SettingsForm(state, setValue)}
                 </Stack>
                 <Box marginBottom={'30px'}>
-                  <Box
-                    sx={{
-                      fontFamily: 'Roboto',
-                      fontStyle: 'normal',
-                      fontWeight: 400,
-                      fontSize: '19px',
-                      marginTop: '25px',
-                    }}
-                    marginTop={6}
-                  >
+                  <Typography variant="h1" fontWeight="400" fontSize="19px" marginTop="25px">
                     Scanning Policy
-                  </Box>
+                  </Typography>
                   <RadioGroup
                     aria-labelledby="demo-radio-buttons-group-label"
                     defaultValue={policy}
@@ -159,12 +135,12 @@ export const SettingsPage = () => {
             </Box>
 
             <Footer>
-              <LoadingButton type="submit" loading={isButtonLoading} onClick={HandleSave} variant="contained">
-                Save
-              </LoadingButton>
               <Button variant="outlined" onClick={HandleCancel}>
                 Cancel
               </Button>
+              <LoadingButton type="submit" loading={isButtonLoading} onClick={HandleSave} variant="contained">
+                Save
+              </LoadingButton>
             </Footer>
           </Wrapper>
         </>

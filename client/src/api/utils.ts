@@ -7,7 +7,6 @@ export function throwErrorAsString(e: any) {
   } else {
     stringErr = e.toString();
   }
-  console.log(stringErr);
   throw stringErr;
 }
 
@@ -44,7 +43,7 @@ export async function getVersions(): Promise<Versions> {
   try {
     let results = await Promise.all([xrayVersionPromise, jfrogCliVersionPromise]);
     let xrayResult = JSON.parse(results[0].stdout);
-    let jfrogCliResult = results[1].stdout.trim().split(" ");
+    let jfrogCliResult = results[1].stdout.trim().split(' ');
     versions.xrayVersion = xrayResult.xray_version;
     versions.jfrogCliVersion = jfrogCliResult[jfrogCliResult.length - 1];
   } catch (e) {
