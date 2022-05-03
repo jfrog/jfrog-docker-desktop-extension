@@ -3,6 +3,9 @@ import { execOnHost, throwErrorAsString } from './utils';
 
 const development: boolean = !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
 
+/**
+ * Scans an image by its tag and returns the results from JFrog CLI in simple-json format.
+ */
 export async function scanImage(imageTag: string): Promise<any> {
   console.log('Running scanImage command on: ' + imageTag);
   if (development) {

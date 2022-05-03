@@ -10,6 +10,10 @@ export const enum SetupStage {
 
 export var setupStage: SetupStage = SetupStage.Idle;
 
+/**
+ * Setups a new JFrog environment. It opens a registration form in a browser window and saves the environments details in the configuration.
+ * After calling this function, use the setupStage public property to check out the stage of the setup process.
+ */
 export async function setupEnv(): Promise<void> {
   setupStage = SetupStage.WaitingForUser;
   console.log("Running setup command");
