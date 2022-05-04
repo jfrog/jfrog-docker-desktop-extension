@@ -10,6 +10,12 @@ export function throwErrorAsString(e: any) {
   throw stringErr;
 }
 
+/**
+ * Executes a command on the host machine. Results and outputs are returned when the process is closed.
+ * @param unixCmd command, binary or script to run on macOS and Linux machines.
+ * @param windowsCmd command, binary or script to run on Windows machines.
+ * @param args
+ */
 export async function execOnHost(unixCmd: string, windowsCmd: string, args?: string[]): Promise<any> {
   if (await isWindows()) {
     return window.ddClient.extension.host.cli.exec(windowsCmd, args);
@@ -17,6 +23,13 @@ export async function execOnHost(unixCmd: string, windowsCmd: string, args?: str
   return window.ddClient.extension.host.cli.exec(unixCmd, args);
 }
 
+/**
+ * Executes a command on the host machine, and streams the output, even before the process is closed.
+ * @param unixCmd command, binary or script to run on macOS and Linux machines.
+ * @param windowsCmd command, binary or script to run on Windows machines.
+ * @param args
+ * @param options an ExecStreamOptions object, as described in Docker Desktop Extensions docs.
+ */
 export async function execOnHostAndStreamResult(unixCmd: string, windowsCmd: string, args: string[], options: any): Promise<any> {
   if (await isWindows()) {
     return window.ddClient.extension.host.cli.exec(windowsCmd, args, options);
@@ -36,6 +49,9 @@ export class Versions {
   jfrogCliVersion?: string;
 }
 
+/**
+ * Gets the versions of JFrog CLI (that's used by the extension) and JFrog Xray.
+ */
 export async function getVersions(): Promise<Versions> {
   let xrayVersionPromise = execOnHost('runcli.sh', 'runcli.bat', ['xr', 'curl', 'api/v1/system/version']);
   let jfrogCliVersionPromise = execOnHost('runcli.sh', 'runcli.bat', ['-v']);
