@@ -365,10 +365,10 @@ const StyledTableHeadCell = styled(Typography)`
 `;
 
 const StyledTableHeadCellWrapper = styled(TableCell)`
-  background-color: transparent,
-  padding: 10px,
-  padding-right: 0,
-  min-width: 70px,
+  background-color: transparent;
+  padding: 10px;
+  padding-right: 0;
+  min-width: 70px;
 `;
 
 const StyledTableCellText = styled(Typography)`

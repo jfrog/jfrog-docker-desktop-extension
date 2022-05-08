@@ -51,7 +51,7 @@ export const CreatePage = () => {
           <Box mt={7}>
             <Stack spacing={0}>
               <Box>You can set up a FREE JFrog environment in the cloud.</Box>
-              <Box> Docker Desktop will automatically connect to your environment after set up is complete.</Box>
+              <Box> Docker Desktop will automatically connect to your environment after the set up is complete.</Box>
               <Box>To set up the environment, all you need to do is run the following command from your terminal.</Box>
             </Stack>
           </Box>

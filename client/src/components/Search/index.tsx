@@ -12,10 +12,8 @@ export default function Search({
   disabled?: boolean;
   onSelectChange: ChangeEventHandler<HTMLInputElement>;
 }) {
-  const [focus, setFocus] = useState(false);
-  let searchWidth = focus ? '200px' : '140px';
   return (
-    <StyledSearch sx={{ width: searchWidth }} onBlur={() => setFocus(false)} onFocus={() => setFocus(true)}>
+    <StyledSearch sx={{ width: '150px' }}>
       <SearchIconWrapper>
         <SearchIcon sx={{ height: '15px' }} />
       </SearchIconWrapper>
