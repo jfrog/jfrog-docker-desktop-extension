@@ -1,5 +1,11 @@
 import { execOnHost, isWindows, throwErrorAsString } from './utils';
 
+/**
+ * There are two kinds of configurations that are managed and used in the extension:
+ * 1. JfrogCliConfig - configurations that are used by JFrog CLI: JFrog Platform URL and credentials.
+ * 2. JfrogExtensionConfig - some extra settings that are used in the extension.
+ * The Config class contains both configurations, and lets the consumers of the API to get all the configurations in one object.
+ */
 export class Config {
   jfrogCliConfig: JfrogCliConfig;
   jfrogExtensionConfig: JfrogExtensionConfig;
@@ -27,6 +33,9 @@ export class JfrogExtensionConfig {
   }
 }
 
+/**
+ * Imports the default configuration from JFrog CLI, if it's already installed and configured on the host.
+ */
 export async function importConfigFromHostCli(): Promise<void> {
   try {
     let exportResponse = await execOnHost('jf', 'jf.exe', ['config', 'export']);
@@ -41,6 +50,11 @@ export async function importConfigFromHostCli(): Promise<void> {
   }
 }
 
+/**
+ * Saves the given configuration.
+ * If password or access token is not provided, then JfrogCliConfig is ignored and won't be saved (even if other properties were changed).
+ * JfrogExtensionConfig is saved either way.
+ */
 export async function saveConfig(config: Config): Promise<void> {
   if (config.jfrogCliConfig?.password != undefined || config.jfrogCliConfig?.accessToken != undefined) {
     let serverId = await getJfrogCliConfigServerId();
@@ -58,6 +72,10 @@ export async function saveConfig(config: Config): Promise<void> {
   }
 }
 
+/**
+ * Gets the current configuration of the extension.
+ * Password and access token are omitted.
+ */
 export async function getConfig(): Promise<Config> {
   let jfrogExtensionConfPromise = getJfrogExtensionConfig();
   let cliConfPromise = getJfrogCliConfig();

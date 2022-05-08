@@ -187,7 +187,7 @@ function getSeverityPieChart(severityCount: { [key: string]: number }) {
     {
       title: Severity.Critical,
       value: severityCount[Severity.Critical],
-      color: '#FB515B',
+      color: '#CA2632',
       icon: SeverityIcons.Critical,
     },
     {
