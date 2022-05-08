@@ -162,7 +162,7 @@ export const ScanPage = () => {
                 <Box display="flex" alignItems="center">
                   <CircularProgress size="10px" sx={{ margin: '0 10px' }} />
                   <Typography fontWeight="400" fontSize="14px">
-                    canning {selectedImage}...
+                    Scanning {selectedImage}...
                   </Typography>
                 </Box>
                 <CloseIcon sx={{ cursor: 'pointer', fontSize: '18px' }} onClick={handleCancelScan} />
