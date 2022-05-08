@@ -42,6 +42,11 @@ export const ScanPage = () => {
     setScanData({});
   };
 
+  const handleCancelScan = () => {
+    setRunningScanId(0);
+    setScanData({});
+  };
+
   useEffect(() => {
     const getDockerImages = async () => {
       try {
@@ -157,10 +162,10 @@ export const ScanPage = () => {
                 <Box display="flex" alignItems="center">
                   <CircularProgress size="10px" sx={{ margin: '0 10px' }} />
                   <Typography fontWeight="400" fontSize="14px">
-                    Scanning {selectedImage}...
+                    canning {selectedImage}...
                   </Typography>
                 </Box>
-                <CloseIcon sx={{ cursor: 'pointer', fontSize: '18px' }} onClick={() => setScanData({})} />
+                <CloseIcon sx={{ cursor: 'pointer', fontSize: '18px' }} onClick={handleCancelScan} />
               </ProgressBox>
             </Box>
           )}
