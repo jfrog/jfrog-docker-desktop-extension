@@ -144,7 +144,7 @@ export const ScanPage = () => {
       <Box display="flex" justifyContent="space-between">
         <Box width="calc(100% - 350px)" maxWidth="1000px">
           <Typography variant="subtitle1">Select local image for scanning</Typography>
-          <Box display="flex" width={3 / 4}>
+          <Box display="flex" width={'90%'}>
             <Select onChange={handleChange} options={dockerImages} />
             <ScanButton
               variant="contained"
@@ -280,7 +280,7 @@ const ProgressBox = styled(Box)`
   margin-top: 20px;
   display: flex;
   justify-content: space-between;
-  width: 75%;
+  width: 90%;
   @media screen and (prefers-color-scheme: dark) {
     color: #f8fafb;
     background: #18222b;
