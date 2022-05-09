@@ -141,7 +141,7 @@ export const ScanPage = () => {
 
       <JfrogHeadline headline="JFrog Xray" marginBottom="50px" />
 
-      <Box display="flex" justifyContent="space-between">
+      <Box height="200px" display="flex" justifyContent="space-between">
         <Box width="calc(100% - 350px)" maxWidth="1000px">
           <Typography variant="subtitle1">Select local image for scanning</Typography>
           <Box display="flex" width={'90%'}>

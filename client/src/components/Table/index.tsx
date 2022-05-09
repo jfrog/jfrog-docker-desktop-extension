@@ -259,7 +259,7 @@ function noIssuesDetected() {
       }}
     >
       <TableCell colSpan={100}>
-        <Box alignItems="center" height="300px" display="flex" flexDirection="column" justifyContent="center">
+        <Box alignItems="center" height="200px" display="flex" flexDirection="column" justifyContent="center">
           <img src={noIssuesIcon} width="90px" height="90px" alt={'no issues'} />
           <Typography fontSize="24px" fontWeight="600" textTransform="capitalize">
             The scan was completed successfully
