@@ -4,6 +4,7 @@ import { ScanPage } from '../pages/Scan';
 import { LoginPage } from '../pages/Login';
 import { CreatePage } from '../pages/Create';
 import { SettingsPage } from '../pages/Setting';
+import { SetupEnvPage } from '../pages/SetupEnv';
 
 import { Route } from '../types/Route';
 
@@ -28,13 +29,20 @@ const routes: Array<Route> = [
     icon: HomeIcon,
     appendDivider: true,
   },
-
   {
     key: 'router-create-config',
     title: 'Create New Config',
     description: 'Create New Config',
     path: '/create',
     component: CreatePage,
+    isEnabled: true,
+  },
+  {
+    key: 'router-wait-setup-env',
+    title: 'Wait for setup env',
+    description: 'Wait For Setup Env',
+    path: '/setupenv',
+    component: SetupEnvPage,
     isEnabled: true,
   },
   {

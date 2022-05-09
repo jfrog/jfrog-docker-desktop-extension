@@ -31,6 +31,7 @@ function App() {
               textTransform: 'none',
               width: '120px',
               height: '40px',
+              fontWeight: '700',
             },
           },
         },
