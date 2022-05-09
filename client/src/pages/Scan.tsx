@@ -139,7 +139,7 @@ export const ScanPage = () => {
     <>
       {getSettingsButton()}
 
-      <JfrogHeadline headline="JFrog Xray Scan" marginBottom="50px" />
+      <JfrogHeadline headline="JFrog Xray" marginBottom="50px" />
 
       <Box display="flex" justifyContent="space-between">
         <Box width="calc(100% - 350px)" maxWidth="1000px">
