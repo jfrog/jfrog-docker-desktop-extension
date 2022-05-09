@@ -77,7 +77,7 @@ export const SetupEnvPage = () => {
         <Button
           type="submit"
           onClick={() => {
-            history.push('/settings');
+            history.goBack();
           }}
           variant="outlined"
         >
