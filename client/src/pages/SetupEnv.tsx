@@ -14,7 +14,7 @@ export const enum SetupStage {
 
 export const SetupEnvPage = () => {
   let history = useHistory();
-  const [setupStage, setSetupStage] = useState<SetupStage>(SetupStage.PreparingEnv);
+  const [setupStage, setSetupStage] = useState<SetupStage>(SetupStage.Idle);
 
   const setupEnvHandler = () => {
     setSetupStage(SetupStage.WaitingForUser);
@@ -52,7 +52,7 @@ export const SetupEnvPage = () => {
         </Box>
         <Box> Docker Desktop will automatically connect to your environment after the set up is complete.</Box>
 
-        {setupStage != SetupStage.Idle && (
+        {(setupStage == SetupStage.WaitingForUser || setupStage == SetupStage.PreparingEnv) && (
           <Box width={1} marginTop="50px" display="flex" position="relative">
             <video width={'100%'} muted autoPlay loop style={{ objectFit: 'cover', transform: 'scaleX(-1)' }}>
               <source src={'https://media.jfrog.com/wp-content/uploads/2021/12/29120758/drop-1.mp4'} type="video/mp4" />
