@@ -50,7 +50,7 @@ export const SetupEnvPage = () => {
           </Link>
           {' to create your environment.'}
         </Box>
-        <Box> Docker Desktop will automatically connect to your environment after the set up is complete.</Box>
+        <Box> Docker Desktop will automatically connect to your environment after the setup is complete.</Box>
 
         {(setupStage == SetupStage.WaitingForUser || setupStage == SetupStage.PreparingEnv) && (
           <Box width={1} marginTop="50px" display="flex" position="relative">

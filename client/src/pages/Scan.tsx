@@ -36,8 +36,8 @@ export const ScanPage = () => {
 
   let history = useHistory();
 
-  const handleChange = (event: SelectChangeEvent<any>) => {
-    setSelectedImage(event.target.value);
+  const handleChange = (selectedImage: string | null) => {
+    setSelectedImage(selectedImage || '');
     setScanData({});
   };
 

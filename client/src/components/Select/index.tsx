@@ -1,36 +1,42 @@
-import { Select, SelectChangeEvent, MenuItem, FormControl, OutlinedInput, Box } from '@mui/material';
+import {
+  Select,
+  SelectChangeEvent,
+  MenuItem,
+  FormControl,
+  OutlinedInput,
+  Box,
+  TextField,
+  Autocomplete,
+} from '@mui/material';
+import { useState } from 'react';
 
 export type SelectProps = {
-  options?: string[];
-  onChange?: (event: SelectChangeEvent<string>) => void;
+  options?: any[];
+  onChange: (selected: string | null) => void;
 };
 
 export default function BasicSelect({ options, onChange }: SelectProps) {
+  const [value, setValue] = useState<string | null>(null);
+  const [inputValue, setInputValue] = useState('');
   return (
     <Box sx={{ width: 1 }}>
       <FormControl fullWidth>
-        <Select
-          fullWidth
-          style={{ fontSize: '14px' }}
-          SelectDisplayProps={{ style: { paddingTop: '10px', paddingBottom: '10px' } }}
-          id="demo-simple-select"
-          onChange={onChange}
-          displayEmpty
-          input={<OutlinedInput />}
-          MenuProps={{ PaperProps: { sx: { maxHeight: 400 } } }}
-          defaultValue=""
-        >
-          <MenuItem disabled value="">
-            Select
-          </MenuItem>
-          {options?.map((option, index) => {
-            return (
-              <MenuItem key={index} value={option}>
-                {option}
-              </MenuItem>
-            );
-          })}
-        </Select>
+        <Autocomplete
+          value={value}
+          onChange={(event: any, newValue: string | null) => {
+            onChange(newValue);
+            setValue(newValue);
+          }}
+          inputValue={inputValue}
+          onInputChange={(event, newInputValue) => {
+            setInputValue(newInputValue);
+          }}
+          id="controllable-states-demo"
+          options={options ? [...options] : []}
+          size="small"
+          sx={{ maxHeight: 400 }}
+          renderInput={(params) => <TextField {...params} InputLabelProps={{ disabled: true }} placeholder="Select" />}
+        />
       </FormControl>
     </Box>
   );
