@@ -10,7 +10,7 @@
 
 The JFrog Docker Desktop Extension scans any of your local Docker images for security vulnerabilities.
 Any image, after it has been built or pulled locally, can be scanned immediately.
-The scanning process is based on JFrog Xray's vast vulnerabilities database, which is continuously updated with the latest vulnerabilities.
+The scanning process is based on [JFrog Xray's](https://jfrog.com/xray/) vast vulnerabilities database, which is continuously updated with the latest vulnerabilities.
 In addition, a dedicated Security Research Team within JFrog, continuously improves the JFrog Xray's detection methods, ensuring that Xray continues to be a leading security solution in the market.
 
 ## Deep recursive scanning
