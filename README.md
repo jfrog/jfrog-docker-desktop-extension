@@ -1,8 +1,8 @@
-# JFrog Docker Desktop Extension
 <div align="center">
 # JFrog Docker Desktop Extension
   <img width="1452" alt="Screen Shot 2022-05-02 at 18 15 00" src="https://user-images.githubusercontent.com/29822394/167413611-a54036bb-bffe-4380-b5b3-5e4ec85ca61a.png">
 </div>
+
 ## General
 
 The JFrog Docker Desktop Extension scans any of your local Docker images for security vulnerabilities.
