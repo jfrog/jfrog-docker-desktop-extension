@@ -35,7 +35,7 @@ export const SetupEnvPage = () => {
       <Stack direction="column" justifyContent="flex-start" alignItems="flex-start" spacing={0} margin={'50px'}>
         <Box>You can set up a FREE JFrog environment in the cloud.</Box>
         <Box>
-          {'Please, '}
+          {'We invite you to '}
           <Link
             underline="hover"
             fontWeight="700"
@@ -46,9 +46,9 @@ export const SetupEnvPage = () => {
               textDecoration: 'underline',
             }}
           >
-            Sign In
+            sign in here
           </Link>
-          {' to set up the environment.'}
+          {' to create your environment.'}
         </Box>
         <Box> Docker Desktop will automatically connect to your environment after the set up is complete.</Box>
 
@@ -68,7 +68,7 @@ export const SetupEnvPage = () => {
               fontWeight="600"
               zIndex="1000"
             >
-              {setupStage == SetupStage.WaitingForUser ? 'Waiting for you to Sign In...' : 'Completing the set up...'}
+              {setupStage == SetupStage.WaitingForUser ? 'Waiting for you to sign in...' : 'Completing the set up...'}
             </Box>
           </Box>
         )}
