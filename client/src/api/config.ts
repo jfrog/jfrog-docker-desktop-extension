@@ -158,7 +158,7 @@ async function getJfrogCliFullConfig(): Promise<any> {
   return cliConfigRes;
 }
 
-async function editJfrogExtensionConfig(jfrogExtensionConfig: JfrogExtensionConfig): Promise<void> {
+export async function editJfrogExtensionConfig(jfrogExtensionConfig: JfrogExtensionConfig): Promise<void> {
   if (jfrogExtensionConfig.project !== undefined) {
     jfrogExtensionConfig.project = jfrogExtensionConfig.project.trim();
     if (!jfrogExtensionConfig.project.match(/^[a-z0-9]+$/)) {
