@@ -4,7 +4,7 @@
 
 </div>
 
-[![JFrog Docker Desktop Extension](https://user-images.githubusercontent.com/29822394/167415020-b1cfbc08-929e-4d41-aaee-3caacf96ad64.png)](#readme)
+https://user-images.githubusercontent.com/29822394/167414572-df6b2d4f-9c77-4d93-9c82-500057e2ffda.mov
 
 ## General
 
@@ -40,7 +40,7 @@ Follow these directions to proceed, based on your use case:
 
 ## 
 
-https://user-images.githubusercontent.com/29822394/167414572-df6b2d4f-9c77-4d93-9c82-500057e2ffda.mov
+
 
 
 
