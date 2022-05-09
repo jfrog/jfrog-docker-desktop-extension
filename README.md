@@ -1,7 +1,10 @@
 <div align="center">
+
 # JFrog Docker Desktop Extension
-  <img width="1452" alt="Screen Shot 2022-05-02 at 18 15 00" src="https://user-images.githubusercontent.com/29822394/167413611-a54036bb-bffe-4380-b5b3-5e4ec85ca61a.png">
+
 </div>
+
+[![JFrog Docker Desktop Extension](https://user-images.githubusercontent.com/29822394/167415020-b1cfbc08-929e-4d41-aaee-3caacf96ad64.png)](#readme)
 
 ## General
 
@@ -35,6 +38,9 @@ Follow these directions to proceed, based on your use case:
 * If you already have a JFrog environment which includes Xray, all you need to do is set the connection details through the UI.
 * If you don't have a JFrog environment, JFrog supports setting up an environment for free. The extension will then connect to this environment automatically. Please note that this new JFrog environment will be available for you as long as you need it.
 
+## 
 
-https://user-images.githubusercontent.com/29822394/167413093-282496c9-e5a5-4c1c-a3b1-f16f00be0700.mov
+https://user-images.githubusercontent.com/29822394/167414572-df6b2d4f-9c77-4d93-9c82-500057e2ffda.mov
+
+
 
