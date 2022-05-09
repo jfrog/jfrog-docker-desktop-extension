@@ -1,8 +1,7 @@
-import {execOnHostAndStreamResult} from "./utils";
+import { execOnHostAndStreamResult } from './utils';
 
 /**
  * Setups a new JFrog environment. It opens a registration form in a browser window and saves the environments details in the configuration.
- * After calling this function, use the setupStage public property to check out the stage of the setup process.
  */
 export async function setupEnv(setPreparingEnv: () => void): Promise<void> {
   return new Promise((resolve, reject) => {
@@ -25,7 +24,7 @@ export async function setupEnv(setPreparingEnv: () => void): Promise<void> {
           if (exitCode === 0) {
             resolve();
           } else {
-            reject("Setup failed");
+            reject('Setup failed');
           }
         },
       },
