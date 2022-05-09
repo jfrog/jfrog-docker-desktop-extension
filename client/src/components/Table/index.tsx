@@ -81,7 +81,7 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Array
           key={line + index}
         >
           <StyledTableCellText>{line}</StyledTableCellText>
-          {line && col.copyIcon && (
+          {line && col.copyIcon && line != 'N/A' && (
             <Tooltip title="Click to Copy" key={'copy tooltip' + index}>
               <CopyIcon
                 key={'copy' + index}
