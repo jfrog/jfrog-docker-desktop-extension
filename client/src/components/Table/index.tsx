@@ -74,7 +74,7 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Array
     stringLines.forEach((line: string, index: number) => {
       cellBody.push(
         <Box
-          width={!col.maxWidth ? 1 : 'inherit'}
+          width={!col.iconList ? 1 : 'inherit'}
           textAlign="left"
           display="flex"
           alignItems="center"
