@@ -12,7 +12,6 @@ import { VulnerabilityKeys, Vulnerability } from '../types/Vulnerability';
 import { SeverityIcons } from '../assets/severityIcons/SeverityIcons';
 import { TechIcons } from '../assets/techIcons/TechIcons';
 import PieChartBox, { ChartItemProps } from '../components/PieChart';
-import { setConstantValue } from 'typescript';
 
 type ScanResults = {
   vulnerabilities: Array<Vulnerability>;
@@ -149,9 +148,9 @@ export const ScanPage = () => {
             <Select onChange={handleChange} options={dockerImages} />
             <ScanButton
               variant="contained"
-              sx={{ width: '120px', fontSize: '16px', fontWeight: '700' }}
               disabled={selectedImage == '' || isScanning}
               onClick={() => onScanClick(Math.random())}
+              sx={{ fontSize: '16px' }}
             >
               Scan
             </ScanButton>

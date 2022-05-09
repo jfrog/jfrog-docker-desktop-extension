@@ -64,7 +64,7 @@ export const SettingsPage = () => {
         <>
           <Wrapper>
             <Box flexGrow={1} overflow={'auto'}>
-              <Box maxWidth={'400px'}>
+              <Box maxWidth={'420px'}>
                 <Box>
                   <Box>
                     <JfrogHeadline headline="JFrog Environment Settings" />

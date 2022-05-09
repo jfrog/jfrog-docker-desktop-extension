@@ -6,18 +6,21 @@ import * as React from 'react';
 
 import { BASIC_AUTH } from '../../utils/constants';
 import { ExtensionConfig } from '../../types';
+import OpenInIcon from '@mui/icons-material/OpenInBrowser';
 
 export const SettingsForm = (
   state: ExtensionConfig,
   setValue: React.Dispatch<React.SetStateAction<ExtensionConfig>>
 ) => {
   let history = useHistory();
+
   const handleCreateFreeAccount = () => {
-    history.push('/create');
+    history.push('/setupenv');
   };
+
   return (
     <>
-      <FormWrapper>
+      <Box marginBottom="16px">
         <RadioGroup
           row
           aria-labelledby="demo-radio-buttons-group-label"
@@ -107,29 +110,30 @@ export const SettingsForm = (
           </Stack>
         </Box>
 
-        <div>
-          Don&apos;t have a JFrog environment?
+        <Box display="flex" alignItems="center" marginTop="20px">
+          {"Don't have a JFrog environment?"}
           <Link
             underline="hover"
             fontWeight="700"
             fontFamily={'Open Sans'}
             onClick={handleCreateFreeAccount}
-            sx={{ marginLeft: '5px', cursor: 'pointer', textDecoration: 'underline' }}
+            sx={{
+              marginLeft: '5px',
+              cursor: 'pointer',
+              textDecoration: 'underline',
+              display: 'flex',
+              alignItems: 'center',
+            }}
           >
             Create one for FREE
+            <OpenInIcon sx={{ marginLeft: '3px', fontSize: '18px' }} />
           </Link>
-        </div>
-      </FormWrapper>
+        </Box>
+      </Box>
     </>
   );
 };
 
-const FormWrapper = styled(Box)`
-  margin-bottom: 16px;
-  & > div {
-    margin-bottom: 20px;
-  }
-`;
 const TextFieldLabel = styled(Box)`
   font-family: 'Open Sans';
   font-style: normal;
