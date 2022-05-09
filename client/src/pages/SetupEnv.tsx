@@ -68,7 +68,7 @@ export const SetupEnvPage = () => {
               fontWeight="600"
               zIndex="1000"
             >
-              {setupStage == SetupStage.WaitingForUser ? 'Waiting for you to sign in...' : 'Completing the set up...'}
+              {setupStage == SetupStage.WaitingForUser ? 'Waiting for you to sign in...' : 'Completing the setup...'}
             </Box>
           </Box>
         )}
