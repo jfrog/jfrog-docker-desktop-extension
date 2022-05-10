@@ -10,7 +10,6 @@ ReactDOM.render(
     <App />
     <img
       src={Footer}
-      onClick={window.ddClient.host.openExternal('https://jfrog.com')}
       alt=""
       style={{ zIndex: '-1', bottom: '0', position: 'fixed', transform: 'translateX(-50%)', left: '50%' }}
     />
