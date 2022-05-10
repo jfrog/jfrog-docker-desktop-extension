@@ -4,7 +4,7 @@ import { execOnHost, isWindows, throwErrorAsString } from './utils';
  * There are two kinds of configurations that are managed and used in the extension:
  * 1. JfrogCliConfig - configurations that are used by JFrog CLI: JFrog Platform URL and credentials.
  * 2. JfrogExtensionConfig - some extra settings that are used in the extension.
- * The Config class contains both configurations, and lets the consumers of the API to get all the configurations in one object.
+ * The Config class contains both configurations, and lets the consumers of the API get all the configurations in one object.
  */
 export class Config {
   jfrogCliConfig: JfrogCliConfig;
