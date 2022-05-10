@@ -21,6 +21,7 @@ export const SetupEnvPage = () => {
     setupEnv(() => setSetupStage(SetupStage.PreparingEnv))
       .then(() => {
         setSetupStage(SetupStage.Done);
+        window.ddClient.desktopUI.toast.success('Please verify your email address within the next 72 hours.');
         history.push('/scan');
       })
       .catch(() => {

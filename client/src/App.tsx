@@ -8,6 +8,7 @@ import { routes } from './config';
 import { Route as AppRoute } from './types';
 import { createTheme } from '@mui/material/styles';
 import { DefaultTheme } from '@mui/system';
+import Cursor from './assets/cursor.png';
 
 function App() {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
@@ -37,7 +38,7 @@ function App() {
         },
         MuiCssBaseline: {
           styleOverrides: {
-            '#root': { position: 'relative', height: '100vh', padding: '40px 40px' },
+            '#root': { position: 'relative', height: '100vh', padding: '40px 40px', cursor: `url(${Cursor}),auto}` },
             '.MuiFormLabel-root > .MuiFormControl-root': {
               marginTop: '3px',
               background: '#fff',

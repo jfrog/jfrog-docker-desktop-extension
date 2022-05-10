@@ -6,7 +6,6 @@ import jfrogLogo from '../assets/jfrog_logo.png';
 import box from '../assets/box.png';
 import { isConfigured, Save } from '../utils/config';
 import Loader from '../components/Loader';
-
 import { ExtensionConfig } from '../types';
 import { BASIC_AUTH } from '../utils/constants';
 import { SettingsForm } from '../components/Settings/Settings';
@@ -51,7 +50,6 @@ export const LoginPage = () => {
             <LogoWrapper>
               <StyledLogo src={jfrogLogo} alt="jfrog_logo" />
             </LogoWrapper>
-
             <LoginWrapper>
               <Title>
                 <img src={box} alt="box" />

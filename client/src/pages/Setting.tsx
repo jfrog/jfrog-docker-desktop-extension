@@ -162,7 +162,6 @@ const SpinnerWrapper = styled(Box)`
   align-items: center;
 `;
 const Footer = styled(Box)`
-  border-top: 1px solid #ccc;
   padding: 20px;
   padding-bottom: 0;
   display: flex;
