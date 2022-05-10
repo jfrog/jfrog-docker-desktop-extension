@@ -1,10 +1,11 @@
 import { execOnHostAndStreamResult } from './utils';
+import {editJfrogExtensionConfig, JfrogExtensionConfig} from "./config";
 
 /**
- * Setups a new JFrog environment. It opens a registration form in a browser window and saves the environments details in the configuration.
+ * Sets up a new JFrog environment. It opens a registration form in a browser window and saves the environments details in the configuration.
  */
 export async function setupEnv(setPreparingEnv: () => void): Promise<void> {
-  return new Promise((resolve, reject) => {
+  await new Promise<void>((resolve, reject) => {
     console.log('Running setup command');
     execOnHostAndStreamResult('runcli.sh', 'runcli.bat', ['setup', '--format=machine'], {
       stream: {
@@ -30,4 +31,7 @@ export async function setupEnv(setPreparingEnv: () => void): Promise<void> {
       },
     });
   });
+  let jfrogExtensionConf = new JfrogExtensionConfig();
+  jfrogExtensionConf.jfrogCliConfigured = true;
+  return editJfrogExtensionConfig(jfrogExtensionConf);
 }
