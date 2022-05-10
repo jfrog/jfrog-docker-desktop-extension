@@ -2,16 +2,12 @@ import { styled, TextField, Box, FormControlLabel, Radio, RadioGroup, Link, Typo
 
 import { useHistory } from 'react-router-dom';
 
-import * as React from 'react';
-
+import { useEffect, useState, Dispatch, SetStateAction } from 'react';
 import { BASIC_AUTH } from '../../utils/constants';
 import { ExtensionConfig } from '../../types';
 import OpenInIcon from '@mui/icons-material/OpenInBrowser';
 
-export const SettingsForm = (
-  state: ExtensionConfig,
-  setValue: React.Dispatch<React.SetStateAction<ExtensionConfig>>
-) => {
+export const SettingsForm = (state: ExtensionConfig, setValue: Dispatch<SetStateAction<ExtensionConfig>>) => {
   let history = useHistory();
 
   const handleCreateFreeAccount = () => {
@@ -43,67 +39,57 @@ export const SettingsForm = (
         <Box>
           <Stack spacing={2}>
             <Box>
-              <Typography>
-                JFrog Environment URL
-                <TextField
-                  fullWidth
-                  size="small"
-                  id="outlined-basic"
-                  label=""
-                  variant="outlined"
-                  value={state.url}
-                  onChange={(e: any) => setValue({ ...state, url: e.target.value })}
-                />
-              </Typography>
+              JFrog Environment URL
+              <TextField
+                fullWidth
+                size="small"
+                id="outlined-basic"
+                label=""
+                variant="outlined"
+                value={state.url ?? ''}
+                onChange={(e: any) => setValue({ ...state, url: e.target.value })}
+              />
             </Box>
             {state.authType === BASIC_AUTH ? (
               <>
                 <Box>
-                  <Typography>
-                    Username
-                    <TextField
-                      fullWidth
-                      size="small"
-                      key={'username'}
-                      onChange={(e: any) => setValue({ ...state, username: e.target.value })}
-                      label=""
-                      defaultValue={state.username}
-                      variant="outlined"
-                    />
-                  </Typography>
+                  Username
+                  <TextField
+                    fullWidth
+                    size="small"
+                    key={'username'}
+                    onChange={(e: any) => setValue({ ...state, username: e.target.value })}
+                    label=""
+                    defaultValue={state.username ?? ''}
+                    variant="outlined"
+                  />
                 </Box>
 
                 <Box>
-                  <Typography>
-                    Password
-                    <TextField
-                      key={'password'}
-                      fullWidth
-                      color="secondary"
-                      size="small"
-                      onChange={(e: any) => setValue({ ...state, password: e.target.value })}
-                      label=""
-                      type="password"
-                      variant="outlined"
-                    />
-                  </Typography>
+                  Password
+                  <TextField
+                    key={'password'}
+                    fullWidth
+                    size="small"
+                    onChange={(e: any) => setValue({ ...state, password: e.target.value })}
+                    label=""
+                    type="password"
+                    variant="outlined"
+                  />
                 </Box>
               </>
             ) : (
               <>
                 <Box>
-                  <Typography>
-                    Access Token
-                    <TextField
-                      key={'accessToken'}
-                      fullWidth
-                      size="small"
-                      label=""
-                      type="password"
-                      defaultValue={state.accessToken}
-                      onChange={(e: any) => setValue({ ...state, accessToken: e.target.value })}
-                    />
-                  </Typography>
+                  Access Token
+                  <TextField
+                    key={'accessToken'}
+                    fullWidth
+                    size="small"
+                    label=""
+                    type="password"
+                    onChange={(e: any) => setValue({ ...state, accessToken: e.target.value })}
+                  />
                 </Box>
               </>
             )}

@@ -173,7 +173,7 @@ export const ScanPage = () => {
       </Box>
 
       {scanResults ? (
-        <Box>
+        <Box sx={{ transform: 'translateY(-40px)' }}>
           <Typography variant="h1" fontWeight="500" fontSize="18px">
             Image Scan Results
           </Typography>
