@@ -1,0 +1,69 @@
+{
+  "name": "jfrog-docker-desktop-extension",
+  "provider": "JFrog",
+  "icon": "icon.svg",
+  "ui": {
+    "dashboard-tab": {
+      "title": "JFrog",
+      "root": "/ui",
+      "src": "index.html"
+    }
+  },
+  "host": {
+    "binaries": [
+      {
+        "darwin": [
+          {
+            "path": "/host/darwin/jf"
+          },
+          {
+            "path": "/host/unix/runcli.sh"
+          },
+          {
+            "path": "/host/unix/readconf.sh"
+          },
+          {
+            "path": "/host/unix/writeconf.sh"
+          },
+          {
+            "path": "/host/unix/scanpermissions.sh"
+          }
+        ],
+        "linux": [
+          {
+            "path": "/host/linux/jf"
+          },
+          {
+            "path": "/host/unix/runcli.sh"
+          },
+          {
+            "path": "/host/unix/readconf.sh"
+          },
+          {
+            "path": "/host/unix/writeconf.sh"
+          },
+          {
+            "path": "/host/unix/scanpermissions.sh"
+          }
+        ],
+        "windows": [
+          {
+            "path": "/host/windows/jf.exe"
+          },
+          {
+            "path": "/host/windows/runcli.bat"
+          },
+          {
+            "path": "/host/windows/readconf.bat"
+          },
+          {
+            "path": "/host/windows/writeconf.bat"
+          },
+          {
+            "path": "/host/windows/scanpermissions.bat"
+          }
+        ]
+      }
+    ]
+  }
+}

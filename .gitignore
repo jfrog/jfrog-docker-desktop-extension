@@ -1,0 +1,14 @@
+# IDEs
+.idea
+.vscode
+*.iml
+
+# Vim
+*~
+*.swp
+
+# IOS
+*.DS_Store
+
+# npm build files
+node_modules
