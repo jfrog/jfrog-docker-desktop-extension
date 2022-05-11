@@ -1,7 +1,9 @@
 <div align="center">
-
-# JFrog Docker Desktop Extension
-
+  
+  ![Docker-Desktop-Extension-863x300-1](https://user-images.githubusercontent.com/29822394/167862029-11997794-9d66-4688-a5ff-698beebf50e4.png)
+  
+ # JFrog Docker Desktop Extension
+  
 </div>
 
 ## General
