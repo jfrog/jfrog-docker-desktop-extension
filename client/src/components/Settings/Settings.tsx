@@ -24,13 +24,15 @@ export const SettingsForm = (state: ExtensionConfig, setValue: Dispatch<SetState
           name="radio-buttons-group"
         >
           <FormControlLabel
-            onClick={(e: any) => setValue({ ...state, authType: e.target.value })}
+            onClick={(e: any) => setValue({ ...state, authType: e.target.value, accessToken: undefined })}
             value="basic"
             control={<Radio />}
             label="Basic"
           />
           <FormControlLabel
-            onClick={(e: any) => setValue({ ...state, authType: e.target.value })}
+            onClick={(e: any) =>
+              setValue({ ...state, authType: e.target.value, username: undefined, password: undefined })
+            }
             value="accessToken"
             control={<Radio />}
             label="Access Token"
