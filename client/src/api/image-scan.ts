@@ -1,6 +1,6 @@
 import { getConfig } from './config';
 import { execOnHost, throwErrorAsString } from './utils';
-import {createDockerDesktopClient} from "@docker/extension-api-client";
+import { createDockerDesktopClient } from "@docker/extension-api-client";
 
 const development: boolean = !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
 const ddClient = createDockerDesktopClient();

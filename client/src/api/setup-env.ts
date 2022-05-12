@@ -1,5 +1,5 @@
 import { execOnHostAndStreamResult } from './utils';
-import {editJfrogExtensionConfig, JfrogExtensionConfig} from "./config";
+import { editJfrogExtensionConfig, JfrogExtensionConfig } from "./config";
 
 /**
  * Sets up a new JFrog environment. It opens a registration form in a browser window and saves the environments details in the configuration.

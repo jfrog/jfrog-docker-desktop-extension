@@ -12,7 +12,7 @@ import { VulnerabilityKeys, Vulnerability } from '../types/Vulnerability';
 import { SeverityIcons } from '../assets/severityIcons/SeverityIcons';
 import { TechIcons } from '../assets/techIcons/TechIcons';
 import PieChartBox, { ChartItemProps } from '../components/PieChart';
-import {createDockerDesktopClient} from "@docker/extension-api-client";
+import { createDockerDesktopClient } from "@docker/extension-api-client";
 
 type ScanResults = {
   vulnerabilities: Array<Vulnerability>;

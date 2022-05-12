@@ -1,4 +1,4 @@
-import {createDockerDesktopClient} from "@docker/extension-api-client";
+import { createDockerDesktopClient } from "@docker/extension-api-client";
 
 const ddClient = createDockerDesktopClient();
 
