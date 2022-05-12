@@ -1,9 +1,13 @@
+import {createDockerDesktopClient} from "@docker/extension-api-client";
+
+const ddClient = createDockerDesktopClient();
+
 let windowsSystem: boolean | undefined;
 
 export function throwErrorAsString(e: any) {
   let stringErr: string;
   if (e.stderr !== undefined) {
-    stringErr = e.stderr;
+    stringErr = "An error occurred. You can find the logs in your home directory under \".jfrog-docker-desktop-extension/logs\".";
   } else {
     stringErr = e.toString();
   }
@@ -16,11 +20,11 @@ export function throwErrorAsString(e: any) {
  * @param windowsCmd command, binary or script to run on Windows machines.
  * @param args
  */
-export async function execOnHost(unixCmd: string, windowsCmd: string, args?: string[]): Promise<any> {
+export async function execOnHost(unixCmd: string, windowsCmd: string, args: string[]): Promise<any> {
   if (await isWindows()) {
-    return window.ddClient.extension.host.cli.exec(windowsCmd, args);
+    return ddClient.extension.host?.cli.exec(windowsCmd, args);
   }
-  return window.ddClient.extension.host.cli.exec(unixCmd, args);
+  return ddClient.extension.host?.cli.exec(unixCmd, args);
 }
 
 /**
@@ -32,9 +36,9 @@ export async function execOnHost(unixCmd: string, windowsCmd: string, args?: str
  */
 export async function execOnHostAndStreamResult(unixCmd: string, windowsCmd: string, args: string[], options: any): Promise<any> {
   if (await isWindows()) {
-    return window.ddClient.extension.host.cli.exec(windowsCmd, args, options);
+    return ddClient.extension.host?.cli.exec(windowsCmd, args, options);
   }
-  return window.ddClient.extension.host.cli.exec(unixCmd, args, options);
+  return ddClient.extension.host?.cli.exec(unixCmd, args, options);
 }
 
 export async function isWindows(): Promise<boolean> {

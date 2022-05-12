@@ -1,4 +1,7 @@
 import { execOnHost, isWindows, throwErrorAsString } from './utils';
+import {createDockerDesktopClient} from "@docker/extension-api-client";
+
+const ddClient = createDockerDesktopClient();
 
 /**
  * There are two kinds of configurations that are managed and used in the extension:
@@ -93,7 +96,7 @@ export async function getConfig(): Promise<Config> {
 export async function getJfrogExtensionConfig(): Promise<JfrogExtensionConfig> {
   let cmdResult;
   try {
-    cmdResult = await execOnHost('readconf.sh', 'readconf.bat');
+    cmdResult = await execOnHost('readconf.sh', 'readconf.bat', []);
   } catch (e: any) {
     if (e.stderr !== undefined && (e.stderr.includes('file not found') || e.stderr.includes('The system cannot find the file specified.'))) {
       try {
@@ -174,9 +177,10 @@ export async function editJfrogExtensionConfig(jfrogExtensionConfig: JfrogExtens
   }
   let configJson = JSON.stringify(jfrogExtensionConfig).replaceAll(' ', '');
   if (await isWindows()) {
-    return window.ddClient.extension.host.cli.exec('writeconf.bat', [configJson]);
+    await ddClient.extension.host?.cli.exec('writeconf.bat', [configJson]);
+    return;
   }
-  return window.ddClient.extension.host.cli.exec('writeconf.sh', ['"' + configJson.replaceAll('"', '\\"') + '"']);
+  await ddClient.extension.host?.cli.exec('writeconf.sh', ['"' + configJson.replaceAll('"', '\\"') + '"']);
 }
 
 async function editCliConfig(cliConfig: JfrogCliConfig, serverId?: string) {
@@ -201,7 +205,7 @@ async function editCliConfig(cliConfig: JfrogCliConfig, serverId?: string) {
 
   let errorCode: string, statusCode: string;
   try {
-    curlResult = await execOnHost('scanpermissions.sh', 'scanpermissions.bat');
+    curlResult = await execOnHost('scanpermissions.sh', 'scanpermissions.bat', []);
     [errorCode, statusCode] = curlResult.stdout.split(",", 2);
   } catch (e: any) {
     [errorCode, statusCode] = e.stdout.split(",", 2);
