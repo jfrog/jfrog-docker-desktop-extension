@@ -1,7 +1,9 @@
 import { getConfig } from './config';
 import { execOnHost, throwErrorAsString } from './utils';
+import { createDockerDesktopClient } from "@docker/extension-api-client";
 
 const development: boolean = !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
+const ddClient = createDockerDesktopClient();
 
 /**
  * Scans an image by its tag and returns the results from JFrog CLI in simple-json format.
@@ -50,7 +52,7 @@ export async function getImages(): Promise<any> {
     return testImageData;
   }
 
-  return window.ddClient.docker.listImages();
+  return ddClient.docker.listImages();
 }
 
 const testImageData = [
