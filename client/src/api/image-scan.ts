@@ -1,5 +1,5 @@
 import { getConfig } from './config';
-import { execOnHost, throwErrorAsString } from './utils';
+import { execOnHostAndStreamResult, throwErrorAsString } from './utils';
 import { createDockerDesktopClient } from "@docker/extension-api-client";
 
 const development: boolean = !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
@@ -24,8 +24,33 @@ export async function scanImage(imageTag: string): Promise<any> {
   }
   let scanResults;
   try {
-    let cmdResult = await execOnHost('runcli.sh', 'runcli.bat', cmdArgs);
-    scanResults = JSON.parse(cmdResult.stdout);
+    let scanResultsStr = "";
+    await new Promise<void>((resolve, reject) => {
+      execOnHostAndStreamResult('runcli.sh', 'runcli.bat', cmdArgs, {
+        stream: {
+          onOutput(data: { stdout: string; stderr?: undefined } | { stdout?: undefined; stderr: string }): void {
+            if (data.stdout) {
+              scanResultsStr += data.stdout;
+            } else {
+              console.error(data.stderr);
+            }
+          },
+          onError(error: any): void {
+            console.error(error);
+            reject(error);
+          },
+          onClose(exitCode: number): void {
+            console.log('Image scan finished with exit code ' + exitCode);
+            if (exitCode === 0) {
+              resolve();
+            } else {
+              reject('Image scan failed');
+            }
+          },
+        },
+      });
+    });
+    scanResults = JSON.parse(scanResultsStr);
   } catch (e: any) {
     try {
       scanResults = JSON.parse(e.stdout);
