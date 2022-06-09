@@ -1,10 +1,13 @@
 import { createDockerDesktopClient } from "@docker/extension-api-client";
+import { ExecProcess } from "@docker/extension-api-client-types/dist/v1";
+import { ExecStreamOptions } from "@docker/extension-api-client-types/dist/v1/exec";
 
 const ddClient = createDockerDesktopClient();
 
 let windowsSystem: boolean | undefined;
 
 export function throwErrorAsString(e: any) {
+  console.error(e)
   let stringErr: string;
   if (e.stderr !== undefined) {
     stringErr = "An error occurred. You can find the logs in your home directory under \".jfrog-docker-desktop-extension/logs\".";
@@ -34,7 +37,7 @@ export async function execOnHost(unixCmd: string, windowsCmd: string, args: stri
  * @param args
  * @param options an ExecStreamOptions object, as described in Docker Desktop Extensions docs.
  */
-export async function execOnHostAndStreamResult(unixCmd: string, windowsCmd: string, args: string[], options: any): Promise<any> {
+export async function execOnHostAndStreamResult(unixCmd: string, windowsCmd: string, args: string[], options: { stream: ExecStreamOptions }): Promise<ExecProcess | undefined> {
   if (await isWindows()) {
     return ddClient.extension.host?.cli.exec(windowsCmd, args, options);
   }
