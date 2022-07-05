@@ -13,7 +13,7 @@
     "directory": "jfrog-docker-desktop-extension"
   },
   "dependencies": {
-    "@docker/docker-mui-theme": "^0.0.4",
+    "@docker/docker-mui-theme": "^0.0.7",
     "@docker/extension-api-client": "^0.2.3",
     "@docker/extension-api-client-types": "^0.2.3",
     "@emotion/react": "^11.8.2",

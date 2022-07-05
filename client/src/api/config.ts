@@ -1,7 +1,6 @@
-import { execOnHost, isWindows, throwErrorAsString } from './utils';
-import { createDockerDesktopClient } from "@docker/extension-api-client";
+import { execOnHost, isWindows, throwErrorAsString, getDockerDesktopClient } from './utils';
 
-const ddClient = createDockerDesktopClient();
+const ddClient = getDockerDesktopClient();
 
 /**
  * There are two kinds of configurations that are managed and used in the extension:
@@ -98,7 +97,10 @@ export async function getJfrogExtensionConfig(): Promise<JfrogExtensionConfig> {
   try {
     cmdResult = await execOnHost('readconf.sh', 'readconf.bat', []);
   } catch (e: any) {
-    if (e.stderr !== undefined && (e.stderr.includes('file not found') || e.stderr.includes('The system cannot find the file specified.'))) {
+    if (
+      e.stderr !== undefined &&
+      (e.stderr.includes('file not found') || e.stderr.includes('The system cannot find the file specified.'))
+    ) {
       try {
         await importConfigFromHostCli();
         let jfrogExtensionConf = new JfrogExtensionConfig();
@@ -177,22 +179,22 @@ export async function editJfrogExtensionConfig(jfrogExtensionConfig: JfrogExtens
   }
   let configJson = JSON.stringify(jfrogExtensionConfig).replaceAll(' ', '');
   if (await isWindows()) {
-    await ddClient.extension.host?.cli.exec('writeconf.bat', [configJson]);
+    await ddClient?.extension.host?.cli.exec('writeconf.bat', [configJson]);
     return;
   }
-  await ddClient.extension.host?.cli.exec('writeconf.sh', ['"' + configJson.replaceAll('"', '\\"') + '"']);
+  await ddClient?.extension.host?.cli.exec('writeconf.sh', ['"' + configJson.replaceAll('"', '\\"') + '"']);
 }
 
 async function editCliConfig(cliConfig: JfrogCliConfig, serverId?: string) {
   const validationServerId = 'validation';
   if (cliConfig.url == undefined) {
-    throw "Please enter URL";
+    throw 'Please enter URL';
   }
 
   // In case of unsupported protocol in the URL, add default protocol
   let url: string = cliConfig.url.trim();
-  if (!url.startsWith("https://") && !url.startsWith("http://")) {
-    cliConfig.url = "https://" + url;
+  if (!url.startsWith('https://') && !url.startsWith('http://')) {
+    cliConfig.url = 'https://' + url;
   }
 
   let validationConfigAddArgs = buildConfigImportCmd(cliConfig, validationServerId);
@@ -206,10 +208,10 @@ async function editCliConfig(cliConfig: JfrogCliConfig, serverId?: string) {
   let errorCode: string, statusCode: string;
   try {
     curlResult = await execOnHost('scanpermissions.sh', 'scanpermissions.bat', []);
-    [errorCode, statusCode] = curlResult.stdout.split(",", 2);
+    [errorCode, statusCode] = curlResult.stdout.split(',', 2);
   } catch (e: any) {
-    [errorCode, statusCode] = e.stdout.split(",", 2);
-    if (errorCode !== "6") {
+    [errorCode, statusCode] = e.stdout.split(',', 2);
+    if (errorCode !== '6') {
       throwErrorAsString(e);
     }
   }

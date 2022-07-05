@@ -1,16 +1,22 @@
-import { createDockerDesktopClient } from "@docker/extension-api-client";
-import { ExecProcess } from "@docker/extension-api-client-types/dist/v1";
-import { ExecStreamOptions } from "@docker/extension-api-client-types/dist/v1/exec";
+import { createDockerDesktopClient } from '@docker/extension-api-client';
+import { ExecProcess } from '@docker/extension-api-client-types/dist/v1';
+import { ExecStreamOptions } from '@docker/extension-api-client-types/dist/v1/exec';
 
-const ddClient = createDockerDesktopClient();
+const development: boolean = !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
+const ddClient = !development ? createDockerDesktopClient() : null;
 
 let windowsSystem: boolean | undefined;
 
+export function getDockerDesktopClient() {
+  return ddClient;
+}
+
 export function throwErrorAsString(e: any) {
-  console.error(e)
+  console.error(e);
   let stringErr: string;
   if (e.stderr !== undefined) {
-    stringErr = "An error occurred. You can find the logs in your home directory under \".jfrog-docker-desktop-extension/logs\".";
+    stringErr =
+      'An error occurred. You can find the logs in your home directory under ".jfrog-docker-desktop-extension/logs".';
   } else {
     stringErr = e.toString();
   }
@@ -25,9 +31,9 @@ export function throwErrorAsString(e: any) {
  */
 export async function execOnHost(unixCmd: string, windowsCmd: string, args: string[]): Promise<any> {
   if (await isWindows()) {
-    return ddClient.extension.host?.cli.exec(windowsCmd, args);
+    return ddClient?.extension.host?.cli.exec(windowsCmd, args);
   }
-  return ddClient.extension.host?.cli.exec(unixCmd, args);
+  return ddClient?.extension.host?.cli.exec(unixCmd, args);
 }
 
 /**
@@ -37,11 +43,16 @@ export async function execOnHost(unixCmd: string, windowsCmd: string, args: stri
  * @param args
  * @param options an ExecStreamOptions object, as described in Docker Desktop Extensions docs.
  */
-export async function execOnHostAndStreamResult(unixCmd: string, windowsCmd: string, args: string[], options: { stream: ExecStreamOptions }): Promise<ExecProcess | undefined> {
+export async function execOnHostAndStreamResult(
+  unixCmd: string,
+  windowsCmd: string,
+  args: string[],
+  options: { stream: ExecStreamOptions }
+): Promise<ExecProcess | undefined> {
   if (await isWindows()) {
-    return ddClient.extension.host?.cli.exec(windowsCmd, args, options);
+    return ddClient?.extension.host?.cli.exec(windowsCmd, args, options);
   }
-  return ddClient.extension.host?.cli.exec(unixCmd, args, options);
+  return ddClient?.extension.host?.cli.exec(unixCmd, args, options);
 }
 
 export async function isWindows(): Promise<boolean> {
