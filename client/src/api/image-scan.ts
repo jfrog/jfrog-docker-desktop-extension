@@ -1,7 +1,9 @@
 import { getConfig } from './config';
-import { execOnHost, throwErrorAsString } from './utils';
+import { execOnHostAndStreamResult, throwErrorAsString } from './utils';
+import { createDockerDesktopClient } from "@docker/extension-api-client";
 
 const development: boolean = !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
+const ddClient = createDockerDesktopClient();
 
 /**
  * Scans an image by its tag and returns the results from JFrog CLI in simple-json format.
@@ -13,17 +15,10 @@ export async function scanImage(imageTag: string): Promise<any> {
     return testScanResults;
   }
 
-  let config = await getConfig();
-  let cmdArgs: string[] = ['docker', 'scan', imageTag, '--format', 'simple-json'];
-  if (config.jfrogExtensionConfig.project != undefined) {
-    cmdArgs.push('--project', '"' + config.jfrogExtensionConfig.project + '"', '--fail=false');
-  } else if (config.jfrogExtensionConfig.watches != undefined) {
-    cmdArgs.push('--watches', '"' + config.jfrogExtensionConfig.watches.join(',') + '"', '--fail=false');
-  }
   let scanResults;
   try {
-    let cmdResult = await execOnHost('runcli.sh', 'runcli.bat', cmdArgs);
-    scanResults = JSON.parse(cmdResult.stdout);
+    let scanResultsStr = await getScanResultsStr(imageTag);
+    scanResults = JSON.parse(scanResultsStr);
   } catch (e: any) {
     try {
       scanResults = JSON.parse(e.stdout);
@@ -43,6 +38,43 @@ export async function scanImage(imageTag: string): Promise<any> {
   return scanResults;
 }
 
+async function getScanResultsStr(imageTag: string): Promise<string> {
+  let config = await getConfig();
+  let cmdArgs: string[] = ['docker', 'scan', imageTag, '--format', 'simple-json'];
+  if (config.jfrogExtensionConfig.project != undefined) {
+    cmdArgs.push('--project', '"' + config.jfrogExtensionConfig.project + '"', '--fail=false');
+  } else if (config.jfrogExtensionConfig.watches != undefined) {
+    cmdArgs.push('--watches', '"' + config.jfrogExtensionConfig.watches.join(',') + '"', '--fail=false');
+  }
+  let scanResultsStr = "";
+  await new Promise<void>((resolve, reject) => {
+    execOnHostAndStreamResult('runcli.sh', 'runcli.bat', cmdArgs, {
+      stream: {
+        onOutput(data: { stdout: string; stderr?: undefined } | { stdout?: undefined; stderr: string }): void {
+          if (data.stdout) {
+            scanResultsStr += data.stdout;
+          } else {
+            console.error(data.stderr);
+          }
+        },
+        onError(error: any): void {
+          console.error(error);
+          reject(error);
+        },
+        onClose(exitCode: number): void {
+          console.log('Image scan finished with exit code ' + exitCode);
+          if (exitCode === 0) {
+            resolve();
+          } else {
+            reject('Image scan failed');
+          }
+        },
+      },
+    });
+  });
+  return scanResultsStr;
+}
+
 export async function getImages(): Promise<any> {
   console.log('Running getImages command');
   if (development) {
@@ -50,7 +82,7 @@ export async function getImages(): Promise<any> {
     return testImageData;
   }
 
-  return window.ddClient.docker.listImages();
+  return ddClient.docker.listImages();
 }
 
 const testImageData = [
