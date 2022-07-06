@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { setupEnv } from '../api/setup-env';
 import { JfrogHeadline } from '../components/JfrogHeadline';
-import { createDockerDesktopClient } from "@docker/extension-api-client";
+import { createDockerDesktopClient } from '@docker/extension-api-client';
 
 export const enum SetupStage {
   Idle,
@@ -14,7 +14,7 @@ export const enum SetupStage {
 }
 
 export const SetupEnvPage = () => {
-  let history = useHistory();
+  const history = useHistory();
   const ddClient = createDockerDesktopClient();
   const [setupStage, setSetupStage] = useState<SetupStage>(SetupStage.Idle);
 
