@@ -12,7 +12,7 @@ jobs:
         steps:
             - uses: actions/checkout@v3
               with:
-                  path: './client'
+                  working-directory: './client'
 
             - name: Setup NodeJS
               uses: actions/setup-node@v3
