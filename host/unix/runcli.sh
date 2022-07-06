@@ -15,4 +15,4 @@ if [ ! -d $LOGS_DIR ]
   then mkdir -p $LOGS_DIR
 fi
 
-$(dirname "$0")/jf $@ 2>> $LOG_FILE_PATH
+"$(dirname "$0")"/jf $@ 2>> $LOG_FILE_PATH
