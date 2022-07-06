@@ -20,7 +20,7 @@ jobs:
                   node-version: '16.x'
 
             - name: Yarn Install
-              run: yarn install install
+              run: yarn build
 
             - name: Yarn Lint
               run: yarn lint
