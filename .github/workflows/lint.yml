@@ -19,7 +19,7 @@ jobs:
                   
             - name: Yarn Install
               working-directory: './client'            
-              run: yarn build
+              run: yarn install
 
             - name: Yarn Lint
               working-directory: './client'            
