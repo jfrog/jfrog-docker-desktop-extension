@@ -19,6 +19,9 @@ jobs:
               with:
                   node-version: '16.x'
 
+            - name: CD client
+              run: cd client
+                  
             - name: Yarn Install
               run: yarn build
 
