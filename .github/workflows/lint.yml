@@ -1,29 +1,34 @@
-name: Lint
-
+name: "Client Lint"
 on: [push, pull_request]
 
 jobs:
-    test:
-        runs-on: ${{ matrix.os }}
-        strategy:
-            fail-fast: false
-            matrix:
-                os: [ubuntu-latest, windows-latest, macOS-latest]
-        steps:
-            - uses: actions/checkout@v3
+  test:
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: client
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+      fail-fast: false
+    steps:
+      # Checkout and install prerequisites
+      - name: Checkout
+        uses: actions/checkout@v3
+        
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16.x"
 
-            - name: Setup NodeJS
-              uses: actions/setup-node@v3
-              with:
-                  node-version: '16.x'
-                  
-            - name: Yarn Install
-              working-directory: './client'            
-              run: yarn install
-
-            - name: Yarn Lint
-              working-directory: './client'            
-              run: yarn lint
-              
-            - name: Super-Linter
-              uses: github/super-linter@v4.9.4  
+      # Install and lint
+      - name: Yarn Install
+        run: yarn install
+        
+      - name: Yarn Lint
+        run: yarn install
+     
+      - name: Super-Linter
+        if: runner.os == 'Linux'
+        uses: github/super-linter@v4.9.4     
+         
