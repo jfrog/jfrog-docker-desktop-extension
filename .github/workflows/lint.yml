@@ -1,0 +1,26 @@
+name: Lint
+
+on: [push, pull_request]
+
+jobs:
+    test:
+        runs-on: ${{ matrix.os }}
+        strategy:
+            fail-fast: false
+            matrix:
+                os: [ubuntu-latest, windows-latest, macOS-latest]
+        steps:
+            - uses: actions/checkout@v3
+              with:
+                  dir: './client'
+
+            - name: Setup NodeJS
+              uses: actions/setup-node@v3
+              with:
+                  node-version: '16.x'
+
+            - name: Yarn Install
+              run:  run: yarn install install
+
+            - name: Yarn Lint
+              run: yarn lint
