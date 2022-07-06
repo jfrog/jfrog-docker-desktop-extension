@@ -125,11 +125,7 @@ export const ScanPage = () => {
 
   const getSettingsButton = () => {
     return (
-      <Button
-        variant="outlined"
-        onClick={onSettingsClick}
-        sx={{ position: 'absolute', right: '40px', top: '40px', fontWeight: '700' }}
-      >
+      <Button variant="outlined" onClick={onSettingsClick} sx={{ position: 'absolute', right: '40px', top: '40px' }}>
         Settings
       </Button>
     );
