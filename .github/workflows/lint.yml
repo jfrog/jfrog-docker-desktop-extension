@@ -11,19 +11,16 @@ jobs:
                 os: [ubuntu-latest, windows-latest, macOS-latest]
         steps:
             - uses: actions/checkout@v3
-              with:
-                  working-directory: './client'
 
             - name: Setup NodeJS
               uses: actions/setup-node@v3
               with:
                   node-version: '16.x'
-
-            - name: CD client
-              run: cd client
                   
             - name: Yarn Install
+              working-directory: './client'            
               run: yarn build
 
             - name: Yarn Lint
+              working-directory: './client'            
               run: yarn lint
