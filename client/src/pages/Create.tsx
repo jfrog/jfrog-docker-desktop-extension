@@ -9,7 +9,7 @@ import { isWindows } from '../api/utils';
 export const CreatePage = () => {
   const [copyText, setCopyText] = useState('');
   const [isCopied, setIsCopied] = useState(false);
-  let history = useHistory();
+  const history = useHistory();
   const handleCopyClick = () => {
     navigator.clipboard
       .writeText(copyText)

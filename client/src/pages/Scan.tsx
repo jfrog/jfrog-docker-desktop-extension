@@ -36,7 +36,7 @@ export const ScanPage = () => {
     };
   }>({});
 
-  let history = useHistory();
+  const history = useHistory();
 
   const handleChange = (selectedImage: string | null) => {
     setSelectedImage(selectedImage || '');
@@ -51,9 +51,9 @@ export const ScanPage = () => {
   useEffect(() => {
     const getDockerImages = async () => {
       try {
-        let imagesData: ImageData[] = await getImages();
+        const imagesData: ImageData[] = await getImages();
         console.log(imagesData);
-        let imagesList: string[] = [];
+        const imagesList: string[] = [];
         imagesData.forEach((image) => {
           image.RepoTags?.forEach((repoTag) => {
             if (repoTag != '<none>:<none>') {
@@ -77,7 +77,7 @@ export const ScanPage = () => {
     try {
       setRunningScanId(scanId);
       setScanData({ [scanId]: { ...scanData[scanId], scanResults: null, isScanning: true } });
-      let results: ScanResults = await scanImage(selectedImage);
+      const results: ScanResults = await scanImage(selectedImage);
       console.log(`[${scanId}] scan results for ${selectedImage}`, results);
       saveScanResults(scanId, results);
     } catch (e: any) {
@@ -87,8 +87,8 @@ export const ScanPage = () => {
   };
 
   const saveScanResults = (scanId: number, results: ScanResults) => {
-    let vulns = results.vulnerabilities ?? results.securityViolations ?? [];
-    let counter: { [key: string]: number } = {
+    const vulns = results.vulnerabilities ?? results.securityViolations ?? [];
+    const counter: { [key: string]: number } = {
       [Severity.Critical]: 0,
       [Severity.High]: 0,
       [Severity.Medium]: 0,
@@ -189,7 +189,7 @@ export const ScanPage = () => {
 };
 
 function getSeverityPieChart(severityCount: { [key: string]: number }) {
-  let chartItems: ChartItemProps[] = [
+  const chartItems: ChartItemProps[] = [
     {
       title: Severity.Critical,
       value: severityCount[Severity.Critical],

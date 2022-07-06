@@ -17,7 +17,7 @@ export async function scanImage(imageTag: string): Promise<any> {
 
   let scanResults;
   try {
-    let scanResultsStr = await getScanResultsStr(imageTag);
+    const scanResultsStr = await getScanResultsStr(imageTag);
     scanResults = JSON.parse(scanResultsStr);
   } catch (e: any) {
     try {
@@ -31,7 +31,7 @@ export async function scanImage(imageTag: string): Promise<any> {
     }
   }
   if (scanResults.errors && scanResults.errors.length > 0) {
-    let errorMessage: string = scanResults.errors[0].errorMessage;
+    const errorMessage: string = scanResults.errors[0].errorMessage;
     // The error will always start with an uppercase letter.
     throw errorMessage[0].toUpperCase() + errorMessage.substring(1);
   }
@@ -39,8 +39,8 @@ export async function scanImage(imageTag: string): Promise<any> {
 }
 
 async function getScanResultsStr(imageTag: string): Promise<string> {
-  let config = await getConfig();
-  let cmdArgs: string[] = ['docker', 'scan', imageTag, '--format', 'simple-json'];
+  const config = await getConfig();
+  const cmdArgs: string[] = ['docker', 'scan', imageTag, '--format', 'simple-json'];
   if (config.jfrogExtensionConfig.project != undefined) {
     cmdArgs.push('--project', '"' + config.jfrogExtensionConfig.project + '"', '--fail=false');
   } else if (config.jfrogExtensionConfig.watches != undefined) {

@@ -10,14 +10,14 @@ import { ExtensionConfig } from '../types';
 import { BASIC_AUTH } from '../utils/constants';
 import { SettingsForm } from '../components/Settings/Settings';
 import { LoadingButton } from '@mui/lab';
-import { createDockerDesktopClient } from "@docker/extension-api-client";
+import { createDockerDesktopClient } from '@docker/extension-api-client';
 
 export const LoginPage = () => {
   const [state, setState] = useState<ExtensionConfig>({ authType: BASIC_AUTH });
   const [isButtonLoading, setButtonLoading] = useState(false);
   const [isLoading, setLoading] = useState(true);
   const ddClient = createDockerDesktopClient();
-  let history = useHistory();
+  const history = useHistory();
 
   const HandleConnect = async () => {
     setButtonLoading(true);
