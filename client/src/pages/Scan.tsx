@@ -12,7 +12,7 @@ import { VulnerabilityKeys, Vulnerability } from '../types/Vulnerability';
 import { SeverityIcons } from '../assets/severityIcons/SeverityIcons';
 import { TechIcons } from '../assets/techIcons/TechIcons';
 import PieChartBox, { ChartItemProps } from '../components/PieChart';
-import { createDockerDesktopClient } from "@docker/extension-api-client";
+import { getDockerDesktopClient } from '../api/utils';
 
 type ScanResults = {
   vulnerabilities: Array<Vulnerability>;
@@ -26,7 +26,7 @@ export const ScanPage = () => {
   const [selectedImage, setSelectedImage] = useState('');
   const [dockerImages, setDockerImages] = useState<string[]>([]);
   const [runningScanId, setRunningScanId] = useState(0);
-  const ddClient = createDockerDesktopClient();
+  const ddClient = getDockerDesktopClient();
 
   const [scanData, setScanData] = useState<{
     [scanId: string]: {
@@ -63,7 +63,7 @@ export const ScanPage = () => {
         });
         setDockerImages(imagesList);
       } catch (e: any) {
-        ddClient.desktopUI.toast.error(e.toString());
+        ddClient?.desktopUI.toast.error(e.toString());
       }
     };
     getDockerImages();
@@ -82,7 +82,7 @@ export const ScanPage = () => {
       saveScanResults(scanId, results);
     } catch (e: any) {
       setScanData({ ...scanData, [scanId]: {} });
-      ddClient.desktopUI.toast.error(e.toString());
+      ddClient?.desktopUI.toast.error(e.toString());
     }
   };
 
@@ -125,11 +125,7 @@ export const ScanPage = () => {
 
   const getSettingsButton = () => {
     return (
-      <Button
-        variant="outlined"
-        onClick={onSettingsClick}
-        sx={{ position: 'absolute', right: '40px', top: '40px', fontWeight: '700' }}
-      >
+      <Button variant="outlined" onClick={onSettingsClick} sx={{ position: 'absolute', right: '40px', top: '40px' }}>
         Settings
       </Button>
     );

@@ -52,7 +52,7 @@ const SearchIconWrapper = styled('div')(() => ({
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: 'inherit',
   fontSize: '12px',
-  border: theme.palette.mode == 'light' ? '1px solid #C9D0E3' : '1px solid #4b5356',
+  border: theme.palette.mode == 'light' ? '1px solid #C9D0E3' : '1px solid #555D61',
   borderRadius: '4px',
   width: '100%',
   paddingLeft: `25px`,
