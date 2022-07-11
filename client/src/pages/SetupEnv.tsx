@@ -14,7 +14,7 @@ export const enum SetupStage {
 }
 
 export const SetupEnvPage = () => {
-  let history = useHistory();
+  const history = useHistory();
   const ddClient = getDockerDesktopClient();
   const [setupStage, setSetupStage] = useState<SetupStage>(SetupStage.Idle);
 

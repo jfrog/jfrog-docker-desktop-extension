@@ -17,7 +17,7 @@ export const LoginPage = () => {
   const [isButtonLoading, setButtonLoading] = useState(false);
   const [isLoading, setLoading] = useState(true);
   const ddClient = getDockerDesktopClient();
-  let history = useHistory();
+  const history = useHistory();
 
   const HandleConnect = async () => {
     setButtonLoading(true);

@@ -8,7 +8,7 @@ import { ExtensionConfig } from '../../types';
 import OpenInIcon from '@mui/icons-material/OpenInBrowser';
 
 export const SettingsForm = (state: ExtensionConfig, setValue: Dispatch<SetStateAction<ExtensionConfig>>) => {
-  let history = useHistory();
+  const history = useHistory();
 
   const handleCreateFreeAccount = () => {
     history.push('/setupenv');

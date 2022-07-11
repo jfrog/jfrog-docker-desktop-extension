@@ -71,13 +71,13 @@ export class Versions {
  * Gets the versions of JFrog CLI (that's used by the extension) and JFrog Xray.
  */
 export async function getVersions(): Promise<Versions> {
-  let xrayVersionPromise = execOnHost('runcli.sh', 'runcli.bat', ['xr', 'curl', 'api/v1/system/version']);
-  let jfrogCliVersionPromise = execOnHost('runcli.sh', 'runcli.bat', ['-v']);
-  let versions: Versions = new Versions();
+  const xrayVersionPromise = execOnHost('runcli.sh', 'runcli.bat', ['xr', 'curl', 'api/v1/system/version']);
+  const jfrogCliVersionPromise = execOnHost('runcli.sh', 'runcli.bat', ['-v']);
+  const versions: Versions = new Versions();
   try {
-    let results = await Promise.all([xrayVersionPromise, jfrogCliVersionPromise]);
-    let xrayResult = JSON.parse(results[0].stdout);
-    let jfrogCliResult = results[1].stdout.trim().split(' ');
+    const results = await Promise.all([xrayVersionPromise, jfrogCliVersionPromise]);
+    const xrayResult = JSON.parse(results[0].stdout);
+    const jfrogCliResult = results[1].stdout.trim().split(' ');
     versions.xrayVersion = xrayResult.xray_version;
     versions.jfrogCliVersion = jfrogCliResult[jfrogCliResult.length - 1];
   } catch (e) {

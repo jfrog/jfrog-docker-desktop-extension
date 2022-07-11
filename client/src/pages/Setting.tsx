@@ -11,7 +11,7 @@ import { JfrogHeadline } from '../components/JfrogHeadline';
 import { SettingsForm } from '../components/Settings/Settings';
 
 export const SettingsPage = () => {
-  let history = useHistory();
+  const history = useHistory();
   const [isWindowLoading, setWindowLoading] = useState(true);
   const [isButtonLoading, setButtonLoading] = useState(false);
   const [state, setValue] = useState<ExtensionConfig>({ authType: BASIC_AUTH });

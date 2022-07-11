@@ -6,7 +6,7 @@ import { getDockerDesktopClient } from '../api/utils';
 const ddClient = getDockerDesktopClient();
 
 // Save a new JFrog platform configurations
-export const Save = async (user: ExtensionConfig | undefined, skipPasswordValidation?: boolean): Promise<Boolean> => {
+export const Save = async (user: ExtensionConfig | undefined, skipPasswordValidation?: boolean): Promise<boolean> => {
   if (!user) {
     return false;
   }
