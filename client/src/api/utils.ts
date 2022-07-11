@@ -1,16 +1,22 @@
-import { createDockerDesktopClient } from "@docker/extension-api-client";
-import { ExecProcess } from "@docker/extension-api-client-types/dist/v1";
-import { ExecStreamOptions } from "@docker/extension-api-client-types/dist/v1/exec";
+import { createDockerDesktopClient } from '@docker/extension-api-client';
+import { ExecProcess } from '@docker/extension-api-client-types/dist/v1';
+import { ExecStreamOptions } from '@docker/extension-api-client-types/dist/v1/exec';
 
-const ddClient = createDockerDesktopClient();
+const development: boolean = !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
+const ddClient = !development ? createDockerDesktopClient() : null;
 
 let windowsSystem: boolean | undefined;
 
+export function getDockerDesktopClient() {
+  return ddClient;
+}
+
 export function throwErrorAsString(e: any) {
-  console.error(e)
+  console.error(e);
   let stringErr: string;
   if (e.stderr !== undefined) {
-    stringErr = "An error occurred. You can find the logs in your home directory under \".jfrog-docker-desktop-extension/logs\".";
+    stringErr =
+      'An error occurred. You can find the logs in your home directory under ".jfrog-docker-desktop-extension/logs".';
   } else {
     stringErr = e.toString();
   }
@@ -25,9 +31,9 @@ export function throwErrorAsString(e: any) {
  */
 export async function execOnHost(unixCmd: string, windowsCmd: string, args: string[]): Promise<any> {
   if (await isWindows()) {
-    return ddClient.extension.host?.cli.exec(windowsCmd, args);
+    return ddClient?.extension.host?.cli.exec(windowsCmd, args);
   }
-  return ddClient.extension.host?.cli.exec(unixCmd, args);
+  return ddClient?.extension.host?.cli.exec(unixCmd, args);
 }
 
 /**
@@ -37,11 +43,16 @@ export async function execOnHost(unixCmd: string, windowsCmd: string, args: stri
  * @param args
  * @param options an ExecStreamOptions object, as described in Docker Desktop Extensions docs.
  */
-export async function execOnHostAndStreamResult(unixCmd: string, windowsCmd: string, args: string[], options: { stream: ExecStreamOptions }): Promise<ExecProcess | undefined> {
+export async function execOnHostAndStreamResult(
+  unixCmd: string,
+  windowsCmd: string,
+  args: string[],
+  options: { stream: ExecStreamOptions }
+): Promise<ExecProcess | undefined> {
   if (await isWindows()) {
-    return ddClient.extension.host?.cli.exec(windowsCmd, args, options);
+    return ddClient?.extension.host?.cli.exec(windowsCmd, args, options);
   }
-  return ddClient.extension.host?.cli.exec(unixCmd, args, options);
+  return ddClient?.extension.host?.cli.exec(unixCmd, args, options);
 }
 
 export async function isWindows(): Promise<boolean> {
@@ -60,13 +71,13 @@ export class Versions {
  * Gets the versions of JFrog CLI (that's used by the extension) and JFrog Xray.
  */
 export async function getVersions(): Promise<Versions> {
-  let xrayVersionPromise = execOnHost('runcli.sh', 'runcli.bat', ['xr', 'curl', 'api/v1/system/version']);
-  let jfrogCliVersionPromise = execOnHost('runcli.sh', 'runcli.bat', ['-v']);
-  let versions: Versions = new Versions();
+  const xrayVersionPromise = execOnHost('runcli.sh', 'runcli.bat', ['xr', 'curl', 'api/v1/system/version']);
+  const jfrogCliVersionPromise = execOnHost('runcli.sh', 'runcli.bat', ['-v']);
+  const versions: Versions = new Versions();
   try {
-    let results = await Promise.all([xrayVersionPromise, jfrogCliVersionPromise]);
-    let xrayResult = JSON.parse(results[0].stdout);
-    let jfrogCliResult = results[1].stdout.trim().split(' ');
+    const results = await Promise.all([xrayVersionPromise, jfrogCliVersionPromise]);
+    const xrayResult = JSON.parse(results[0].stdout);
+    const jfrogCliResult = results[1].stdout.trim().split(' ');
     versions.xrayVersion = xrayResult.xray_version;
     versions.jfrogCliVersion = jfrogCliResult[jfrogCliResult.length - 1];
   } catch (e) {

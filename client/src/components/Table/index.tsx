@@ -31,7 +31,7 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Array
   const isEmptyTable = rows.length == 0;
 
   const getSortOrderIfExists = () => {
-    for (let col of columnsData) {
+    for (const col of columnsData) {
       if (col.id == orderBy) {
         return col.sortOrder;
       }
@@ -40,9 +40,9 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Array
 
   const includesSearchText = (row: any) => {
     let found = false;
-    for (let col of columnsData) {
-      let stringLines: string[] = Array.isArray(row[col.id]) ? row[col.id] : [row[col.id]];
-      for (let line of stringLines) {
+    for (const col of columnsData) {
+      const stringLines: string[] = Array.isArray(row[col.id]) ? row[col.id] : [row[col.id]];
+      for (const line of stringLines) {
         if (line.toLowerCase().includes(searchText.toLowerCase())) {
           found = true;
           break;
@@ -62,7 +62,7 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Array
   };
 
   const createCell = (col: VulnsColumnData, cellItem: string | string[], rowIndex: number, colIndex: number) => {
-    let cellBody: any = [];
+    const cellBody: any = [];
     // Add icon if needed
     if (col.iconList && typeof cellItem == 'string' && col.iconList[cellItem]) {
       cellBody.push(
@@ -70,7 +70,7 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Array
       );
     }
     // Add text lines
-    let stringLines = Array.isArray(cellItem) ? cellItem : [cellItem];
+    const stringLines = Array.isArray(cellItem) ? cellItem : [cellItem];
     stringLines.forEach((line: string, index: number) => {
       cellBody.push(
         <Box
@@ -366,6 +366,7 @@ const StyledTableHeadCell = styled(Typography)`
 
 const StyledTableHeadCellWrapper = styled(TableCell)`
   background-color: transparent;
+  border: 0;
   padding: 10px;
   padding-right: 0;
   min-width: 70px;

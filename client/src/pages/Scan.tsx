@@ -12,7 +12,7 @@ import { VulnerabilityKeys, Vulnerability } from '../types/Vulnerability';
 import { SeverityIcons } from '../assets/severityIcons/SeverityIcons';
 import { TechIcons } from '../assets/techIcons/TechIcons';
 import PieChartBox, { ChartItemProps } from '../components/PieChart';
-import { createDockerDesktopClient } from "@docker/extension-api-client";
+import { getDockerDesktopClient } from '../api/utils';
 
 type ScanResults = {
   vulnerabilities: Array<Vulnerability>;
@@ -26,7 +26,7 @@ export const ScanPage = () => {
   const [selectedImage, setSelectedImage] = useState('');
   const [dockerImages, setDockerImages] = useState<string[]>([]);
   const [runningScanId, setRunningScanId] = useState(0);
-  const ddClient = createDockerDesktopClient();
+  const ddClient = getDockerDesktopClient();
 
   const [scanData, setScanData] = useState<{
     [scanId: string]: {
@@ -36,7 +36,7 @@ export const ScanPage = () => {
     };
   }>({});
 
-  let history = useHistory();
+  const history = useHistory();
 
   const handleChange = (selectedImage: string | null) => {
     setSelectedImage(selectedImage || '');
@@ -51,9 +51,9 @@ export const ScanPage = () => {
   useEffect(() => {
     const getDockerImages = async () => {
       try {
-        let imagesData: ImageData[] = await getImages();
+        const imagesData: ImageData[] = await getImages();
         console.log(imagesData);
-        let imagesList: string[] = [];
+        const imagesList: string[] = [];
         imagesData.forEach((image) => {
           image.RepoTags?.forEach((repoTag) => {
             if (repoTag != '<none>:<none>') {
@@ -63,7 +63,7 @@ export const ScanPage = () => {
         });
         setDockerImages(imagesList);
       } catch (e: any) {
-        ddClient.desktopUI.toast.error(e.toString());
+        ddClient?.desktopUI.toast.error(e.toString());
       }
     };
     getDockerImages();
@@ -77,18 +77,18 @@ export const ScanPage = () => {
     try {
       setRunningScanId(scanId);
       setScanData({ [scanId]: { ...scanData[scanId], scanResults: null, isScanning: true } });
-      let results: ScanResults = await scanImage(selectedImage);
+      const results: ScanResults = await scanImage(selectedImage);
       console.log(`[${scanId}] scan results for ${selectedImage}`, results);
       saveScanResults(scanId, results);
     } catch (e: any) {
       setScanData({ ...scanData, [scanId]: {} });
-      ddClient.desktopUI.toast.error(e.toString());
+      ddClient?.desktopUI.toast.error(e.toString());
     }
   };
 
   const saveScanResults = (scanId: number, results: ScanResults) => {
-    let vulns = results.vulnerabilities ?? results.securityViolations ?? [];
-    let counter: { [key: string]: number } = {
+    const vulns = results.vulnerabilities ?? results.securityViolations ?? [];
+    const counter: { [key: string]: number } = {
       [Severity.Critical]: 0,
       [Severity.High]: 0,
       [Severity.Medium]: 0,
@@ -125,11 +125,7 @@ export const ScanPage = () => {
 
   const getSettingsButton = () => {
     return (
-      <Button
-        variant="outlined"
-        onClick={onSettingsClick}
-        sx={{ position: 'absolute', right: '40px', top: '40px', fontWeight: '700' }}
-      >
+      <Button variant="outlined" onClick={onSettingsClick} sx={{ position: 'absolute', right: '40px', top: '40px' }}>
         Settings
       </Button>
     );
@@ -189,7 +185,7 @@ export const ScanPage = () => {
 };
 
 function getSeverityPieChart(severityCount: { [key: string]: number }) {
-  let chartItems: ChartItemProps[] = [
+  const chartItems: ChartItemProps[] = [
     {
       title: Severity.Critical,
       value: severityCount[Severity.Critical],

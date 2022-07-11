@@ -1,9 +1,8 @@
 import { getConfig } from './config';
-import { execOnHostAndStreamResult, throwErrorAsString } from './utils';
-import { createDockerDesktopClient } from "@docker/extension-api-client";
+import { execOnHostAndStreamResult, throwErrorAsString, getDockerDesktopClient } from './utils';
 
 const development: boolean = !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
-const ddClient = createDockerDesktopClient();
+const ddClient = getDockerDesktopClient();
 
 /**
  * Scans an image by its tag and returns the results from JFrog CLI in simple-json format.
@@ -17,7 +16,7 @@ export async function scanImage(imageTag: string): Promise<any> {
 
   let scanResults;
   try {
-    let scanResultsStr = await getScanResultsStr(imageTag);
+    const scanResultsStr = await getScanResultsStr(imageTag);
     scanResults = JSON.parse(scanResultsStr);
   } catch (e: any) {
     try {
@@ -31,7 +30,7 @@ export async function scanImage(imageTag: string): Promise<any> {
     }
   }
   if (scanResults.errors && scanResults.errors.length > 0) {
-    let errorMessage: string = scanResults.errors[0].errorMessage;
+    const errorMessage: string = scanResults.errors[0].errorMessage;
     // The error will always start with an uppercase letter.
     throw errorMessage[0].toUpperCase() + errorMessage.substring(1);
   }
@@ -39,14 +38,14 @@ export async function scanImage(imageTag: string): Promise<any> {
 }
 
 async function getScanResultsStr(imageTag: string): Promise<string> {
-  let config = await getConfig();
-  let cmdArgs: string[] = ['docker', 'scan', imageTag, '--format', 'simple-json'];
+  const config = await getConfig();
+  const cmdArgs: string[] = ['docker', 'scan', imageTag, '--format', 'simple-json'];
   if (config.jfrogExtensionConfig.project != undefined) {
     cmdArgs.push('--project', '"' + config.jfrogExtensionConfig.project + '"', '--fail=false');
   } else if (config.jfrogExtensionConfig.watches != undefined) {
     cmdArgs.push('--watches', '"' + config.jfrogExtensionConfig.watches.join(',') + '"', '--fail=false');
   }
-  let scanResultsStr = "";
+  let scanResultsStr = '';
   await new Promise<void>((resolve, reject) => {
     execOnHostAndStreamResult('runcli.sh', 'runcli.bat', cmdArgs, {
       stream: {
@@ -82,7 +81,7 @@ export async function getImages(): Promise<any> {
     return testImageData;
   }
 
-  return ddClient.docker.listImages();
+  return ddClient?.docker.listImages();
 }
 
 const testImageData = [
