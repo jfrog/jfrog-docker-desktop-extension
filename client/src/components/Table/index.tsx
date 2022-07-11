@@ -366,6 +366,7 @@ const StyledTableHeadCell = styled(Typography)`
 
 const StyledTableHeadCellWrapper = styled(TableCell)`
   background-color: transparent;
+  border: 0;
   padding: 10px;
   padding-right: 0;
   min-width: 70px;

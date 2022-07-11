@@ -1,9 +1,8 @@
 import { getConfig } from './config';
-import { execOnHostAndStreamResult, throwErrorAsString } from './utils';
-import { createDockerDesktopClient } from "@docker/extension-api-client";
+import { execOnHostAndStreamResult, throwErrorAsString, getDockerDesktopClient } from './utils';
 
 const development: boolean = !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
-const ddClient = createDockerDesktopClient();
+const ddClient = getDockerDesktopClient();
 
 /**
  * Scans an image by its tag and returns the results from JFrog CLI in simple-json format.
@@ -46,7 +45,7 @@ async function getScanResultsStr(imageTag: string): Promise<string> {
   } else if (config.jfrogExtensionConfig.watches != undefined) {
     cmdArgs.push('--watches', '"' + config.jfrogExtensionConfig.watches.join(',') + '"', '--fail=false');
   }
-  let scanResultsStr = "";
+  let scanResultsStr = '';
   await new Promise<void>((resolve, reject) => {
     execOnHostAndStreamResult('runcli.sh', 'runcli.bat', cmdArgs, {
       stream: {
@@ -82,7 +81,7 @@ export async function getImages(): Promise<any> {
     return testImageData;
   }
 
-  return ddClient.docker.listImages();
+  return ddClient?.docker.listImages();
 }
 
 const testImageData = [

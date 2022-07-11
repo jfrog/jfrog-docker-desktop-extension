@@ -1,7 +1,6 @@
-import { execOnHost, isWindows, throwErrorAsString } from './utils';
-import { createDockerDesktopClient } from '@docker/extension-api-client';
+import { execOnHost, isWindows, throwErrorAsString, getDockerDesktopClient } from './utils';
 
-const ddClient = createDockerDesktopClient();
+const ddClient = getDockerDesktopClient();
 
 /**
  * There are two kinds of configurations that are managed and used in the extension:
@@ -180,10 +179,10 @@ export async function editJfrogExtensionConfig(jfrogExtensionConfig: JfrogExtens
   }
   const configJson = JSON.stringify(jfrogExtensionConfig).replaceAll(' ', '');
   if (await isWindows()) {
-    await ddClient.extension.host?.cli.exec('writeconf.bat', [configJson]);
+    await ddClient?.extension.host?.cli.exec('writeconf.bat', [configJson]);
     return;
   }
-  await ddClient.extension.host?.cli.exec('writeconf.sh', ['"' + configJson.replaceAll('"', '\\"') + '"']);
+  await ddClient?.extension.host?.cli.exec('writeconf.sh', ['"' + configJson.replaceAll('"', '\\"') + '"']);
 }
 
 async function editCliConfig(cliConfig: JfrogCliConfig, serverId?: string) {
@@ -194,6 +193,7 @@ async function editCliConfig(cliConfig: JfrogCliConfig, serverId?: string) {
 
   // In case of unsupported protocol in the URL, add default protocol
   const url: string = cliConfig.url.trim();
+
   if (!url.startsWith('https://') && !url.startsWith('http://')) {
     cliConfig.url = 'https://' + url;
   }
