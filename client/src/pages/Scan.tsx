@@ -1,21 +1,18 @@
-import { Box, styled, Typography, SelectChangeEvent, CircularProgress, Button, useTheme } from '@mui/material';
+import { Box, styled, Typography, SelectChangeEvent, CircularProgress, Button } from '@mui/material';
 import { useEffect, useState } from 'react';
-
 import Select from '../components/Select';
 import Table from '../components/Table';
 import { getImages, scanImage } from '../api/image-scan';
 import { JfrogHeadline } from '../components/JfrogHeadline';
-import { useNavigate } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import CloseIcon from '@mui/icons-material/Close';
 import { Severity } from '../types/severity';
 import { ImageData } from '../types/ImageData';
-import { VulnerabilityKeys, Vulnerability, Cve } from '../types/Vulnerability';
+import { VulnerabilityKeys, Vulnerability } from '../types/Vulnerability';
 import { SeverityIcons } from '../assets/severityIcons/SeverityIcons';
 import { TechIcons } from '../assets/techIcons/TechIcons';
 import PieChartBox, { ChartItemProps } from '../components/PieChart';
-import { ddToast } from '../api/utils';
-import scanDark from '../assets/scanDark.mp4';
-import scanLight from '../assets/scanLight.mp4';
+import { getDockerDesktopClient } from '../api/utils';
 
 type ScanResults = {
   vulnerabilities: Array<Vulnerability>;
@@ -29,10 +26,7 @@ export const ScanPage = () => {
   const [selectedImage, setSelectedImage] = useState('');
   const [dockerImages, setDockerImages] = useState<string[]>([]);
   const [runningScanId, setRunningScanId] = useState(0);
-  const { palette } = useTheme();
-  const [windowSize, setWindowSize] = useState(getWindowSize());
-
-  const isDarkMode = palette.mode == 'dark';
+  const ddClient = getDockerDesktopClient();
 
   const [scanData, setScanData] = useState<{
     [scanId: string]: {
@@ -42,7 +36,7 @@ export const ScanPage = () => {
     };
   }>({});
 
-  const navigate = useNavigate();
+  const history = useHistory();
 
   const handleChange = (selectedImage: string | null) => {
     setSelectedImage(selectedImage || '');
@@ -69,29 +63,14 @@ export const ScanPage = () => {
         });
         setDockerImages(imagesList);
       } catch (e: any) {
-        ddToast.error(e.toString());
+        ddClient?.desktopUI.toast.error(e.toString());
       }
     };
     getDockerImages();
-
-    function handleWindowResize() {
-      setWindowSize(getWindowSize());
-    }
-
-    window.addEventListener('resize', handleWindowResize);
-
-    return () => {
-      window.removeEventListener('resize', handleWindowResize);
-    };
   }, []);
 
-  function getWindowSize() {
-    const { innerWidth, innerHeight } = window;
-    return { innerWidth, innerHeight };
-  }
-
   const onSettingsClick = async () => {
-    navigate('/settings');
+    history.push('/settings');
   };
 
   const onScanClick = async (scanId: number) => {
@@ -103,7 +82,7 @@ export const ScanPage = () => {
       saveScanResults(scanId, results);
     } catch (e: any) {
       setScanData({ ...scanData, [scanId]: {} });
-      ddToast.error(e.toString());
+      ddClient?.desktopUI.toast.error(e.toString());
     }
   };
 
@@ -121,12 +100,12 @@ export const ScanPage = () => {
       vuln.cveIds = [];
       vuln.cvssV2 = [];
       vuln.cvssV3 = [];
-      vuln.cves?.forEach((cve: Cve) => {
-        vuln.cveIds.push(cve.id);
-        vuln.cvssV2.push(cve.cvssV2);
-        vuln.cvssV3.push(cve.cvssV3);
+      vuln.cves?.forEach((cve: any) => {
+        vuln.cveIds?.push(cve.id);
+        vuln.cvssV2?.push(cve.cvssV2);
+        vuln.cvssV3?.push(cve.cvssV3);
       });
-      if (vuln.cveIds?.join('') == '') {
+      if (vuln.cveIds.join('') == '') {
         vuln.cveIds = [vuln.issueId];
       }
 
@@ -136,11 +115,12 @@ export const ScanPage = () => {
       }
       counter[vuln.severity.toString()]++;
     });
-
-    setScanData((data) => ({
-      ...data,
-      [scanId]: { scanResults: vulns, severityCount: counter, isScanning: false },
-    }));
+    setScanData((data) => {
+      return {
+        ...data,
+        [scanId]: { scanResults: vulns, severityCount: counter, isScanning: false },
+      };
+    });
   };
 
   const getSettingsButton = () => {
@@ -157,12 +137,12 @@ export const ScanPage = () => {
     <>
       {getSettingsButton()}
 
-      <JfrogHeadline headline="JFrog Xray Scan" />
+      <JfrogHeadline headline="JFrog Xray" marginBottom="50px" />
 
-      <Box display="flex" justifyContent="space-between" minHeight="120px">
-        <Box width="-webkit-fill-available">
-          <Typography fontSize="16px">Select local image for scanning</Typography>
-          <Box display="flex">
+      <Box height="200px" display="flex" justifyContent="space-between">
+        <Box width="calc(100% - 350px)" maxWidth="1000px">
+          <Typography variant="subtitle1">Select local image for scanning</Typography>
+          <Box display="flex" width={'90%'}>
             <Select onChange={handleChange} options={dockerImages} />
             <ScanButton
               variant="contained"
@@ -173,7 +153,6 @@ export const ScanPage = () => {
               Scan
             </ScanButton>
           </Box>
-
           {isScanning && (
             <Box>
               <ProgressBox>
@@ -188,45 +167,14 @@ export const ScanPage = () => {
             </Box>
           )}
         </Box>
-
         {scanResults && scanResults.length > 0 && severityCount && getSeverityPieChart(severityCount)}
       </Box>
 
-      {isScanning && (
-        <Box
-          marginTop="20px"
-          display="flex"
-          justifyContent="center"
-          style={{
-            maxHeight: 'calc(100vh - 360px)',
-            height: '-webkit-fill-available',
-            borderRadius: '15px',
-            overflow: 'hidden',
-            width: '100%',
-          }}
-        >
-          <video
-            muted
-            autoPlay
-            loop
-            style={{
-              objectFit: windowSize.innerWidth / windowSize.innerHeight > 1.8 ? 'fill' : 'cover',
-              borderRadius: '15px',
-              height: '100%',
-              width: '-webkit-fill-available',
-            }}
-          >
-            <source src={isDarkMode ? scanDark : scanLight} type="video/mp4" />
-          </video>
-        </Box>
-      )}
       {scanResults ? (
-        <Box sx={{ transform: 'translateY(-30px)' }}>
-          <Box display="flex">
-            <Typography variant="h1" fontWeight="500" fontSize="18px">
-              Image Scan Results
-            </Typography>
-          </Box>
+        <Box sx={{ transform: 'translateY(-40px)' }}>
+          <Typography variant="h1" fontWeight="500" fontSize="18px">
+            Image Scan Results
+          </Typography>
           <Table columnsData={scanTableColumnsData} rows={scanResults} />
         </Box>
       ) : (
@@ -330,12 +278,12 @@ const ProgressBox = styled(Box)`
   margin-top: 20px;
   display: flex;
   justify-content: space-between;
+  width: 90%;
   @media screen and (prefers-color-scheme: dark) {
     color: #f8fafb;
     background: #18222b;
   }
 `;
-
 const ScanButton = styled(Button)`
   margin-left: 30px;
   padding: 0 50px;

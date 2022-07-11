@@ -1,5 +1,7 @@
-import { execOnHost, isWindows, throwErrorAsString, ddClient, ddToast } from './utils';
-import { ExtensionConfig } from '../types';
+import { execOnHost, isWindows, throwErrorAsString, getDockerDesktopClient } from './utils';
+
+const ddClient = getDockerDesktopClient();
+
 /**
  * There are two kinds of configurations that are managed and used in the extension:
  * 1. JfrogCliConfig - configurations that are used by JFrog CLI: JFrog Platform URL and credentials.
@@ -37,13 +39,17 @@ export class JfrogExtensionConfig {
  * Imports the default configuration from JFrog CLI, if it's already installed and configured on the host.
  */
 export async function importConfigFromHostCli(): Promise<void> {
-  const exportResponse = await execOnHost('jf', 'jf.exe', ['config', 'export']);
-  const serverToken = exportResponse.stdout;
-  const importPromise = await execOnHost('runcli.sh', 'runcli.bat', ['config', 'import', serverToken]);
-  const jfrogExtensionConf = new JfrogExtensionConfig();
-  jfrogExtensionConf.jfrogCliConfigured = true;
-  const saveExtensionPromise = await editJfrogExtensionConfig(jfrogExtensionConf);
-  await [importPromise, saveExtensionPromise];
+  try {
+    const exportResponse = await execOnHost('jf', 'jf.exe', ['config', 'export']);
+    const serverToken = exportResponse.stdout;
+    const importPromise = execOnHost('runcli.sh', 'runcli.bat', ['config', 'import', serverToken]);
+    const jfrogExtensionConf = new JfrogExtensionConfig();
+    jfrogExtensionConf.jfrogCliConfigured = true;
+    const saveExtensionPromise = editJfrogExtensionConfig(jfrogExtensionConf);
+    await Promise.all([importPromise, saveExtensionPromise]);
+  } catch (e) {
+    throwErrorAsString(e);
+  }
 }
 
 /**
@@ -73,12 +79,13 @@ export async function saveConfig(config: Config): Promise<void> {
  * Password and access token are omitted.
  */
 export async function getConfig(): Promise<Config> {
-  const jfrogExtensionConfPromise =await getJfrogExtensionConfig();
-  const cliConfPromise =await getJfrogCliConfig();
+  const jfrogExtensionConfPromise = getJfrogExtensionConfig();
+  const cliConfPromise = getJfrogCliConfig();
   const config: Config = new Config();
   try {
-    config.jfrogExtensionConfig = jfrogExtensionConfPromise;
-    config.jfrogCliConfig = cliConfPromise;
+    const results = await Promise.all([jfrogExtensionConfPromise, cliConfPromise]);
+    config.jfrogExtensionConfig = results[0];
+    config.jfrogCliConfig = results[1];
   } catch (e) {
     throwErrorAsString(e);
   }
@@ -147,8 +154,12 @@ async function getJfrogCliConfigServerId(): Promise<string | undefined> {
 
 async function getJfrogCliFullConfig(): Promise<any> {
   let cliConfigRes;
-  const cliConfResult = await execOnHost('runcli.sh', 'runcli.bat', ['config', 'export']);
-  cliConfigRes = JSON.parse(window.atob(cliConfResult.stdout));
+  try {
+    const cliConfResult = await execOnHost('runcli.sh', 'runcli.bat', ['config', 'export']);
+    cliConfigRes = JSON.parse(window.atob(cliConfResult.stdout));
+  } catch (e) {
+    throwErrorAsString(e);
+  }
   return cliConfigRes;
 }
 
@@ -189,7 +200,11 @@ async function editCliConfig(cliConfig: JfrogCliConfig, serverId?: string) {
 
   const validationConfigAddArgs = buildConfigImportCmd(cliConfig, validationServerId);
   let curlResult;
-  await execOnHost('runcli.sh', 'runcli.bat', validationConfigAddArgs);
+  try {
+    await execOnHost('runcli.sh', 'runcli.bat', validationConfigAddArgs);
+  } catch (e) {
+    throwErrorAsString(e);
+  }
 
   let errorCode: string, statusCode: string;
   try {
@@ -239,29 +254,4 @@ function buildConfigImportCmd(cliConfig: JfrogCliConfig, serverId?: string): str
   conf.serverId = serverId;
   const confToken = window.btoa(JSON.stringify(conf));
   return ['config', 'import', confToken];
-}
-
-/**
- * Imports the default configuration from JFrog CLI, if it's already installed and configured on the host.
- */
-export async function testJFrogPlatformConnection(cliConfig: ExtensionConfig | undefined): Promise<any> {
-  try {
-    let cmd = ['rt', 'ping'];
-    if (cliConfig) {
-      const url = cliConfig.url ?? '';
-      const trimUrl = url.endsWith('/') ? url.slice(0, -1) : url;
-      cmd.push(`--url=${trimUrl}/artifactory`);
-
-      if (cliConfig.username && cliConfig.password) {
-        cmd.push(`--user=${cliConfig.username}`);
-        cmd.push(`--password=${cliConfig.password}`);
-      } else {
-        cmd.push(`--access-token=${cliConfig.accessToken}`);
-      }
-    }
-    const pingResponse = await execOnHost('runcli.sh', 'runcli.bat', cmd);
-    return pingResponse.stdout;
-  } catch (e) {
-    throwErrorAsString(e);
-  }
 }
