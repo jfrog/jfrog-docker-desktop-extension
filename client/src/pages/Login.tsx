@@ -1,5 +1,5 @@
 import { styled, Box, Typography } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
 import jfrogLogo from '../assets/jfrog_logo.png';
@@ -8,30 +8,22 @@ import { isConfigured, Save } from '../utils/config';
 import Loader from '../components/Loader';
 import { ExtensionConfig } from '../types';
 import { BASIC_AUTH } from '../utils/constants';
-import { CredentialsForm } from '../components/CredentialsForm/CredentialsForm';
+import { SettingsForm } from '../components/Settings/Settings';
 import { LoadingButton } from '@mui/lab';
-import { ddToast } from '../api/utils';
+import { getDockerDesktopClient } from '../api/utils';
 
 export const LoginPage = () => {
-  const [extensionConfig, setExtensionConfig] = useState<ExtensionConfig>({ authType: BASIC_AUTH });
+  const [state, setState] = useState<ExtensionConfig>({ authType: BASIC_AUTH });
   const [isButtonLoading, setButtonLoading] = useState(false);
   const [isLoading, setLoading] = useState(true);
-  const navigate = useNavigate();
-
-  const credentialsNotEmpty =
-    extensionConfig.url && ((extensionConfig.username && extensionConfig.password) || extensionConfig.accessToken);
+  const ddClient = getDockerDesktopClient();
+  let history = useHistory();
 
   const HandleConnect = async () => {
     setButtonLoading(true);
-    if (extensionConfig.authType === BASIC_AUTH) {
-      extensionConfig.accessToken = undefined;
-    } else {
-      extensionConfig.username = undefined;
-      extensionConfig.password = undefined;
-    }
-    if (await Save(extensionConfig)) {
-      navigate('/scan');
-      ddToast.success("You're all set!");
+    if (await Save(state)) {
+      history.push('/scan');
+      ddClient?.desktopUI.toast.success("You're all set!");
     }
     setButtonLoading(false);
   };
@@ -41,7 +33,7 @@ export const LoginPage = () => {
       isConfigured()
         .then((configured) => {
           if (configured) {
-            navigate('/scan');
+            history.push('/scan');
           }
         })
         .finally(() => {
@@ -67,21 +59,17 @@ export const LoginPage = () => {
                   <Typography fontSize="34px" fontWeight="600">
                     Welcome
                   </Typography>
-                  <Box sx={{ fontSize: '13px', fontWeight: 'bold' }}>Enter Your JFrog Connection Details</Box>
+                  <Box sx={{ fontSize: '13px', fontWeight: 'bold' }}>
+                    Enter Your JFrog Environment Connection Details
+                  </Box>
                 </Box>
               </Title>
 
-              <Box
-                onKeyDown={(event) => {
-                  if (credentialsNotEmpty && event.key === 'Enter') {
-                    HandleConnect();
-                  }
-                }}
-              >
-                {CredentialsForm(extensionConfig, setExtensionConfig, navigate, isButtonLoading)}
+              <Box sx={{ minHeight: '500px' }}>
+                {SettingsForm(state, setState)}
+
                 <LoadingButton
                   sx={{ width: '100%' }}
-                  disabled={!credentialsNotEmpty}
                   loading={isButtonLoading}
                   type="submit"
                   variant="contained"

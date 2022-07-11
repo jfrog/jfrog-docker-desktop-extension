@@ -2,40 +2,25 @@ import { createDockerDesktopClient } from '@docker/extension-api-client';
 import { ExecProcess } from '@docker/extension-api-client-types/dist/v1';
 import { ExecStreamOptions } from '@docker/extension-api-client-types/dist/v1/exec';
 
-export const isDevelopment: boolean = !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
-export const ddClient = !isDevelopment ? createDockerDesktopClient() : null;
-export const ddToast: any =
-  ddClient?.desktopUI?.toast ??
-  new Proxy(
-    {},
-    {
-      get(t, prop) {
-        switch (prop) {
-          case 'error':
-            return console.error;
-          case 'warning':
-            return console.warn;
-          default:
-            return console.log;
-        }
-      },
-    }
-  );
+const development: boolean = !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
+const ddClient = !development ? createDockerDesktopClient() : null;
 
 let windowsSystem: boolean | undefined;
 
 export function getDockerDesktopClient() {
-  return;
+  return ddClient;
 }
 
 export function throwErrorAsString(e: any) {
-  ddToast.warning('You can find logs in your home directory under ".jfrog-docker-desktop-extension/logs".');
-  if (typeof e === 'string') {
-    throw e;
-  } else if (e && e.stderr) {
-    throw e.stderr;
+  console.error(e);
+  let stringErr: string;
+  if (e.stderr !== undefined) {
+    stringErr =
+      'An error occurred. You can find the logs in your home directory under ".jfrog-docker-desktop-extension/logs".';
+  } else {
+    stringErr = e.toString();
   }
-  throw 'An error occurred';
+  throw stringErr;
 }
 
 /**
@@ -86,12 +71,13 @@ export class Versions {
  * Gets the versions of JFrog CLI (that's used by the extension) and JFrog Xray.
  */
 export async function getVersions(): Promise<Versions> {
-  const versions: Versions = new Versions();
+  let xrayVersionPromise = execOnHost('runcli.sh', 'runcli.bat', ['xr', 'curl', 'api/v1/system/version']);
+  let jfrogCliVersionPromise = execOnHost('runcli.sh', 'runcli.bat', ['-v']);
+  let versions: Versions = new Versions();
   try {
-    const xrayVersionPromise = await execOnHost('runcli.sh', 'runcli.bat', ['xr', 'curl', 'api/v1/system/version']);
-    const jfrogCliVersionPromise = await execOnHost('runcli.sh', 'runcli.bat', ['-v']);
-    const xrayResult = JSON.parse(xrayVersionPromise.stdout);
-    const jfrogCliResult = jfrogCliVersionPromise.stdout.trim().split(' ');
+    let results = await Promise.all([xrayVersionPromise, jfrogCliVersionPromise]);
+    let xrayResult = JSON.parse(results[0].stdout);
+    let jfrogCliResult = results[1].stdout.trim().split(' ');
     versions.xrayVersion = xrayResult.xray_version;
     versions.jfrogCliVersion = jfrogCliResult[jfrogCliResult.length - 1];
   } catch (e) {

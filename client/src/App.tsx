@@ -1,18 +1,16 @@
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { DockerMuiThemeProvider } from '@docker/docker-mui-theme';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import { AppContext } from './contexts';
 import { AppClient } from './clients';
+import { routes } from './config';
+import { Route as AppRoute } from './types';
 import { createTheme } from '@mui/material/styles';
 import { DefaultTheme } from '@mui/system';
 import deepmerge from 'deepmerge';
-import { LoginPage } from './pages/Login';
-import { ScanPage } from './pages/Scan';
-import { SetupEnvPage } from './pages/SetupEnv';
-import { SettingsPage } from './pages/Setting';
 
-export default function App() {
+function App() {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
   const appClient = new AppClient();
 
@@ -34,24 +32,6 @@ export default function App() {
             },
           },
         },
-        MuiLink: {
-          styleOverrides: {
-            root: {
-              cursor: 'pointer',
-              width: 'fit-content',
-            },
-          },
-        },
-        MuiTooltip: {
-          styleOverrides: {
-            tooltip: {
-              textTransform: 'none',
-              letterSpacing: 'inherit',
-              fontSize: '13px',
-              lineHeight: 'inherit',
-            },
-          },
-        },
         MuiButton: {
           styleOverrides: {
             root: {
@@ -65,7 +45,6 @@ export default function App() {
             },
           },
         },
-
         MuiCssBaseline: {
           styleOverrides: {
             '#root': {
@@ -90,6 +69,8 @@ export default function App() {
         },
       },
     };
+    console.log(createTheme(deepmerge<DefaultTheme>(dockerTheme, appTheme)));
+
     return createTheme(deepmerge<DefaultTheme>(dockerTheme, appTheme));
   };
 
@@ -99,24 +80,17 @@ export default function App() {
         <ThemeProvider theme={(dockerTheme) => mergeDockerTheme(dockerTheme)}>
           <CssBaseline />
           <BrowserRouter>
-            <Routes>
-              <Route path={'/scan'} element={<ScanPage />} />
-              <Route path={'C:/scan'} element={<ScanPage />} />
-
-              <Route path={'/settings'} element={<SettingsPage />} />
-              <Route path={'C:/settings'} element={<SettingsPage />} />
-
-              <Route path={'/login'} element={<LoginPage />} />
-              <Route path={'C:/login'} element={<LoginPage />} />
-
-              <Route path={'/setupenv'} element={<SetupEnvPage />} />
-              <Route path={'C:/setupenv'} element={<SetupEnvPage />} />
-
-              <Route path="*" element={<LoginPage />} />
-            </Routes>
+            <Switch>
+              {routes.map((route: AppRoute) => (
+                <Route key={route.key} path={route.path} component={route.component} exact />
+              ))}
+              <Redirect to="/login" />
+            </Switch>
           </BrowserRouter>
         </ThemeProvider>
       </DockerMuiThemeProvider>
     </AppContext.Provider>
   );
 }
+
+export default App;
