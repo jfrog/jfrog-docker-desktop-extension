@@ -10,20 +10,19 @@ import { ExtensionConfig } from '../types';
 import { BASIC_AUTH } from '../utils/constants';
 import { SettingsForm } from '../components/Settings/Settings';
 import { LoadingButton } from '@mui/lab';
-import { getDockerDesktopClient } from '../api/utils';
+import { ddToast } from '../api/utils';
 
 export const LoginPage = () => {
   const [state, setState] = useState<ExtensionConfig>({ authType: BASIC_AUTH });
   const [isButtonLoading, setButtonLoading] = useState(false);
   const [isLoading, setLoading] = useState(true);
-  const ddClient = getDockerDesktopClient();
   const history = useHistory();
 
   const HandleConnect = async () => {
     setButtonLoading(true);
     if (await Save(state)) {
       history.push('/scan');
-      ddClient?.desktopUI.toast.success("You're all set!");
+      ddToast.success("You're all set!");
     }
     setButtonLoading(false);
   };

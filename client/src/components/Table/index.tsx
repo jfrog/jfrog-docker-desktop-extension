@@ -21,6 +21,8 @@ import noIssuesIcon from '../../assets/no-issues.png';
 import { ContentCopy } from '@mui/icons-material';
 import { useState } from 'react';
 import CircularChart from '../CircularChart';
+import exportCsv from '../../assets/csv.png';
+import { CSVLink } from 'react-csv';
 
 export default function DynamicTable({ columnsData, rows }: { columnsData: Array<VulnsColumnData>; rows: any[] }) {
   const [order, setOrder] = useState<Order>('asc');
@@ -150,6 +152,11 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Array
           >
             Clear
           </Typography>
+          <ExportCsvBox>
+            <CSVLink data={rows} headers={columnsData.map((col) => ({ label: col.label ?? col.id, key: col.id }))}>
+              <img src={exportCsv} width="18px" height="18px" alt={'export csv'} />
+            </CSVLink>
+          </ExportCsvBox>
         </Box>
       </Box>
     );
@@ -197,23 +204,17 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Array
                             <Collapse in={isRowOpen} timeout="auto" unmountOnExit>
                               <Box width="1" display="flex" justifyContent="space-between" maxHeight="250px">
                                 <Box paddingRight="20px" display="flex" flexDirection="column" maxWidth={2 / 3}>
-                                  <Typography fontWeight="600" fontSize="12px">
-                                    Summary:
-                                  </Typography>
+                                  <Typography fontWeight="600">Summary:</Typography>
                                   <Box marginBottom="10px" maxHeight="60%" overflow="hidden auto">
-                                    <Typography fontSize="12px" marginRight="10px">
-                                      {row.summary}
-                                    </Typography>
+                                    <Typography marginRight="10px">{row.summary}</Typography>
                                   </Box>
-                                  <Typography fontWeight="600" fontSize="12px">
-                                    References:
-                                  </Typography>
+                                  <Typography fontWeight="600">References:</Typography>
                                   <Box display="flex" flexDirection="column" flex="1" overflow="hidden auto">
                                     {row.references?.map((link: string, index: number) => {
                                       return (
                                         <Link
+                                          fontSize="13px"
                                           key={'link' + index}
-                                          variant="subtitle2"
                                           whiteSpace="nowrap"
                                           sx={{
                                             cursor: 'pointer',
