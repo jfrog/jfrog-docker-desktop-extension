@@ -1,15 +1,12 @@
 import { getConfig } from './config';
-import { execOnHostAndStreamResult, throwErrorAsString, getDockerDesktopClient } from './utils';
-
-const development: boolean = !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
-const ddClient = getDockerDesktopClient();
+import { execOnHostAndStreamResult, throwErrorAsString, ddClient, isDevelopment } from './utils';
 
 /**
  * Scans an image by its tag and returns the results from JFrog CLI in simple-json format.
  */
 export async function scanImage(imageTag: string): Promise<any> {
   console.log('Running scanImage command on: ' + imageTag);
-  if (development) {
+  if (isDevelopment) {
     console.log('Dev environment. Getting sample results');
     return testScanResults;
   }
@@ -76,7 +73,7 @@ async function getScanResultsStr(imageTag: string): Promise<string> {
 
 export async function getImages(): Promise<any> {
   console.log('Running getImages command');
-  if (development) {
+  if (isDevelopment) {
     console.log('Dev environment. Getting sample results');
     return testImageData;
   }

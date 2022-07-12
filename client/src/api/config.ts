@@ -1,6 +1,4 @@
-import { execOnHost, isWindows, throwErrorAsString, getDockerDesktopClient } from './utils';
-
-const ddClient = getDockerDesktopClient();
+import { execOnHost, isWindows, throwErrorAsString, ddClient } from './utils';
 
 /**
  * There are two kinds of configurations that are managed and used in the extension:

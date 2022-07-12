@@ -69,8 +69,6 @@ function App() {
         },
       },
     };
-    console.log(createTheme(deepmerge<DefaultTheme>(dockerTheme, appTheme)));
-
     return createTheme(deepmerge<DefaultTheme>(dockerTheme, appTheme));
   };
 
