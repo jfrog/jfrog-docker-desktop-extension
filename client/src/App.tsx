@@ -32,6 +32,24 @@ function App() {
             },
           },
         },
+        MuiLink: {
+          styleOverrides: {
+            root: {
+              cursor: 'pointer',
+              width: 'fit-content',
+            },
+          },
+        },
+        MuiTooltip: {
+          styleOverrides: {
+            tooltip: {
+              textTransform: 'none',
+              letterSpacing: 'inherit',
+              fontSize: '13px',
+              lineHeight: 'inherit',
+            },
+          },
+        },
         MuiButton: {
           styleOverrides: {
             root: {
@@ -45,6 +63,7 @@ function App() {
             },
           },
         },
+
         MuiCssBaseline: {
           styleOverrides: {
             '#root': {

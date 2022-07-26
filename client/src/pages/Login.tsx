@@ -8,7 +8,7 @@ import { isConfigured, Save } from '../utils/config';
 import Loader from '../components/Loader';
 import { ExtensionConfig } from '../types';
 import { BASIC_AUTH } from '../utils/constants';
-import { SettingsForm } from '../components/Settings/Settings';
+import { CredentialsForm } from '../components/CredentialsForm/CredentialsForm';
 import { LoadingButton } from '@mui/lab';
 import { ddToast } from '../api/utils';
 
@@ -18,6 +18,8 @@ export const LoginPage = () => {
   const [isLoading, setLoading] = useState(true);
   const history = useHistory();
 
+  const credentialsNotEmpty = state.url && ((state.username && state.password) || state.accessToken);
+
   const HandleConnect = async () => {
     setButtonLoading(true);
     if (await Save(state)) {
@@ -26,6 +28,8 @@ export const LoginPage = () => {
     }
     setButtonLoading(false);
   };
+
+  let myState = state;
 
   useEffect(() => {
     if (isLoading) {
@@ -64,11 +68,18 @@ export const LoginPage = () => {
                 </Box>
               </Title>
 
-              <Box sx={{ minHeight: '500px' }}>
-                {SettingsForm(state, setState)}
-
+              <Box
+                sx={{ minHeight: '500px' }}
+                onKeyDown={(event) => {
+                  if (credentialsNotEmpty && event.key === 'Enter') {
+                    HandleConnect();
+                  }
+                }}
+              >
+                {CredentialsForm(myState, setState, history, isButtonLoading)}
                 <LoadingButton
                   sx={{ width: '100%' }}
+                  disabled={!credentialsNotEmpty}
                   loading={isButtonLoading}
                   type="submit"
                   variant="contained"
