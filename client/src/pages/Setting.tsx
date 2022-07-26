@@ -217,7 +217,7 @@ export const SettingsPage = () => {
             {isEditConnectionDetails && (
               <LoadingButton
                 color="success"
-                disabled={missingConnectionDetails()}
+                disabled={missingConnectionDetails() || isButtonLoading}
                 loading={isTestingConnection}
                 variant="contained"
                 sx={{ width: 'fit-content' }}
