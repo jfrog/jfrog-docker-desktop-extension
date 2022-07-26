@@ -8,25 +8,28 @@ import { isConfigured, Save } from '../utils/config';
 import Loader from '../components/Loader';
 import { ExtensionConfig } from '../types';
 import { BASIC_AUTH } from '../utils/constants';
-import { SettingsForm } from '../components/Settings/Settings';
+import { CredentialsForm } from '../components/CredentialsForm/CredentialsForm';
 import { LoadingButton } from '@mui/lab';
-import { createDockerDesktopClient } from "@docker/extension-api-client";
+import { ddToast } from '../api/utils';
 
 export const LoginPage = () => {
   const [state, setState] = useState<ExtensionConfig>({ authType: BASIC_AUTH });
   const [isButtonLoading, setButtonLoading] = useState(false);
   const [isLoading, setLoading] = useState(true);
-  const ddClient = createDockerDesktopClient();
-  let history = useHistory();
+  const history = useHistory();
+
+  const credentialsNotEmpty = state.url && ((state.username && state.password) || state.accessToken);
 
   const HandleConnect = async () => {
     setButtonLoading(true);
     if (await Save(state)) {
       history.push('/scan');
-      ddClient.desktopUI.toast.success("You're all set!");
+      ddToast.success("You're all set!");
     }
     setButtonLoading(false);
   };
+
+  let myState = state;
 
   useEffect(() => {
     if (isLoading) {
@@ -65,11 +68,18 @@ export const LoginPage = () => {
                 </Box>
               </Title>
 
-              <Box sx={{ minHeight: '500px' }}>
-                {SettingsForm(state, setState)}
-
+              <Box
+                sx={{ minHeight: '500px' }}
+                onKeyDown={(event) => {
+                  if (credentialsNotEmpty && event.key === 'Enter') {
+                    HandleConnect();
+                  }
+                }}
+              >
+                {CredentialsForm(myState, setState, history, isButtonLoading)}
                 <LoadingButton
                   sx={{ width: '100%' }}
+                  disabled={!credentialsNotEmpty}
                   loading={isButtonLoading}
                   type="submit"
                   variant="contained"

@@ -1,40 +1,18 @@
-import {Config, getConfig, getJfrogExtensionConfig, saveConfig} from '../api/config';
+import { Config, getConfig, getJfrogExtensionConfig, saveConfig } from '../api/config';
 import { ExtensionConfig } from '../types';
 import { BASIC_AUTH, ACCESS_TOKEN } from './constants';
-import {createDockerDesktopClient} from "@docker/extension-api-client";
-
-const ddClient = createDockerDesktopClient();
+import { ddToast } from '../api/utils';
 
 // Save a new JFrog platform configurations
-export const Save = async (user: ExtensionConfig | undefined, skipPasswordValidation?: boolean): Promise<Boolean> => {
-  if (!user) {
+export const Save = async (extensionConfig: ExtensionConfig | undefined): Promise<boolean> => {
+  if (!extensionConfig) {
     return false;
   }
   try {
-    if (!user.url) {
-      ddClient.desktopUI.toast.warning("Please enter URL")
-      return false;
-    }
-    if (!user.authType || user.authType === BASIC_AUTH) {
-      if (!user.username) {
-        ddClient.desktopUI.toast.warning('Please enter username');
-        return false;
-      }
-      if (!user.password && !skipPasswordValidation) {
-        ddClient.desktopUI.toast.warning('Please enter password');
-        return false;
-      }
-    } else {
-      if (!user.accessToken && !skipPasswordValidation) {
-        ddClient.desktopUI.toast.warning('Please enter access token');
-        return false;
-      }
-    }
-
-    await saveConfig(toJfrogCliConfig(user));
+    await saveConfig(toJfrogCliConfig(extensionConfig));
     return true;
   } catch (error: any) {
-    ddClient.desktopUI.toast.error(error.toString());
+    ddToast.error(error.toString());
     return false;
   }
 };

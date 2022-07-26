@@ -1,7 +1,7 @@
 import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
-import { useState, ChangeEventHandler } from 'react';
+import { ChangeEventHandler } from 'react';
 
 export default function Search({
   searchText,
@@ -52,7 +52,7 @@ const SearchIconWrapper = styled('div')(() => ({
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: 'inherit',
   fontSize: '12px',
-  border: theme.palette.mode == 'light' ? '1px solid #C9D0E3' : '1px solid #4b5356',
+  border: theme.palette.mode == 'light' ? '1px solid #C9D0E3' : '1px solid #555D61',
   borderRadius: '4px',
   width: '100%',
   paddingLeft: `25px`,

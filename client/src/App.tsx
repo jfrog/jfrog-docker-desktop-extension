@@ -8,42 +8,72 @@ import { routes } from './config';
 import { Route as AppRoute } from './types';
 import { createTheme } from '@mui/material/styles';
 import { DefaultTheme } from '@mui/system';
+import deepmerge from 'deepmerge';
 
 function App() {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
   const appClient = new AppClient();
 
   const mergeDockerTheme = (dockerTheme: DefaultTheme) => {
-    const appTheme = createTheme({
-      ...dockerTheme,
-      typography: {
-        fontFamily: 'Open Sans',
-        h1: {
-          fontFamily: 'Roboto',
-          lineHeight: 'unset',
-          letterSpacing: '0',
-        },
+    const appTheme: DefaultTheme = {
+      palette: {
+        mode: prefersDarkMode ? 'dark' : 'light',
       },
       components: {
-        MuiButton: {
+        MuiTypography: {
           styleOverrides: {
             root: {
-              textTransform: 'none',
-              width: '120px',
-              height: '40px',
-              fontWeight: '700',
+              fontFamily: 'Open Sans',
+              lineHeight: 'unset',
+              letterSpacing: '0',
+            },
+            h1: {
+              fontFamily: 'Roboto',
             },
           },
         },
+        MuiLink: {
+          styleOverrides: {
+            root: {
+              cursor: 'pointer',
+              width: 'fit-content',
+            },
+          },
+        },
+        MuiTooltip: {
+          styleOverrides: {
+            tooltip: {
+              textTransform: 'none',
+              letterSpacing: 'inherit',
+              fontSize: '13px',
+              lineHeight: 'inherit',
+            },
+          },
+        },
+        MuiButton: {
+          styleOverrides: {
+            root: {
+              fontFamily: 'Open Sans',
+              width: '120px',
+              height: '40px',
+              fontSize: '14px',
+            },
+            outlined: {
+              color: '#007BFF',
+            },
+          },
+        },
+
         MuiCssBaseline: {
           styleOverrides: {
-            '#root': { position: 'relative', height: '100vh', padding: '40px 40px' },
+            '#root': {
+              position: 'relative',
+              height: '100vh',
+              padding: '40px 40px',
+            },
             '.MuiFormLabel-root > .MuiFormControl-root': {
               marginTop: '3px',
               background: '#fff',
-            },
-            '.MuiOutlinedInput-root': {
-              borderRadius: '4px',
             },
             '&::-webkit-scrollbar': {
               width: 7,
@@ -57,8 +87,8 @@ function App() {
           },
         },
       },
-    });
-    return appTheme;
+    };
+    return createTheme(deepmerge<DefaultTheme>(dockerTheme, appTheme));
   };
 
   return (

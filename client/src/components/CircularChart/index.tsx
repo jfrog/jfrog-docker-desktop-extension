@@ -25,7 +25,7 @@ export default function CircularChart({ items }: { items: string[] }) {
         return (
           <StyledCircle
             key={index}
-            lineHeight={`${15 * (items.length - 1) + index * 25}px`}
+            afterHeight={`${15 * (items.length - 1) + index * 25}px`}
             topLine={`${CORE_CIRCLE_SIZE - index + index * 20}px`}
             lineBorderColor={isCoreItem ? '#fb515b' : '#c7cee0'}
             top={`${centerTop}px`}
@@ -43,9 +43,7 @@ export default function CircularChart({ items }: { items: string[] }) {
                 style={{ marginRight: '5px' }}
               />
               <Tooltip title={item}>
-                <StyledCircleText fontSize="14px" color={isCoreItem ? '#fb515b' : 'inherit'}>
-                  {item}
-                </StyledCircleText>
+                <StyledCircleText color={isCoreItem ? '#fb515b' : 'inherit'}>{item}</StyledCircleText>
               </Tooltip>
             </StyledCircleTextWrapper>
           </StyledCircle>
@@ -55,7 +53,7 @@ export default function CircularChart({ items }: { items: string[] }) {
   );
 }
 
-const StyledCircle = styled(Box)<{ topLine: string; lineHeight: string; lineBorderColor: string }>`
+const StyledCircle = styled(Box)<{ topLine: string; afterHeight: string; lineBorderColor: string }>`
   position: absolute;
   left: 50%;
   display: inline-block;
@@ -70,7 +68,7 @@ const StyledCircle = styled(Box)<{ topLine: string; lineHeight: string; lineBord
     display: block;
     border-top: 2px solid ${({ lineBorderColor }) => lineBorderColor};
     border-left: 2px solid ${({ lineBorderColor }) => lineBorderColor};
-    height: ${({ lineHeight }) => lineHeight};
+    height: ${({ afterHeight }) => afterHeight};
     width: 36px;
     top: ${({ topLine }) => topLine};
     right: 99%;

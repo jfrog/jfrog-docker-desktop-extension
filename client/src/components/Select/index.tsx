@@ -1,13 +1,4 @@
-import {
-  Select,
-  SelectChangeEvent,
-  MenuItem,
-  FormControl,
-  OutlinedInput,
-  Box,
-  TextField,
-  Autocomplete,
-} from '@mui/material';
+import { FormControl, Box, TextField, Autocomplete } from '@mui/material';
 import { useState } from 'react';
 
 export type SelectProps = {

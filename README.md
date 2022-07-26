@@ -1,11 +1,11 @@
 <div align="center">
-    
- ![Docker pulls](https://img.shields.io/docker/pulls/jfrog/jfrog-docker-desktop-extension?style=for-the-badge)
-    
- [![Docker-Desktop-Extension-863x300-1](https://user-images.githubusercontent.com/29822394/167862029-11997794-9d66-4688-a5ff-698beebf50e4.png)](https://jfrog.com/blog/get-peace-of-mind-about-security-when-deploying-containers-from-docker-desktop/)
-  
- # JFrog Docker Desktop Extension
-  
+
+![Docker pulls](https://img.shields.io/docker/pulls/jfrog/jfrog-docker-desktop-extension?label=Docker%20Pulls&logo=Docker&style=for-the-badge)
+
+[![Docker-Desktop-Extension-863x300-1](https://user-images.githubusercontent.com/29822394/167862029-11997794-9d66-4688-a5ff-698beebf50e4.png)](https://jfrog.com/blog/get-peace-of-mind-about-security-when-deploying-containers-from-docker-desktop/)
+
+# JFrog Docker Desktop Extension
+
 </div>
 
 ## General
@@ -39,12 +39,8 @@ When clicking on a specific vulnerability, the view is expanded, to also include
 
 Using the JFrog Extension doesn't require a paid JFrog subscription.
 Follow these directions to proceed, based on your use case:
-* If you already have a JFrog environment which includes Xray, all you need to do is set the connection details through the UI.
-* If you don't have a JFrog environment, JFrog supports setting up an environment for free. The extension will then connect to this environment automatically. Please note that this new JFrog environment will be available for you as long as you need it.
 
-## 
+- If you already have a JFrog environment which includes Xray, all you need to do is set the connection details through the UI.
+- If you don't have a JFrog environment, JFrog supports setting up an environment for free. The extension will then connect to this environment automatically. Please note that this new JFrog environment will be available for you as long as you need it.
 
-
-
-
-
+##
