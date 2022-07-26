@@ -29,6 +29,7 @@ import UndoIcon from '@mui/icons-material/Undo';
 import CloudQueueIcon from '@mui/icons-material/CloudQueue';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import InfoIcon from '@mui/icons-material/Info';
+import CloudDoneIcon from '@mui/icons-material/CloudDone';
 
 export const SettingsPage = () => {
   const history = useHistory();
@@ -114,13 +115,22 @@ export const SettingsPage = () => {
   const ShowJfrogDetails = () => {
     const settingsLine = (key: string, value: string | undefined, link?: string) => {
       return (
-        <Box display="flex">
-          <Typography marginLeft="10px" marginRight="20px">
+        <Box display="flex" alignItems="center">
+          <Typography width="120px" marginLeft="10px" marginRight="20px">
             {key}
           </Typography>
-          <Link onClick={link ? () => ddClient?.host?.openExternal(link) : undefined}>
-            {value ?? <CircularProgress size="14px" color="success" />}
-          </Link>
+          {value ? (
+            <Button
+              variant="text"
+              sx={{ width: 'fit-content', height: '20px' }}
+              endIcon={<CloudDoneIcon color="success" />}
+              onClick={link ? () => ddClient?.host?.openExternal(link) : undefined}
+            >
+              {value}
+            </Button>
+          ) : (
+            <CircularProgress size="14px" color="success" />
+          )}
         </Box>
       );
     };
@@ -141,29 +151,40 @@ export const SettingsPage = () => {
       </Stack>
     );
   };
-
-  const fullConnectionDetails =
-    extensionConfig.url && ((extensionConfig.username && extensionConfig.password) || extensionConfig.accessToken);
-
-  const policyChanged = () => {
-    if (oldPolicy != policy) {
-      // Policy changed
+  const missingConnectionDetails = () => {
+    if (!extensionConfig.url) {
       return true;
-    } else if (oldExtensionConfig?.watches != extensionConfig.watches) {
-      // Same policy, different data
+    }
+    if (extensionConfig.authType === BASIC_AUTH && (!extensionConfig.username || !extensionConfig.password)) {
       return true;
-    } else if (oldExtensionConfig?.project != extensionConfig.project) {
-      // Same policy, different data
+    }
+    if (extensionConfig.authType === ACCESS_TOKEN && !extensionConfig.accessToken) {
       return true;
     }
     return false;
   };
 
+  const samePolicyDetails = () => {
+    if (oldPolicy != policy) {
+      // Policy changed
+      return false;
+    }
+    if (policy == Policy.Project && oldExtensionConfig?.project != extensionConfig.project) {
+      // Same policy, different data
+      return false;
+    }
+    if (policy == Policy.Watches && oldExtensionConfig?.watches != extensionConfig.watches) {
+      // Same policy, different data
+      return false;
+    }
+    return true;
+  };
+
   const saveButtonDisabled = () => {
     if (isEditConnectionDetails) {
-      return !fullConnectionDetails; //
+      return missingConnectionDetails(); // On edit mode , but not all details exist
     } else {
-      return !policyChanged;
+      return samePolicyDetails(); // Not edit mode and also policy not changed
     }
   };
 
@@ -180,7 +201,7 @@ export const SettingsPage = () => {
               <JfrogHeadline headline="JFrog Environment Settings" marginBottom="50px" />
             </Box>
             <Box flexGrow={1} overflow={'auto'} width="420px">
-              <Stack spacing={2}>
+              <Stack spacing={1}>
                 <Typography variant="h1" fontWeight="400" fontSize="19px" id="JFrog Environment Connection Details">
                   JFrog Environment Connection Details
                 </Typography>
@@ -201,12 +222,12 @@ export const SettingsPage = () => {
                   {isEditConnectionDetails && (
                     <LoadingButton
                       color="success"
-                      disabled={!fullConnectionDetails}
+                      disabled={missingConnectionDetails()}
                       loading={isTestingConnection}
                       variant="contained"
                       sx={{ width: 'fit-content' }}
                       onClick={HandleTestConnection}
-                      endIcon={<CloudQueueIcon />}
+                      startIcon={<CloudQueueIcon />}
                     >
                       Test Connection
                     </LoadingButton>
