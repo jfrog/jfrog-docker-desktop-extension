@@ -44,7 +44,6 @@ export const SetupEnvPage = () => {
             fontSize="18px"
             onClick={setupEnvHandler}
             sx={{
-              cursor: 'pointer',
               textDecoration: 'underline',
             }}
           >

@@ -138,7 +138,7 @@ export const ScanPage = () => {
     <>
       {getSettingsButton()}
 
-      <JfrogHeadline headline="JFrog Xray" marginBottom="50px" />
+      <JfrogHeadline headline="JFrog Xray Scan" marginBottom="50px" />
 
       <Box height="200px" display="flex" justifyContent="space-between">
         <Box width="calc(100% - 350px)" maxWidth="1000px">
@@ -172,7 +172,7 @@ export const ScanPage = () => {
       </Box>
 
       {scanResults ? (
-        <Box sx={{ transform: 'translateY(-40px)' }}>
+        <Box sx={{ transform: 'translateY(-30px)' }}>
           <Box display="flex">
             <Typography variant="h1" fontWeight="500" fontSize="18px">
               Image Scan Results
