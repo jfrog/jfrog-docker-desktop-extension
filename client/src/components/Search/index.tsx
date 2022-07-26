@@ -1,7 +1,7 @@
 import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
-import { useState, ChangeEventHandler } from 'react';
+import { ChangeEventHandler } from 'react';
 
 export default function Search({
   searchText,

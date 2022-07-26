@@ -4,32 +4,12 @@ import { BASIC_AUTH, ACCESS_TOKEN } from './constants';
 import { ddToast } from '../api/utils';
 
 // Save a new JFrog platform configurations
-export const Save = async (user: ExtensionConfig | undefined, skipPasswordValidation?: boolean): Promise<boolean> => {
-  if (!user) {
+export const Save = async (extensionConfig: ExtensionConfig | undefined): Promise<boolean> => {
+  if (!extensionConfig) {
     return false;
   }
   try {
-    if (!user.url) {
-      ddToast.warning('Please enter URL');
-      return false;
-    }
-    if (!user.authType || user.authType === BASIC_AUTH) {
-      if (!user.username) {
-        ddToast.warning('Please enter username');
-        return false;
-      }
-      if (!user.password && !skipPasswordValidation) {
-        ddToast.warning('Please enter password');
-        return false;
-      }
-    } else {
-      if (!user.accessToken && !skipPasswordValidation) {
-        ddToast.warning('Please enter access token');
-        return false;
-      }
-    }
-
-    await saveConfig(toJfrogCliConfig(user));
+    await saveConfig(toJfrogCliConfig(extensionConfig));
     return true;
   } catch (error: any) {
     ddToast.error(error.toString());

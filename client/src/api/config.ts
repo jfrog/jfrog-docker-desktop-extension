@@ -1,5 +1,5 @@
-import { execOnHost, isWindows, throwErrorAsString, ddClient } from './utils';
-
+import { execOnHost, isWindows, throwErrorAsString, ddClient, ddToast } from './utils';
+import { ExtensionConfig } from '../types';
 /**
  * There are two kinds of configurations that are managed and used in the extension:
  * 1. JfrogCliConfig - configurations that are used by JFrog CLI: JFrog Platform URL and credentials.
@@ -252,4 +252,30 @@ function buildConfigImportCmd(cliConfig: JfrogCliConfig, serverId?: string): str
   conf.serverId = serverId;
   const confToken = window.btoa(JSON.stringify(conf));
   return ['config', 'import', confToken];
+}
+
+/**
+ * Imports the default configuration from JFrog CLI, if it's already installed and configured on the host.
+ */
+export async function testJFrogPlatformConnection(cliConfig: ExtensionConfig | undefined): Promise<any> {
+  try {
+    let cmd = ['rt', 'ping'];
+    if (cliConfig) {
+      const url = cliConfig.url ?? '';
+      const trimUrl = url.endsWith('/') ? url.slice(0, -1) : url;
+      cmd.push(`--url=${trimUrl}/artifactory`);
+
+      if (cliConfig.username && cliConfig.password) {
+        cmd.push(`--user=${cliConfig.username}`);
+        cmd.push(`--password=${cliConfig.password}`);
+      } else {
+        cmd.push(`--access-token=${cliConfig.accessToken}`);
+      }
+    }
+    console.log('Running jfrog cli ping command', cmd);
+    const pingResponse = await execOnHost('runcli.sh', 'runcli.bat', cmd);
+    return pingResponse.stdout;
+  } catch (e) {
+    throwErrorAsString(e);
+  }
 }
