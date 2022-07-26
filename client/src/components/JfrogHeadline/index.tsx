@@ -15,18 +15,18 @@ export const JfrogHeadline = (props: Props) => (
         {props.headline}
       </Typography>
     </Box>
-    <Box display="flex" marginTop="5px">
-      <Typography sx={{ opacity: '0.6' }}>
-        {
-          'Shift left and run a deep recursive scan for security vulnerabilities through all the layers of a Docker Image.'
-        }
+    <Box display="flex" marginTop="5px" width="calc(100% - 130px)">
+      <Typography>
+        <span style={{ opacity: '0.6' }}>
+          Shift left and run a deep recursive scan for vulnerabilities through all the layers of an image
+        </span>
+        <Link
+          onClick={() => ddClient?.host?.openExternal('https://jfrog.com/integration/xray-docker-security-scanning/')}
+          sx={{ marginLeft: '5px', whiteSpace: 'nowrap' }}
+        >
+          Learn more
+        </Link>
       </Typography>
-      <Link
-        onClick={() => ddClient?.host?.openExternal('https://jfrog.com/integration/xray-docker-security-scanning/')}
-        sx={{ marginLeft: '5px' }}
-      >
-        Learn more
-      </Link>
     </Box>
   </Box>
 );
