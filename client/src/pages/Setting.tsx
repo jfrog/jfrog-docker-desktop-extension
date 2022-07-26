@@ -9,7 +9,6 @@ import {
   Button,
   Typography,
   CircularProgress,
-  Link,
   Tooltip,
 } from '@mui/material';
 import { useEffect, useState, useCallback } from 'react';
@@ -20,11 +19,9 @@ import { testJFrogPlatformConnection } from '../api/config';
 import { ACCESS_TOKEN, BASIC_AUTH } from '../utils/constants';
 import { Policy } from '../types/policy';
 import { LoadingButton } from '@mui/lab';
-import Loader from '../components/Loader';
 import { JfrogHeadline } from '../components/JfrogHeadline';
 import { CredentialsForm } from '../components/CredentialsForm/CredentialsForm';
-import { ddToast, ddClient, isDevelopment, getVersions, Versions } from '../api/utils';
-import EditIcon from '@mui/icons-material/Edit';
+import { ddToast, ddClient, getVersions, Versions } from '../api/utils';
 import UndoIcon from '@mui/icons-material/Undo';
 import CloudQueueIcon from '@mui/icons-material/CloudQueue';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
@@ -35,7 +32,6 @@ export const SettingsPage = () => {
   const history = useHistory();
   const [extensionConfig, setExtensionConfig] = useState<ExtensionConfig>({ authType: BASIC_AUTH });
   const [oldExtensionConfig, setOldExtensionConfig] = useState<ExtensionConfig | undefined>(undefined);
-  const [isWindowLoading, setWindowLoading] = useState(true);
   const [isButtonLoading, setButtonLoading] = useState(false);
   const [isEditConnectionDetails, setIsEditConnectionDetails] = useState(false);
   const [isTestingConnection, setIsTestingConnection] = useState(false);
@@ -60,9 +56,7 @@ export const SettingsPage = () => {
   }, []);
 
   useEffect(() => {
-    fetchData()
-      .then(() => setWindowLoading(false))
-      .catch(console.error);
+    fetchData().catch(console.error);
   }, [fetchData]);
 
   const HandleCancel = () => {
@@ -113,7 +107,7 @@ export const SettingsPage = () => {
   };
 
   const ShowJfrogDetails = () => {
-    const settingsLine = (key: string, value: string | undefined, link?: string) => {
+    const settingsLine = (key: string, value: string | undefined, link?: string, cloudIcon?: boolean) => {
       return (
         <Box display="flex" alignItems="center">
           <Typography width="120px" marginLeft="10px" marginRight="20px">
@@ -122,8 +116,8 @@ export const SettingsPage = () => {
           {value ? (
             <Button
               variant="text"
-              sx={{ width: 'fit-content', height: '20px' }}
-              endIcon={<CloudDoneIcon color="success" />}
+              sx={{ width: 'fit-content', minWidth: '0', height: '20px' }}
+              endIcon={cloudIcon ? <CloudDoneIcon color="success" /> : undefined}
               onClick={link ? () => ddClient?.host?.openExternal(link) : undefined}
             >
               {value}
@@ -136,7 +130,12 @@ export const SettingsPage = () => {
     };
     return (
       <Stack spacing={2}>
-        {settingsLine('Environment URL:', oldExtensionConfig?.url, oldExtensionConfig?.url)}
+        {settingsLine(
+          'Environment URL:',
+          oldExtensionConfig?.url?.endsWith('/') ? oldExtensionConfig?.url.slice(0, -1) : oldExtensionConfig?.url,
+          oldExtensionConfig?.url,
+          true
+        )}
         {settingsLine(
           'Xray Version:',
           versions.xrayVersion,
@@ -189,134 +188,127 @@ export const SettingsPage = () => {
   };
 
   return (
-    <>
-      {!isDevelopment && isWindowLoading ? (
-        <SpinnerWrapper className="login-wrapper">
-          <Loader />
-        </SpinnerWrapper>
-      ) : (
-        <>
-          <Wrapper>
-            <Box>
-              <JfrogHeadline headline="JFrog Environment Settings" marginBottom="50px" />
-            </Box>
-            <Box flexGrow={1} overflow={'auto'} width="420px">
-              <Stack spacing={1}>
-                <Typography variant="h1" fontWeight="400" fontSize="19px" id="JFrog Environment Connection Details">
-                  JFrog Environment Connection Details
-                </Typography>
+    <Wrapper>
+      <Box>
+        <JfrogHeadline headline="JFrog Environment Settings" marginBottom="50px" />
+      </Box>
+      <Box flexGrow={1} overflow={'auto'} width="420px">
+        <Stack spacing={2}>
+          <Typography variant="h1" fontWeight="400" fontSize="19px" id="JFrog Environment Connection Details">
+            JFrog Environment Connection Details
+          </Typography>
 
-                {isEditConnectionDetails
-                  ? CredentialsForm(extensionConfig, setExtensionConfig, history, isButtonLoading)
-                  : ShowJfrogDetails()}
-                <Box>
-                  <Button
-                    color="success"
-                    variant="contained"
-                    startIcon={isEditConnectionDetails ? <UndoIcon /> : <ManageAccountsIcon />}
-                    onClick={() => setIsEditConnectionDetails(!isEditConnectionDetails)}
-                    sx={{ width: 'fit-content', marginRight: '20px' }}
-                  >
-                    {isEditConnectionDetails ? 'Back' : 'Edit Connection Details'}
-                  </Button>
-                  {isEditConnectionDetails && (
-                    <LoadingButton
-                      color="success"
-                      disabled={missingConnectionDetails()}
-                      loading={isTestingConnection}
-                      variant="contained"
-                      sx={{ width: 'fit-content' }}
-                      onClick={HandleTestConnection}
-                      startIcon={<CloudQueueIcon />}
-                    >
-                      Test Connection
-                    </LoadingButton>
-                  )}
-                </Box>
-              </Stack>
-
-              <Box mt="35px">
-                <Box display="flex" alignItems="center">
-                  <Typography variant="h1" fontWeight="400" fontSize="19px" id="JFrog Environment Connection Details">
-                    Scanning Policy
-                  </Typography>
-                  <Tooltip
-                    placement="bottom"
-                    arrow
-                    title="Optionally use the Watches/Project fields to allow the security and license compliance information displayed on the scan results, to reflect the security policies required by your organization."
-                  >
-                    <InfoIcon sx={{ opacity: 0.5, marginLeft: '5px' }} />
-                  </Tooltip>
-                </Box>
-
-                <RadioGroup
-                  sx={{ marginLeft: '10px', marginTop: '10px' }}
-                  aria-labelledby="demo-radio-buttons-group-label"
-                  defaultValue={policy}
-                  name="radio-buttons-group"
-                >
-                  <FormControlLabel
-                    value="allVulnerabilities"
-                    onChange={() => setPolicy(Policy.Vulnerabilities)}
-                    control={<Radio />}
-                    label="All Vulnerabilities"
-                  />
-                  <FormControlLabel
-                    value="project"
-                    onChange={() => setPolicy(Policy.Project)}
-                    control={<Radio />}
-                    label="JFrog Project"
-                  />
-                  <Box ml={4}>
-                    {policy == Policy.Project && (
-                      <TextField
-                        placeholder="Project Name"
-                        defaultValue={extensionConfig.project}
-                        onChange={(e: any) => setExtensionConfig({ ...extensionConfig, project: e.target.value })}
-                        size="small"
-                        id="project"
-                      />
-                    )}
-                  </Box>
-                  <FormControlLabel
-                    value="watches"
-                    onChange={() => setPolicy(Policy.Watches)}
-                    control={<Radio />}
-                    label="Watches"
-                  />
-                  <Box ml={4}>
-                    {policy == Policy.Watches && (
-                      <TextField
-                        placeholder="watch1,watch2,..."
-                        defaultValue={extensionConfig.watches}
-                        onChange={(e: any) => setExtensionConfig({ ...extensionConfig, watches: e.target.value })}
-                        size="small"
-                        id="watches"
-                      />
-                    )}
-                  </Box>
-                </RadioGroup>
-              </Box>
-            </Box>
-
-            <Footer>
-              <Button variant="outlined" onClick={HandleCancel}>
-                Cancel
-              </Button>
-              <LoadingButton
-                type="submit"
-                disabled={saveButtonDisabled()}
-                loading={isButtonLoading}
-                onClick={HandleSave}
+          {isEditConnectionDetails
+            ? CredentialsForm(extensionConfig, setExtensionConfig, history, isTestingConnection || isButtonLoading)
+            : ShowJfrogDetails()}
+          <Box>
+            {oldExtensionConfig && (
+              <Button
+                disabled={isTestingConnection || isButtonLoading}
+                color="success"
                 variant="contained"
+                startIcon={isEditConnectionDetails ? <UndoIcon /> : <ManageAccountsIcon />}
+                onClick={() => setIsEditConnectionDetails(!isEditConnectionDetails)}
+                sx={{ width: 'fit-content', marginRight: '20px' }}
               >
-                Save
+                {isEditConnectionDetails ? 'Back' : 'Edit Connection Details'}
+              </Button>
+            )}
+            {isEditConnectionDetails && (
+              <LoadingButton
+                color="success"
+                disabled={missingConnectionDetails()}
+                loading={isTestingConnection}
+                variant="contained"
+                sx={{ width: 'fit-content' }}
+                onClick={HandleTestConnection}
+                startIcon={<CloudQueueIcon />}
+              >
+                Test Connection
               </LoadingButton>
-            </Footer>
-          </Wrapper>
-        </>
-      )}
-    </>
+            )}
+          </Box>
+        </Stack>
+
+        <Box mt="35px">
+          <Box display="flex" alignItems="center">
+            <Typography variant="h1" fontWeight="400" fontSize="19px" id="JFrog Environment Connection Details">
+              Scanning Policy
+            </Typography>
+            <Tooltip
+              placement="bottom"
+              arrow
+              title="Optionally use the Watches/Project fields to allow the security and license compliance information displayed on the scan results, to reflect the security policies required by your organization."
+            >
+              <InfoIcon sx={{ opacity: 0.5, marginLeft: '5px' }} />
+            </Tooltip>
+          </Box>
+
+          <RadioGroup
+            sx={{ marginLeft: '10px', marginTop: '10px' }}
+            aria-labelledby="demo-radio-buttons-group-label"
+            value={policy}
+            name="radio-buttons-group"
+          >
+            <FormControlLabel
+              value="allVulnerabilities"
+              onChange={() => setPolicy(Policy.Vulnerabilities)}
+              control={<Radio />}
+              label="All Vulnerabilities"
+            />
+            <FormControlLabel
+              value="project"
+              onChange={() => setPolicy(Policy.Project)}
+              control={<Radio />}
+              label="JFrog Project"
+            />
+            <Box ml={4}>
+              {policy == Policy.Project && (
+                <TextField
+                  placeholder="Project Name"
+                  defaultValue={extensionConfig.project}
+                  onChange={(e: any) => setExtensionConfig({ ...extensionConfig, project: e.target.value })}
+                  size="small"
+                  id="project"
+                />
+              )}
+            </Box>
+            <FormControlLabel
+              value="watches"
+              onChange={() => setPolicy(Policy.Watches)}
+              control={<Radio />}
+              label="Watches"
+            />
+            <Box ml={4}>
+              {policy == Policy.Watches && (
+                <TextField
+                  placeholder="watch1,watch2,..."
+                  defaultValue={extensionConfig.watches}
+                  onChange={(e: any) => setExtensionConfig({ ...extensionConfig, watches: e.target.value })}
+                  size="small"
+                  id="watches"
+                />
+              )}
+            </Box>
+          </RadioGroup>
+        </Box>
+      </Box>
+
+      <Footer>
+        <Button variant="outlined" onClick={HandleCancel}>
+          Cancel
+        </Button>
+        <LoadingButton
+          type="submit"
+          disabled={saveButtonDisabled() || isTestingConnection}
+          loading={isButtonLoading}
+          onClick={HandleSave}
+          variant="contained"
+        >
+          Save
+        </LoadingButton>
+      </Footer>
+    </Wrapper>
   );
 };
 

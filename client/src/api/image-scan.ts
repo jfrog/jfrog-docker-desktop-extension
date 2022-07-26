@@ -55,6 +55,7 @@ async function getScanResultsStr(imageTag: string): Promise<string> {
         },
         onError(error: any): void {
           console.error(error);
+          alert(error);
           reject(error);
         },
         onClose(exitCode: number): void {
