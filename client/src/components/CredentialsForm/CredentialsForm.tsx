@@ -115,6 +115,7 @@ export const CredentialsForm = (
                     label=""
                     type="password"
                     variant="outlined"
+                    defaultValue={extensionConfig.password ?? ''}
                   />
                 </Box>
               </>
@@ -128,6 +129,7 @@ export const CredentialsForm = (
                   size="small"
                   label=""
                   type="password"
+                  defaultValue={extensionConfig.accessToken ?? ''}
                   onChange={(e: any) => setExtensionConfig({ ...extensionConfig, accessToken: e.target.value })}
                 />
               </Box>

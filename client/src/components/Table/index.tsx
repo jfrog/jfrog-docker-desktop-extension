@@ -14,14 +14,12 @@ import {
   Link,
   Tooltip,
   Button,
-  Menu,
-  MenuItem,
 } from '@mui/material';
 import Search from '../Search';
 import { visuallyHidden } from '@mui/utils';
 import { VulnsColumnData } from '../../pages/Scan';
 import noIssuesIcon from '../../assets/no-issues.png';
-import { ContentCopy, KeyboardArrowDown } from '@mui/icons-material';
+import { ContentCopy } from '@mui/icons-material';
 import { useState } from 'react';
 import CircularChart from '../CircularChart';
 import exportCsv from '../../assets/csv.png';
@@ -39,10 +37,6 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Array
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
   };
 
   const getSortOrderIfExists = () => {
@@ -317,23 +311,6 @@ function getComparator(order: Order, orderBy: string, sortOrder?: string[]): (a:
     ? (a, b) => descendingComparator(a, b, orderBy, sortOrder)
     : (a, b) => -descendingComparator(a, b, orderBy, sortOrder);
 }
-
-const ExportCsvBox = styled(Button)`
-  padding-top: 10px;
-  margin-left: 10px;
-  background-color: #e6e6ed;
-  width: 28px;
-  min-width: 0;
-  height: 28px;
-  align-items: center;
-  display: flex;
-  justify-content: center;
-  border-radius: 3px;
-  cursor: pointer;
-  @media screen and (prefers-color-scheme: dark) {
-    background-color: #18222b;
-  }
-`;
 
 const StyledTable = styled(Table)`
   background-color: #e6e6ed;
