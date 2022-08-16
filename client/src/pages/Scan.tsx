@@ -116,8 +116,6 @@ export const ScanPage = () => {
       counter[vuln.severity.toString()]++;
     });
 
-    console.log('sdsdsd', vulns);
-
     setScanData((data) => ({
       ...data,
       [scanId]: { scanResults: vulns, severityCount: counter, isScanning: false },
