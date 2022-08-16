@@ -13,6 +13,7 @@ import {
   Collapse,
   Link,
   Tooltip,
+  Button,
 } from '@mui/material';
 import Search from '../Search';
 import { visuallyHidden } from '@mui/utils';
@@ -21,6 +22,8 @@ import noIssuesIcon from '../../assets/no-issues.png';
 import { ContentCopy } from '@mui/icons-material';
 import { useState } from 'react';
 import CircularChart from '../CircularChart';
+import exportCsv from '../../assets/csv.png';
+import { CSVLink } from 'react-csv';
 
 export default function DynamicTable({ columnsData, rows }: { columnsData: Array<VulnsColumnData>; rows: any[] }) {
   const [order, setOrder] = useState<Order>('asc');
@@ -29,9 +32,15 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Array
   const [rowHover, setRowHover] = useState<number | undefined>(undefined);
   const [rowOpen, setRowOpen] = useState<number | undefined>(undefined);
   const isEmptyTable = rows.length == 0;
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
 
   const getSortOrderIfExists = () => {
-    for (let col of columnsData) {
+    for (const col of columnsData) {
       if (col.id == orderBy) {
         return col.sortOrder;
       }
@@ -40,9 +49,9 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Array
 
   const includesSearchText = (row: any) => {
     let found = false;
-    for (let col of columnsData) {
-      let stringLines: string[] = Array.isArray(row[col.id]) ? row[col.id] : [row[col.id]];
-      for (let line of stringLines) {
+    for (const col of columnsData) {
+      const stringLines: string[] = Array.isArray(row[col.id]) ? row[col.id] : [row[col.id]];
+      for (const line of stringLines) {
         if (line.toLowerCase().includes(searchText.toLowerCase())) {
           found = true;
           break;
@@ -62,7 +71,7 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Array
   };
 
   const createCell = (col: VulnsColumnData, cellItem: string | string[], rowIndex: number, colIndex: number) => {
-    let cellBody: any = [];
+    const cellBody: any = [];
     // Add icon if needed
     if (col.iconList && typeof cellItem == 'string' && col.iconList[cellItem]) {
       cellBody.push(
@@ -70,7 +79,7 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Array
       );
     }
     // Add text lines
-    let stringLines = Array.isArray(cellItem) ? cellItem : [cellItem];
+    const stringLines = Array.isArray(cellItem) ? cellItem : [cellItem];
     stringLines.forEach((line: string, index: number) => {
       cellBody.push(
         <Box
@@ -136,7 +145,7 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Array
 
   const createTableButtons = () => {
     return (
-      <Box display="flex" justifyContent="space-between" alignItems="center">
+      <Box display="flex" alignItems="center" sx={{ justifyContent: 'space-between' }}>
         <Box display="flex" alignItems="center">
           <Search
             disabled={isEmptyTable}
@@ -144,13 +153,29 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Array
             onSelectChange={(e) => setSearchText(e.target.value)}
           />
           <Typography
-            onMouseDown={(e) => setSearchText('')}
+            onMouseDown={() => setSearchText('')}
             fontSize="12px"
             sx={{ cursor: isEmptyTable ? 'default' : 'pointer' }}
           >
             Clear
           </Typography>
         </Box>
+        <Button
+          variant="text"
+          sx={{ minWidth: '0', width: 'fit-content', height: '28px' }}
+          id="basic-button"
+          aria-controls={open ? 'basic-menu' : undefined}
+          aria-haspopup="true"
+          aria-expanded={open ? 'true' : undefined}
+          onClick={handleClick}
+        >
+          <img src={exportCsv} alt="csv" />
+          <CSVLink
+            style={{ position: 'absolute', width: '100%', height: '100%', left: 0 }}
+            data={rows}
+            headers={columnsData.map((col) => ({ label: col.label ?? col.id, key: col.id }))}
+          ></CSVLink>
+        </Button>
       </Box>
     );
   };
@@ -197,29 +222,15 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Array
                             <Collapse in={isRowOpen} timeout="auto" unmountOnExit>
                               <Box width="1" display="flex" justifyContent="space-between" maxHeight="250px">
                                 <Box paddingRight="20px" display="flex" flexDirection="column" maxWidth={2 / 3}>
-                                  <Typography fontWeight="600" fontSize="12px">
-                                    Summary:
-                                  </Typography>
+                                  <Typography fontWeight="600">Summary:</Typography>
                                   <Box marginBottom="10px" maxHeight="60%" overflow="hidden auto">
-                                    <Typography fontSize="12px" marginRight="10px">
-                                      {row.summary}
-                                    </Typography>
+                                    <Typography marginRight="10px">{row.summary}</Typography>
                                   </Box>
-                                  <Typography fontWeight="600" fontSize="12px">
-                                    References:
-                                  </Typography>
+                                  <Typography fontWeight="600">References:</Typography>
                                   <Box display="flex" flexDirection="column" flex="1" overflow="hidden auto">
                                     {row.references?.map((link: string, index: number) => {
                                       return (
-                                        <Link
-                                          key={'link' + index}
-                                          variant="subtitle2"
-                                          whiteSpace="nowrap"
-                                          sx={{
-                                            cursor: 'pointer',
-                                          }}
-                                          title={link}
-                                        >
+                                        <Link fontSize="13px" key={'link' + index} whiteSpace="nowrap" title={link}>
                                           {link}
                                         </Link>
                                       );
@@ -301,20 +312,6 @@ function getComparator(order: Order, orderBy: string, sortOrder?: string[]): (a:
     : (a, b) => -descendingComparator(a, b, orderBy, sortOrder);
 }
 
-const ExportCsvBox = styled(Box)`
-  background-color: #e6e6ed;
-  width: 28px;
-  height: 28px;
-  align-items: center;
-  display: flex;
-  justify-content: center;
-  border-radius: 3px;
-  cursor: pointer;
-  @media screen and (prefers-color-scheme: dark) {
-    background-color: #222e33;
-  }
-`;
-
 const StyledTable = styled(Table)`
   background-color: #e6e6ed;
   min-width: 750px;
@@ -366,6 +363,7 @@ const StyledTableHeadCell = styled(Typography)`
 
 const StyledTableHeadCellWrapper = styled(TableCell)`
   background-color: transparent;
+  border: 0;
   padding: 10px;
   padding-right: 0;
   min-width: 70px;

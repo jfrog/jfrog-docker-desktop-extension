@@ -2,8 +2,8 @@ import { styled, Box, Button, Link, Stack } from '@mui/material';
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { setupEnv } from '../api/setup-env';
+import { ddToast } from '../api/utils';
 import { JfrogHeadline } from '../components/JfrogHeadline';
-import { createDockerDesktopClient } from "@docker/extension-api-client";
 
 export const enum SetupStage {
   Idle,
@@ -14,8 +14,7 @@ export const enum SetupStage {
 }
 
 export const SetupEnvPage = () => {
-  let history = useHistory();
-  const ddClient = createDockerDesktopClient();
+  const history = useHistory();
   const [setupStage, setSetupStage] = useState<SetupStage>(SetupStage.Idle);
 
   const setupEnvHandler = () => {
@@ -23,7 +22,7 @@ export const SetupEnvPage = () => {
     setupEnv(() => setSetupStage(SetupStage.PreparingEnv))
       .then(() => {
         setSetupStage(SetupStage.Done);
-        ddClient.desktopUI.toast.success('Please verify your email address within the next 72 hours.');
+        ddToast.success('Please verify your email address within the next 72 hours.');
         history.push('/scan');
       })
       .catch(() => {
@@ -45,7 +44,6 @@ export const SetupEnvPage = () => {
             fontSize="18px"
             onClick={setupEnvHandler}
             sx={{
-              cursor: 'pointer',
               textDecoration: 'underline',
             }}
           >

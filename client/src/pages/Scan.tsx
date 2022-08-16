@@ -1,5 +1,6 @@
 import { Box, styled, Typography, SelectChangeEvent, CircularProgress, Button } from '@mui/material';
 import { useEffect, useState } from 'react';
+
 import Select from '../components/Select';
 import Table from '../components/Table';
 import { getImages, scanImage } from '../api/image-scan';
@@ -8,11 +9,11 @@ import { useHistory } from 'react-router-dom';
 import CloseIcon from '@mui/icons-material/Close';
 import { Severity } from '../types/severity';
 import { ImageData } from '../types/ImageData';
-import { VulnerabilityKeys, Vulnerability } from '../types/Vulnerability';
+import { VulnerabilityKeys, Vulnerability, Cve } from '../types/Vulnerability';
 import { SeverityIcons } from '../assets/severityIcons/SeverityIcons';
 import { TechIcons } from '../assets/techIcons/TechIcons';
 import PieChartBox, { ChartItemProps } from '../components/PieChart';
-import { createDockerDesktopClient } from "@docker/extension-api-client";
+import { ddToast } from '../api/utils';
 
 type ScanResults = {
   vulnerabilities: Array<Vulnerability>;
@@ -26,7 +27,6 @@ export const ScanPage = () => {
   const [selectedImage, setSelectedImage] = useState('');
   const [dockerImages, setDockerImages] = useState<string[]>([]);
   const [runningScanId, setRunningScanId] = useState(0);
-  const ddClient = createDockerDesktopClient();
 
   const [scanData, setScanData] = useState<{
     [scanId: string]: {
@@ -36,7 +36,7 @@ export const ScanPage = () => {
     };
   }>({});
 
-  let history = useHistory();
+  const history = useHistory();
 
   const handleChange = (selectedImage: string | null) => {
     setSelectedImage(selectedImage || '');
@@ -51,9 +51,9 @@ export const ScanPage = () => {
   useEffect(() => {
     const getDockerImages = async () => {
       try {
-        let imagesData: ImageData[] = await getImages();
+        const imagesData: ImageData[] = await getImages();
         console.log(imagesData);
-        let imagesList: string[] = [];
+        const imagesList: string[] = [];
         imagesData.forEach((image) => {
           image.RepoTags?.forEach((repoTag) => {
             if (repoTag != '<none>:<none>') {
@@ -63,7 +63,7 @@ export const ScanPage = () => {
         });
         setDockerImages(imagesList);
       } catch (e: any) {
-        ddClient.desktopUI.toast.error(e.toString());
+        ddToast.error(e.toString());
       }
     };
     getDockerImages();
@@ -77,18 +77,18 @@ export const ScanPage = () => {
     try {
       setRunningScanId(scanId);
       setScanData({ [scanId]: { ...scanData[scanId], scanResults: null, isScanning: true } });
-      let results: ScanResults = await scanImage(selectedImage);
+      const results: ScanResults = await scanImage(selectedImage);
       console.log(`[${scanId}] scan results for ${selectedImage}`, results);
       saveScanResults(scanId, results);
     } catch (e: any) {
       setScanData({ ...scanData, [scanId]: {} });
-      ddClient.desktopUI.toast.error(e.toString());
+      ddToast.error(e.toString());
     }
   };
 
   const saveScanResults = (scanId: number, results: ScanResults) => {
-    let vulns = results.vulnerabilities ?? results.securityViolations ?? [];
-    let counter: { [key: string]: number } = {
+    const vulns = results.vulnerabilities ?? results.securityViolations ?? [];
+    const counter: { [key: string]: number } = {
       [Severity.Critical]: 0,
       [Severity.High]: 0,
       [Severity.Medium]: 0,
@@ -100,12 +100,12 @@ export const ScanPage = () => {
       vuln.cveIds = [];
       vuln.cvssV2 = [];
       vuln.cvssV3 = [];
-      vuln.cves?.forEach((cve: any) => {
-        vuln.cveIds?.push(cve.id);
-        vuln.cvssV2?.push(cve.cvssV2);
-        vuln.cvssV3?.push(cve.cvssV3);
+      vuln.cves?.forEach((cve: Cve) => {
+        vuln.cveIds.push(cve.id);
+        vuln.cvssV2.push(cve.cvssV2);
+        vuln.cvssV3.push(cve.cvssV3);
       });
-      if (vuln.cveIds.join('') == '') {
+      if (vuln.cveIds?.join('') == '') {
         vuln.cveIds = [vuln.issueId];
       }
 
@@ -115,21 +115,16 @@ export const ScanPage = () => {
       }
       counter[vuln.severity.toString()]++;
     });
-    setScanData((data) => {
-      return {
-        ...data,
-        [scanId]: { scanResults: vulns, severityCount: counter, isScanning: false },
-      };
-    });
+
+    setScanData((data) => ({
+      ...data,
+      [scanId]: { scanResults: vulns, severityCount: counter, isScanning: false },
+    }));
   };
 
   const getSettingsButton = () => {
     return (
-      <Button
-        variant="outlined"
-        onClick={onSettingsClick}
-        sx={{ position: 'absolute', right: '40px', top: '40px', fontWeight: '700' }}
-      >
+      <Button variant="outlined" onClick={onSettingsClick} sx={{ position: 'absolute', right: '40px', top: '40px' }}>
         Settings
       </Button>
     );
@@ -141,11 +136,11 @@ export const ScanPage = () => {
     <>
       {getSettingsButton()}
 
-      <JfrogHeadline headline="JFrog Xray" marginBottom="50px" />
+      <JfrogHeadline headline="JFrog Xray Scan" marginBottom="50px" />
 
       <Box height="200px" display="flex" justifyContent="space-between">
         <Box width="calc(100% - 350px)" maxWidth="1000px">
-          <Typography variant="subtitle1">Select local image for scanning</Typography>
+          <Typography fontSize="16px">Select local image for scanning</Typography>
           <Box display="flex" width={'90%'}>
             <Select onChange={handleChange} options={dockerImages} />
             <ScanButton
@@ -175,10 +170,12 @@ export const ScanPage = () => {
       </Box>
 
       {scanResults ? (
-        <Box sx={{ transform: 'translateY(-40px)' }}>
-          <Typography variant="h1" fontWeight="500" fontSize="18px">
-            Image Scan Results
-          </Typography>
+        <Box sx={{ transform: 'translateY(-30px)' }}>
+          <Box display="flex">
+            <Typography variant="h1" fontWeight="500" fontSize="18px">
+              Image Scan Results
+            </Typography>
+          </Box>
           <Table columnsData={scanTableColumnsData} rows={scanResults} />
         </Box>
       ) : (
@@ -189,7 +186,7 @@ export const ScanPage = () => {
 };
 
 function getSeverityPieChart(severityCount: { [key: string]: number }) {
-  let chartItems: ChartItemProps[] = [
+  const chartItems: ChartItemProps[] = [
     {
       title: Severity.Critical,
       value: severityCount[Severity.Critical],
@@ -288,6 +285,7 @@ const ProgressBox = styled(Box)`
     background: #18222b;
   }
 `;
+
 const ScanButton = styled(Button)`
   margin-left: 30px;
   padding: 0 50px;
