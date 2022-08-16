@@ -150,7 +150,7 @@ export const SettingsPage = () => {
       </Stack>
     );
   };
-  const missingConnectionDetails = () => {
+  const isMissingConnectionDetails = () => {
     if (!extensionConfig.url) {
       return true;
     }
@@ -163,27 +163,27 @@ export const SettingsPage = () => {
     return false;
   };
 
-  const samePolicyDetails = () => {
-    if (oldPolicy != policy) {
-      // Policy changed
+  const isSamePolicyDetails = () => {
+    if (policy == Policy.Vulnerabilities && oldPolicy != Policy.Vulnerabilities) {
+      // Policy changed to all Vulnerabilities
       return false;
     }
-    if (policy == Policy.Project && oldExtensionConfig?.project != extensionConfig.project) {
+    if (policy == Policy.Project && extensionConfig.project && oldExtensionConfig?.project != extensionConfig.project) {
       // Same policy, different data
       return false;
     }
-    if (policy == Policy.Watches && oldExtensionConfig?.watches != extensionConfig.watches) {
+    if (policy == Policy.Watches && extensionConfig.watches && oldExtensionConfig?.watches != extensionConfig.watches) {
       // Same policy, different data
       return false;
     }
     return true;
   };
 
-  const saveButtonDisabled = () => {
+  const isSaveButtonDisabled = () => {
     if (isEditConnectionDetails) {
-      return missingConnectionDetails(); // On edit mode , but not all details exist
+      return isMissingConnectionDetails(); // On edit mode , but not all details filled
     } else {
-      return samePolicyDetails(); // Not edit mode and also policy not changed
+      return isSamePolicyDetails(); // Not edit mode and also policy not changed
     }
   };
 
@@ -217,7 +217,7 @@ export const SettingsPage = () => {
             {isEditConnectionDetails && (
               <LoadingButton
                 color="success"
-                disabled={missingConnectionDetails() || isButtonLoading}
+                disabled={isMissingConnectionDetails() || isButtonLoading}
                 loading={isTestingConnection}
                 variant="contained"
                 sx={{ width: 'fit-content' }}
@@ -300,7 +300,7 @@ export const SettingsPage = () => {
         </Button>
         <LoadingButton
           type="submit"
-          disabled={saveButtonDisabled() || isTestingConnection}
+          disabled={isSaveButtonDisabled() || isTestingConnection}
           loading={isButtonLoading}
           onClick={HandleSave}
           variant="contained"
@@ -318,12 +318,7 @@ const Wrapper = styled(Box)`
   flex-direction: column;
   justify-content: space-between;
 `;
-const SpinnerWrapper = styled(Box)`
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
+
 const Footer = styled(Box)`
   padding: 20px;
   padding-bottom: 0;
