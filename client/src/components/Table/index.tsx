@@ -184,7 +184,7 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Array
   const filteredRow = searchText == '' ? rows.slice() : rows.slice().filter((row) => includesSearchText(row));
   return (
     <Box sx={{ width: '100%' }}>
-      {createTableButtons()}
+      {!isEmptyTable && createTableButtons()}
 
       <TableContainer sx={{ overflow: 'hidden auto', maxHeight: 'calc(100vh - 430px)' }}>
         <StyledTable aria-label="collapsible table">
