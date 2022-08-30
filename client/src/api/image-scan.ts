@@ -17,7 +17,7 @@ export async function scanImage(imageTag: string): Promise<any> {
     scanResults = JSON.parse(scanResultsStr);
   } catch (e: any) {
     try {
-      scanResults = JSON.parse(e.stdout);
+      scanResults = JSON.parse(e);
       if (!scanResults.errors || scanResults.errors.length === 0) {
         throwErrorAsString(e);
       }
@@ -29,7 +29,7 @@ export async function scanImage(imageTag: string): Promise<any> {
   if (scanResults.errors && scanResults.errors.length > 0) {
     const errorMessage: string = scanResults.errors[0].errorMessage;
     // The error will always start with an uppercase letter.
-    throw errorMessage[0].toUpperCase() + errorMessage.substring(1);
+    throw 'Image scan failed. ' + errorMessage[0].toUpperCase() + errorMessage.substring(1);
   }
   return scanResults;
 }
@@ -38,9 +38,9 @@ async function getScanResultsStr(imageTag: string): Promise<string> {
   const config = await getConfig();
   const cmdArgs: string[] = ['docker', 'scan', imageTag, '--format', 'simple-json'];
   if (config.jfrogExtensionConfig.project != undefined) {
-    cmdArgs.push('--project', '"' + config.jfrogExtensionConfig.project + '"', '--fail=false');
+    cmdArgs.push('--project=' + config.jfrogExtensionConfig.project, '--fail=false');
   } else if (config.jfrogExtensionConfig.watches != undefined) {
-    cmdArgs.push('--watches', '"' + config.jfrogExtensionConfig.watches.join(',') + '"', '--fail=false');
+    cmdArgs.push('--watches=' + config.jfrogExtensionConfig.watches.join(','), '--fail=false');
   }
   let scanResultsStr = '';
   await new Promise<void>((resolve, reject) => {
@@ -62,8 +62,10 @@ async function getScanResultsStr(imageTag: string): Promise<string> {
           console.log('Image scan finished with exit code ' + exitCode);
           if (exitCode === 0) {
             resolve();
+          } else if (scanResultsStr != '') {
+            reject(scanResultsStr);
           } else {
-            reject('Image scan failed');
+            reject('Image Scan Failed.');
           }
         },
       },

@@ -168,6 +168,7 @@ export default function DynamicTable({ columnsData, rows }: { columnsData: Array
           aria-haspopup="true"
           aria-expanded={open ? 'true' : undefined}
           onClick={handleClick}
+          title="Export to CSV"
         >
           <img src={exportCsv} alt="csv" />
           <CSVLink
