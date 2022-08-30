@@ -8,7 +8,7 @@ interface Props {
 }
 
 export const JfrogHeadline = (props: Props) => (
-  <Box marginBottom={props.marginBottom}>
+  <Box marginBottom="40px">
     <Box display="flex">
       <img src={jfrogLogo} alt="jfrog logo" width="34px" height="32px" />
       <Typography variant="h1" fontSize="24px" marginLeft="10px">

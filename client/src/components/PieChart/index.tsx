@@ -41,7 +41,7 @@ export default function PieChartBox({ chartName, chartItems }: ChartProps) {
 
   return (
     <PieChartWrapper sx={{ backgroundColor: isDarkMode ? '#18222b' : '#e6e6ed' }}>
-      <Box display="flex" alignItems="center" marginLeft="20px" marginBottom="10px">
+      <Box display="flex" alignItems="center" marginLeft="20px">
         <img src={vulnIcon} alt="" height="16px" />
         <Typography fontWeight="600" fontSize="14px" marginLeft="5px">
           {chartName}
@@ -80,11 +80,11 @@ export default function PieChartBox({ chartName, chartItems }: ChartProps) {
 }
 
 const PieChartWrapper = styled(Box)`
-  width: 350px;
-  height: 200px;
+  width: 500px;
+  height: 165px;
+  margin-left: 30px;
   flex-direction: column;
   display: flex;
   justify-content: space-evenly;
-  padding-bottom: 10px;
   border-radius: 6px;
 `;
