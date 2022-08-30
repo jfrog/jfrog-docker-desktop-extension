@@ -60,8 +60,6 @@ export const SettingsPage = () => {
     } catch (e) {
       ddToast.error('Could not connect to JFrog Environment: ' + e);
     }
-    const versions = await getVersions();
-    setVersions(versions);
   }, []);
 
   useEffect(() => {
