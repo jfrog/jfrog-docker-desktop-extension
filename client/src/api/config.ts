@@ -272,7 +272,6 @@ export async function testJFrogPlatformConnection(cliConfig: ExtensionConfig | u
         cmd.push(`--access-token=${cliConfig.accessToken}`);
       }
     }
-    console.log('Running jfrog cli ping command', cmd);
     const pingResponse = await execOnHost('runcli.sh', 'runcli.bat', cmd);
     return pingResponse.stdout;
   } catch (e) {
