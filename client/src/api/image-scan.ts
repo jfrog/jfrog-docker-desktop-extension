@@ -17,7 +17,6 @@ export async function scanImage(imageTag: string): Promise<any> {
     scanResults = JSON.parse(scanResultsStr);
   } catch (e: any) {
     try {
-      console.error(e);
       scanResults = JSON.parse(e);
       if (!scanResults.errors || scanResults.errors.length === 0) {
         throwErrorAsString(e);
@@ -29,7 +28,6 @@ export async function scanImage(imageTag: string): Promise<any> {
   }
   if (scanResults.errors && scanResults.errors.length > 0) {
     const errorMessage: string = scanResults.errors[0].errorMessage;
-    console.log(errorMessage);
     // The error will always start with an uppercase letter.
     throw 'Image scan failed. ' + errorMessage[0].toUpperCase() + errorMessage.substring(1);
   }
@@ -49,7 +47,6 @@ async function getScanResultsStr(imageTag: string): Promise<string> {
     execOnHostAndStreamResult('runcli.sh', 'runcli.bat', cmdArgs, {
       stream: {
         onOutput(data: { stdout: string; stderr?: undefined } | { stdout?: undefined; stderr: string }): void {
-          console.log(data);
           if (data.stdout) {
             scanResultsStr += data.stdout;
           } else {
@@ -63,13 +60,13 @@ async function getScanResultsStr(imageTag: string): Promise<string> {
         },
         onClose(exitCode: number): void {
           console.log('Image scan finished with exit code ' + exitCode);
-          if (exitCode !== 0) {
-            if (scanResultsStr != '') {
-              reject(scanResultsStr);
-            }
+          if (exitCode === 0) {
+            resolve();
+          } else if (scanResultsStr != '') {
+            reject(scanResultsStr);
+          } else {
             reject('Image Scan Failed.');
           }
-          resolve();
         },
       },
     });
