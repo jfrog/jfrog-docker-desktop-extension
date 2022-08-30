@@ -103,7 +103,6 @@ export const ScanPage = () => {
       saveScanResults(scanId, results);
     } catch (e: any) {
       setScanData({ ...scanData, [scanId]: {} });
-
       ddToast.error(e.toString());
     }
   };
