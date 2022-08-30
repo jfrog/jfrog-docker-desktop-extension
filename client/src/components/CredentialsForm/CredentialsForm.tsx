@@ -1,4 +1,4 @@
-import { styled, TextField, Box, FormControlLabel, Radio, RadioGroup, Link, Typography, Stack } from '@mui/material';
+import { TextField, Box, FormControlLabel, Radio, RadioGroup, Link, Typography, Stack } from '@mui/material';
 
 import { Dispatch, SetStateAction } from 'react';
 import { BASIC_AUTH } from '../../utils/constants';
@@ -17,7 +17,7 @@ export const CredentialsForm = (
 
   return (
     <Box marginBottom="16px">
-      <Stack spacing={2} width="400px">
+      <Stack spacing={2}>
         <Box display="flex" alignItems="center">
           <Typography>{"Don't have a JFrog environment?"}</Typography>
           <Link

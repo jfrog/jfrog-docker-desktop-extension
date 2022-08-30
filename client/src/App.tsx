@@ -1,7 +1,7 @@
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { DockerMuiThemeProvider } from '@docker/docker-mui-theme';
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { AppContext } from './contexts';
 import { AppClient } from './clients';
 import { createTheme } from '@mui/material/styles';
@@ -11,7 +11,6 @@ import { LoginPage } from './pages/Login';
 import { ScanPage } from './pages/Scan';
 import { SetupEnvPage } from './pages/SetupEnv';
 import { SettingsPage } from './pages/Setting';
-import { CreatePage } from './pages/Create';
 
 export default function App() {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
@@ -105,7 +104,6 @@ export default function App() {
               <Route key={'login'} path={'/login'} element={<LoginPage />} />
               <Route key={'setupenv'} path={'/setupenv'} element={<SetupEnvPage />} />
               <Route key={'settings'} path={'/settings'} element={<SettingsPage />} />
-              <Route key={'create'} path={'/create'} element={<CreatePage />} />
               <Route path="*" element={<LoginPage />} />
             </Routes>
           </BrowserRouter>

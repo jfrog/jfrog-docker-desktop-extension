@@ -62,9 +62,7 @@ export const LoginPage = () => {
                   <Typography fontSize="34px" fontWeight="600">
                     Welcome
                   </Typography>
-                  <Box sx={{ fontSize: '13px', fontWeight: 'bold' }}>
-                    Enter Your JFrog Environment Connection Details
-                  </Box>
+                  <Box sx={{ fontSize: '13px', fontWeight: 'bold' }}>Enter Your JFrog Connection Details</Box>
                 </Box>
               </Title>
 

@@ -201,22 +201,24 @@ export const SettingsPage = () => {
   return (
     <Box justifyContent="space-between" display="flex" flexDirection="column" height="100%">
       <Box>
-        <JfrogHeadline headline="JFrog Environment Settings" marginBottom="50px" />
+        <JfrogHeadline headline="JFrog Environment Settings" />
         <Box display="flex" flexDirection="row" overflow={'auto'}>
-          <Stack spacing={2} width="50%" borderRight="1px solid #4b5356">
+          <Stack spacing={2} minWidth="50%" paddingRight="20px" borderRight="1px solid #4b5356">
             <Typography variant="h1" fontWeight="400" fontSize="19px" id="JFrog Environment Connection Details">
-              JFrog Environment Connection Details
+              JFrog Connection Details
             </Typography>
 
-            {isEditConnectionDetails
-              ? CredentialsForm(extensionConfig, setExtensionConfig, history, isTestingConnection || isButtonLoading)
-              : ShowJfrogDetails()}
+            <Box width="370px">
+              {isEditConnectionDetails
+                ? CredentialsForm(extensionConfig, setExtensionConfig, navigate, isTestingConnection || isButtonLoading)
+                : ShowJfrogDetails()}
+            </Box>
             <Box>
               {oldExtensionConfig && (
                 <Button
                   disabled={isTestingConnection || isButtonLoading}
-                  color="success"
-                  variant="contained"
+                  color={isEditConnectionDetails ? undefined : 'success'}
+                  variant={isEditConnectionDetails ? 'outlined' : 'contained'}
                   startIcon={isEditConnectionDetails ? <UndoIcon /> : <ManageAccountsIcon />}
                   onClick={() => setIsEditConnectionDetails(!isEditConnectionDetails)}
                   sx={{ width: 'fit-content', marginRight: '20px' }}

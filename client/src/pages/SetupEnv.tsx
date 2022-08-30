@@ -33,15 +33,15 @@ export const SetupEnvPage = () => {
 
   return (
     <>
-      <JfrogHeadline headline="Create a FREE JFrog Environment" marginBottom="50px" />
+      <JfrogHeadline headline="Create a FREE JFrog Environment" />
       <Stack direction="column" justifyContent="flex-start" alignItems="flex-start" spacing={0} margin={'50px'}>
-        <Box>You can set up a FREE JFrog environment in the cloud.</Box>
+        <Box>You can set up a FREE JFrog Environment in the cloud.</Box>
         <Box>
           {'We invite you to '}
           <Link
             underline="hover"
             fontWeight="700"
-            fontSize="18px"
+            fontSize="16px"
             onClick={setupEnvHandler}
             sx={{
               textDecoration: 'underline',
@@ -51,7 +51,7 @@ export const SetupEnvPage = () => {
           </Link>
           {' to create your environment.'}
         </Box>
-        <Box> Docker Desktop will automatically connect to your environment after the setup is complete.</Box>
+        <Box> Docker Desktop will automatically connect to your environment once the setup is complete.</Box>
 
         {(setupStage == SetupStage.WaitingForUser || setupStage == SetupStage.PreparingEnv) && (
           <Box width={1} marginTop="50px" display="flex" position="relative">
