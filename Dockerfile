@@ -4,7 +4,7 @@ RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
 RUN apt-get install -y nodejs
 RUN npm install -g yarn
 WORKDIR /host
-ARG jfrogCliVersion=2.25.0
+ARG jfrogCliVersion=2.25.1
 ARG TARGETARCH
 RUN if [ "$TARGETARCH" = "arm64" ]; then \
     curl -XGET "https://releases.jfrog.io/artifactory/jfrog-cli/v2-jf/$jfrogCliVersion/jfrog-cli-mac-arm64/jf" -L -k -g > jf-darwin; \
@@ -45,7 +45,7 @@ LABEL org.opencontainers.image.title="JFrog" \
     com.docker.extension.detailed-description="<p>The JFrog Docker Desktop Extension scans any of your local Docker images for security vulnerabilities. The scanning process is based on JFrog Xray's vast vulnerabilities database, which is continuously updated with the latest vulnerabilities. In addition, a dedicated Security Research Team within JFrog, continuously improves the JFrog Xray's detection methods, ensuring that Xray continues to be a leading security solution in the market.</p><h3>Deep recursive scanning</h3><p>When an image is scanned with the JFrog Extension, Xray recursively scans every package included in the Docker Image. Drilling down to analyze even the smallest binary component that affects your software. For example, when analyzing a Docker image, if Xray finds that it contains a Java application it will also analyze all the .jar files used in this application.</p><h3>Fixed versions</h3><p>The JFrog Extension not only allows the detection of vulnerable packages, but also displays the software versions that include the fixes, allowing you to upgrade the vulnerable packages and resolve the issue.</p><h3>Easy and intuitive interface</h3><p>When clicking on a specific vulnerability, the view is expanded, to also include the issue description, online references about the issue, and a graph showing the location of the vulnerability within the image.</p><h3>It is all available for free</h3><p>Using the JFrog Extension doesn't require a paid JFrog subscription. You can use your own existing JFrog environment, or set up a new one in just two steps.</p><video src=\"https://user-images.githubusercontent.com/29822394/167414572-df6b2d4f-9c77-4d93-9c82-500057e2ffda.mov\" controls=\"controls\" muted=\"muted\" style=\"max-width:100%;\"></video>" \
     com.docker.extension.publisher-url="https://jfrog.com" \
     com.docker.extension.additional-urls="[{\"title\":\"Documentation\",\"url\":\"https://github.com/jfrog/jfrog-docker-desktop-extension#readme\"},{\"title\":\"Source code\",\"url\":\"https://github.com/jfrog/jfrog-docker-desktop-extension\"},{\"title\":\"JFrog Xray documentation\",\"url\":\"https://www.jfrog.com/confluence/display/JFROG/JFrog+Xray\"}]" \
-    com.docker.extension.changelog="<p>Exciting New Features🎉</p><ul><li>New image scan animtaion</li><li>JFrog CLI version 2.25.0</li><li>Improve error and warning messages</li>/ul><p>Bug Fixes 🛠</p><ul><li>Fix scanning policy watches/project issue</li></ul>"
+    com.docker.extension.changelog="<p>Exciting New Features🎉</p><ul><li>New image scan animtaion</li><li>JFrog CLI version 2.25.1</li><li>Improve error and warning messages</li>/ul><p>Bug Fixes 🛠</p><ul><li>Fix scanning policy watches/project issue</li></ul>"
 COPY --from=client-builder /app/client/dist ui
 COPY resources/icon.svg .
 COPY metadata.json .
