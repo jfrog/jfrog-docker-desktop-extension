@@ -1,6 +1,6 @@
 import { styled, Box, Button, Link, Stack } from '@mui/material';
 import { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { setupEnv } from '../api/setup-env';
 import { ddToast } from '../api/utils';
 import { JfrogHeadline } from '../components/JfrogHeadline';
@@ -14,7 +14,7 @@ export const enum SetupStage {
 }
 
 export const SetupEnvPage = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const [setupStage, setSetupStage] = useState<SetupStage>(SetupStage.Idle);
 
   const setupEnvHandler = () => {
@@ -23,7 +23,7 @@ export const SetupEnvPage = () => {
       .then(() => {
         setSetupStage(SetupStage.Done);
         ddToast.success('Please verify your email address within the next 72 hours.');
-        history.push('/scan');
+        navigate('/scan');
       })
       .catch(() => {
         setSetupStage(SetupStage.Error);
@@ -75,13 +75,7 @@ export const SetupEnvPage = () => {
         )}
       </Stack>
       <DoneButton>
-        <Button
-          type="submit"
-          onClick={() => {
-            history.goBack();
-          }}
-          variant="outlined"
-        >
+        <Button type="submit" onClick={() => navigate(-1)} variant="outlined">
           Back
         </Button>
       </DoneButton>

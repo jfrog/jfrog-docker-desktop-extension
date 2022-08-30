@@ -17,7 +17,8 @@ export async function scanImage(imageTag: string): Promise<any> {
     scanResults = JSON.parse(scanResultsStr);
   } catch (e: any) {
     try {
-      scanResults = JSON.parse(e.stdout);
+      console.error(e);
+      scanResults = JSON.parse(e);
       if (!scanResults.errors || scanResults.errors.length === 0) {
         throwErrorAsString(e);
       }
@@ -28,8 +29,9 @@ export async function scanImage(imageTag: string): Promise<any> {
   }
   if (scanResults.errors && scanResults.errors.length > 0) {
     const errorMessage: string = scanResults.errors[0].errorMessage;
+    console.log(errorMessage);
     // The error will always start with an uppercase letter.
-    throw errorMessage[0].toUpperCase() + errorMessage.substring(1);
+    throw 'Image scan failed. ' + errorMessage[0].toUpperCase() + errorMessage.substring(1);
   }
   return scanResults;
 }
@@ -38,15 +40,16 @@ async function getScanResultsStr(imageTag: string): Promise<string> {
   const config = await getConfig();
   const cmdArgs: string[] = ['docker', 'scan', imageTag, '--format', 'simple-json'];
   if (config.jfrogExtensionConfig.project != undefined) {
-    cmdArgs.push('--project', '"' + config.jfrogExtensionConfig.project + '"', '--fail=false');
+    cmdArgs.push('--project=' + config.jfrogExtensionConfig.project, '--fail=false');
   } else if (config.jfrogExtensionConfig.watches != undefined) {
-    cmdArgs.push('--watches', '"' + config.jfrogExtensionConfig.watches.join(',') + '"', '--fail=false');
+    cmdArgs.push('--watches=' + config.jfrogExtensionConfig.watches.join(','), '--fail=false');
   }
   let scanResultsStr = '';
   await new Promise<void>((resolve, reject) => {
     execOnHostAndStreamResult('runcli.sh', 'runcli.bat', cmdArgs, {
       stream: {
         onOutput(data: { stdout: string; stderr?: undefined } | { stdout?: undefined; stderr: string }): void {
+          console.log(data);
           if (data.stdout) {
             scanResultsStr += data.stdout;
           } else {
@@ -60,11 +63,13 @@ async function getScanResultsStr(imageTag: string): Promise<string> {
         },
         onClose(exitCode: number): void {
           console.log('Image scan finished with exit code ' + exitCode);
-          if (exitCode === 0) {
-            resolve();
-          } else {
-            reject('Image scan failed');
+          if (exitCode !== 0) {
+            if (scanResultsStr != '') {
+              reject(scanResultsStr);
+            }
+            reject('Image Scan Failed.');
           }
+          resolve();
         },
       },
     });

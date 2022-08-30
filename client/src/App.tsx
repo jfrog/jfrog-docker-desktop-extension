@@ -1,16 +1,19 @@
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { DockerMuiThemeProvider } from '@docker/docker-mui-theme';
-import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { AppContext } from './contexts';
 import { AppClient } from './clients';
-import { routes } from './config';
-import { Route as AppRoute } from './types';
 import { createTheme } from '@mui/material/styles';
 import { DefaultTheme } from '@mui/system';
 import deepmerge from 'deepmerge';
+import { LoginPage } from './pages/Login';
+import { ScanPage } from './pages/Scan';
+import { SetupEnvPage } from './pages/SetupEnv';
+import { SettingsPage } from './pages/Setting';
+import { CreatePage } from './pages/Create';
 
-function App() {
+export default function App() {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
   const appClient = new AppClient();
 
@@ -97,17 +100,17 @@ function App() {
         <ThemeProvider theme={(dockerTheme) => mergeDockerTheme(dockerTheme)}>
           <CssBaseline />
           <BrowserRouter>
-            <Switch>
-              {routes.map((route: AppRoute) => (
-                <Route key={route.key} path={route.path} component={route.component} exact />
-              ))}
-              <Redirect to="/login" />
-            </Switch>
+            <Routes>
+              <Route key={'scan'} path={'/scan'} element={<ScanPage />} />
+              <Route key={'login'} path={'/login'} element={<LoginPage />} />
+              <Route key={'setupenv'} path={'/setupenv'} element={<SetupEnvPage />} />
+              <Route key={'settings'} path={'/settings'} element={<SettingsPage />} />
+              <Route key={'create'} path={'/create'} element={<CreatePage />} />
+              <Route path="*" element={<LoginPage />} />
+            </Routes>
           </BrowserRouter>
         </ThemeProvider>
       </DockerMuiThemeProvider>
     </AppContext.Provider>
   );
 }
-
-export default App;

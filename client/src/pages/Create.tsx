@@ -1,7 +1,7 @@
 import { styled, TextField, Stack, Box, Button, InputAdornment, IconButton } from '@mui/material';
 import ContentCopy from '@mui/icons-material/ContentCopy';
 import { useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { JfrogHeadline } from '../components/JfrogHeadline';
 import { LINUX_SETUP, WINDOWS_SETUP } from '../utils/constants';
@@ -9,7 +9,7 @@ import { isWindows } from '../api/utils';
 export const CreatePage = () => {
   const [copyText, setCopyText] = useState('');
   const [isCopied, setIsCopied] = useState(false);
-  const history = useHistory();
+  const navigate = useNavigate();
   const handleCopyClick = () => {
     navigator.clipboard
       .writeText(copyText)
@@ -51,7 +51,7 @@ export const CreatePage = () => {
           <Box mt={7}>
             <Stack spacing={0}>
               <Box>You can set up a FREE JFrog environment in the cloud.</Box>
-              <Box> Docker Desktop will automatically connect to your environment after the set up is complete.</Box>
+              <Box>Docker Desktop will automatically connect to your environment after the set up is complete.</Box>
               <Box>To set up the environment, all you need to do is run the following command from your terminal.</Box>
             </Stack>
           </Box>
@@ -83,7 +83,7 @@ export const CreatePage = () => {
         <Button
           type="submit"
           onClick={() => {
-            history.push('/scan');
+            navigate('/scan');
           }}
           variant="contained"
         >

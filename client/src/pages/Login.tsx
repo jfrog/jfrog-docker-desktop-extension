@@ -1,5 +1,5 @@
 import { styled, Box, Typography } from '@mui/material';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
 import jfrogLogo from '../assets/jfrog_logo.png';
@@ -16,14 +16,14 @@ export const LoginPage = () => {
   const [state, setState] = useState<ExtensionConfig>({ authType: BASIC_AUTH });
   const [isButtonLoading, setButtonLoading] = useState(false);
   const [isLoading, setLoading] = useState(true);
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const credentialsNotEmpty = state.url && ((state.username && state.password) || state.accessToken);
 
   const HandleConnect = async () => {
     setButtonLoading(true);
     if (await Save(state)) {
-      history.push('/scan');
+      navigate('/scan');
       ddToast.success("You're all set!");
     }
     setButtonLoading(false);
@@ -36,7 +36,7 @@ export const LoginPage = () => {
       isConfigured()
         .then((configured) => {
           if (configured) {
-            history.push('/scan');
+            navigate('/scan');
           }
         })
         .finally(() => {
