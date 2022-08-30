@@ -1,6 +1,6 @@
 import { styled, Box, Button, Link, Stack } from '@mui/material';
 import { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { setupEnv } from '../api/setup-env';
 import { ddToast } from '../api/utils';
 import { JfrogHeadline } from '../components/JfrogHeadline';
@@ -14,7 +14,7 @@ export const enum SetupStage {
 }
 
 export const SetupEnvPage = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const [setupStage, setSetupStage] = useState<SetupStage>(SetupStage.Idle);
 
   const setupEnvHandler = () => {
@@ -23,7 +23,7 @@ export const SetupEnvPage = () => {
       .then(() => {
         setSetupStage(SetupStage.Done);
         ddToast.success('Please verify your email address within the next 72 hours.');
-        history.push('/scan');
+        navigate('/scan');
       })
       .catch(() => {
         setSetupStage(SetupStage.Error);
@@ -33,15 +33,15 @@ export const SetupEnvPage = () => {
 
   return (
     <>
-      <JfrogHeadline headline="Create a FREE JFrog Environment" marginBottom="50px" />
+      <JfrogHeadline headline="Create a FREE JFrog Environment" />
       <Stack direction="column" justifyContent="flex-start" alignItems="flex-start" spacing={0} margin={'50px'}>
-        <Box>You can set up a FREE JFrog environment in the cloud.</Box>
+        <Box>You can set up a FREE JFrog Environment in the cloud.</Box>
         <Box>
           {'We invite you to '}
           <Link
             underline="hover"
             fontWeight="700"
-            fontSize="18px"
+            fontSize="16px"
             onClick={setupEnvHandler}
             sx={{
               textDecoration: 'underline',
@@ -51,7 +51,7 @@ export const SetupEnvPage = () => {
           </Link>
           {' to create your environment.'}
         </Box>
-        <Box> Docker Desktop will automatically connect to your environment after the setup is complete.</Box>
+        <Box> Docker Desktop will automatically connect to your environment once the setup is complete.</Box>
 
         {(setupStage == SetupStage.WaitingForUser || setupStage == SetupStage.PreparingEnv) && (
           <Box width={1} marginTop="50px" display="flex" position="relative">
@@ -75,13 +75,7 @@ export const SetupEnvPage = () => {
         )}
       </Stack>
       <DoneButton>
-        <Button
-          type="submit"
-          onClick={() => {
-            history.goBack();
-          }}
-          variant="outlined"
-        >
+        <Button type="submit" onClick={() => navigate(-1)} variant="outlined">
           Back
         </Button>
       </DoneButton>
