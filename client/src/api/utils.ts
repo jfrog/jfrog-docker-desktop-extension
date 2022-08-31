@@ -29,14 +29,13 @@ export function getDockerDesktopClient() {
 }
 
 export function throwErrorAsString(e: any) {
-  ddToast.warning('You can find the logs in your home directory under ".jfrog-docker-desktop-extension/logs".');
+  ddToast.warning('You can find logs in your home directory under ".jfrog-docker-desktop-extension/logs".');
   if (typeof e === 'string') {
     throw e;
-  } else if (!e || e.stderr !== undefined) {
-    throw 'An error occurred';
+  } else if (e && e.stderr) {
+    throw e.stderr;
   }
-
-  throw e.toString();
+  throw 'An error occurred';
 }
 
 /**
