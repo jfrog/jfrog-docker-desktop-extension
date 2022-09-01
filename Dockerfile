@@ -56,9 +56,3 @@ COPY --from=client-builder host/jf-windows.exe host/windows/jf.exe
 COPY --from=client-builder host/jf-linux host/linux/jf
 
 CMD [ "sleep", "infinity" ]
-
-
-
-
-
-
