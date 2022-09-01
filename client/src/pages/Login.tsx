@@ -13,23 +13,28 @@ import { LoadingButton } from '@mui/lab';
 import { ddToast } from '../api/utils';
 
 export const LoginPage = () => {
-  const [state, setState] = useState<ExtensionConfig>({ authType: BASIC_AUTH });
+  const [extensionConfig, setExtensionConfig] = useState<ExtensionConfig>({ authType: BASIC_AUTH });
   const [isButtonLoading, setButtonLoading] = useState(false);
   const [isLoading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  const credentialsNotEmpty = state.url && ((state.username && state.password) || state.accessToken);
+  const credentialsNotEmpty =
+    extensionConfig.url && ((extensionConfig.username && extensionConfig.password) || extensionConfig.accessToken);
 
   const HandleConnect = async () => {
     setButtonLoading(true);
-    if (await Save(state)) {
+    if (extensionConfig.authType === BASIC_AUTH) {
+      extensionConfig.accessToken = undefined;
+    } else {
+      extensionConfig.username = undefined;
+      extensionConfig.password = undefined;
+    }
+    if (await Save(extensionConfig)) {
       navigate('/scan');
       ddToast.success("You're all set!");
     }
     setButtonLoading(false);
   };
-
-  let myState = state;
 
   useEffect(() => {
     if (isLoading) {
@@ -67,14 +72,13 @@ export const LoginPage = () => {
               </Title>
 
               <Box
-                sx={{ minHeight: '500px' }}
                 onKeyDown={(event) => {
                   if (credentialsNotEmpty && event.key === 'Enter') {
                     HandleConnect();
                   }
                 }}
               >
-                {CredentialsForm(myState, setState, history, isButtonLoading)}
+                {CredentialsForm(extensionConfig, setExtensionConfig, navigate, isButtonLoading)}
                 <LoadingButton
                   sx={{ width: '100%' }}
                   disabled={!credentialsNotEmpty}
