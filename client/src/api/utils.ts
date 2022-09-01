@@ -88,11 +88,10 @@ export class Versions {
 export async function getVersions(): Promise<Versions> {
   const versions: Versions = new Versions();
   try {
-    const xrayVersionPromise = execOnHost('runcli.sh', 'runcli.bat', ['xr', 'curl', 'api/v1/system/version']);
-    const jfrogCliVersionPromise = execOnHost('runcli.sh', 'runcli.bat', ['-v']);
-    const results = await Promise.all([xrayVersionPromise, jfrogCliVersionPromise]);
-    const xrayResult = JSON.parse(results[0].stdout);
-    const jfrogCliResult = results[1].stdout.trim().split(' ');
+    const xrayVersionPromise = await execOnHost('runcli.sh', 'runcli.bat', ['xr', 'curl', 'api/v1/system/version']);
+    const jfrogCliVersionPromise = await execOnHost('runcli.sh', 'runcli.bat', ['-v']);
+    const xrayResult = JSON.parse(xrayVersionPromise.stdout);
+    const jfrogCliResult = jfrogCliVersionPromise.stdout.trim().split(' ');
     versions.xrayVersion = xrayResult.xray_version;
     versions.jfrogCliVersion = jfrogCliResult[jfrogCliResult.length - 1];
   } catch (e) {
