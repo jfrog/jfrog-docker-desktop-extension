@@ -39,11 +39,11 @@ export class JfrogExtensionConfig {
 export async function importConfigFromHostCli(): Promise<void> {
   const exportResponse = await execOnHost('jf', 'jf.exe', ['config', 'export']);
   const serverToken = exportResponse.stdout;
-  const importPromise = execOnHost('runcli.sh', 'runcli.bat', ['config', 'import', serverToken]);
+  const importPromise = await execOnHost('runcli.sh', 'runcli.bat', ['config', 'import', serverToken]);
   const jfrogExtensionConf = new JfrogExtensionConfig();
   jfrogExtensionConf.jfrogCliConfigured = true;
-  const saveExtensionPromise = editJfrogExtensionConfig(jfrogExtensionConf);
-  await Promise.all([importPromise, saveExtensionPromise]);
+  const saveExtensionPromise = await editJfrogExtensionConfig(jfrogExtensionConf);
+  await [importPromise, saveExtensionPromise];
 }
 
 /**
@@ -73,13 +73,12 @@ export async function saveConfig(config: Config): Promise<void> {
  * Password and access token are omitted.
  */
 export async function getConfig(): Promise<Config> {
-  const jfrogExtensionConfPromise = getJfrogExtensionConfig();
-  const cliConfPromise = getJfrogCliConfig();
+  const jfrogExtensionConfPromise =await getJfrogExtensionConfig();
+  const cliConfPromise =await getJfrogCliConfig();
   const config: Config = new Config();
   try {
-    const results = await Promise.all([jfrogExtensionConfPromise, cliConfPromise]);
-    config.jfrogExtensionConfig = results[0];
-    config.jfrogCliConfig = results[1];
+    config.jfrogExtensionConfig = jfrogExtensionConfPromise;
+    config.jfrogCliConfig = cliConfPromise;
   } catch (e) {
     throwErrorAsString(e);
   }

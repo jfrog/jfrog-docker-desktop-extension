@@ -100,10 +100,18 @@ export default function App() {
           <CssBaseline />
           <BrowserRouter>
             <Routes>
-              <Route key={'scan'} path={'/scan'} element={<ScanPage />} />
-              <Route key={'login'} path={'/login'} element={<LoginPage />} />
-              <Route key={'setupenv'} path={'/setupenv'} element={<SetupEnvPage />} />
-              <Route key={'settings'} path={'/settings'} element={<SettingsPage />} />
+              <Route path={'/scan'} element={<ScanPage />} />
+              <Route path={'C:/scan'} element={<ScanPage />} />
+
+              <Route path={'/settings'} element={<SettingsPage />} />
+              <Route path={'C:/settings'} element={<SettingsPage />} />
+
+              <Route path={'/login'} element={<LoginPage />} />
+              <Route path={'C:/login'} element={<LoginPage />} />
+
+              <Route path={'/setupenv'} element={<SetupEnvPage />} />
+              <Route path={'C:/setupenv'} element={<SetupEnvPage />} />
+
               <Route path="*" element={<LoginPage />} />
             </Routes>
           </BrowserRouter>

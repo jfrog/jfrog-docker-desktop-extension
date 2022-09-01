@@ -78,7 +78,7 @@ export const LoginPage = () => {
                   }
                 }}
               >
-                {CredentialsForm(extensionConfig, setExtensionConfig, history, isButtonLoading)}
+                {CredentialsForm(extensionConfig, setExtensionConfig, navigate, isButtonLoading)}
                 <LoadingButton
                   sx={{ width: '100%' }}
                   disabled={!credentialsNotEmpty}
