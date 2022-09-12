@@ -42,6 +42,14 @@ body:
       required: false
 
   - type: input
+    id: docker-version
+    attributes:
+      label: Docker Client and Desktop info
+      description: using 'docker version' command on your CLI
+    validations:
+      required: true
+      
+  - type: input
     id: jfrog-docker-version
     attributes:
       label: JFrog Docker Desktop Extension version
