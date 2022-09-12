@@ -1,7 +1,9 @@
 ---
 name: "🐛 Bug Report"
 description: Create a report to help us improve
+title: "(short issue description)"
 labels: [ bug ]
+assignees: []
 body:
   - type: textarea
     id: description
@@ -39,14 +41,6 @@ body:
     validations:
       required: false
 
-  - type: input
-    id: docker-version
-    attributes:
-      label: Docker Client and Desktop info
-      description: using 'docker version' command on your CLI
-    validations:
-      required: true
-      
   - type: input
     id: jfrog-docker-version
     attributes:
