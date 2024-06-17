@@ -34,13 +34,3 @@ After selecting the image to scan, the vulnerabilities are displayed in a table,
 Furthermore, you can filter the displayed vulnerabilities using a simple search.
 
 When clicking on a specific vulnerability, the view is expanded, to also include the issue description, online references about the issue, and a graph showing the location of the vulnerability within the image.
-
-## It is all available for free
-
-Using the JFrog Extension doesn't require a paid JFrog subscription.
-Follow these directions to proceed, based on your use case:
-
-- If you already have a JFrog environment which includes Xray, all you need to do is set the connection details through the UI.
-- If you don't have a JFrog environment, JFrog supports setting up an environment for free. The extension will then connect to this environment automatically. Please note that this new JFrog environment will be available for you as long as you need it.
-
-##
