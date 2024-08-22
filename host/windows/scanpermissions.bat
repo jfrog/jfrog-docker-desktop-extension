@@ -2,10 +2,7 @@
 
 :: Checks whether the user has permissions to run scans in Xray.
 :: The return value (in stdout) is the HTTP code returned from Xray.
-
 set "JFROG_CLI_HOME_DIR=%USERPROFILE%\.jfrog-docker-desktop-extension"
-
-:: Debug: Echo the JFROG_CLI_HOME_DIR path
 
 :: Run the JFrog CLI with the specified command.
 :: Handle paths with spaces by wrapping the command in quotes.
