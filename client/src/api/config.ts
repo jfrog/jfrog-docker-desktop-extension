@@ -108,6 +108,7 @@ export async function getJfrogExtensionConfig(): Promise<JfrogExtensionConfig> {
 
   let jfrogExtensionConfig: JfrogExtensionConfig;
   try {
+    console.log(cmdResult.stdout);
     jfrogExtensionConfig = JSON.parse(cmdResult.stdout);
   } catch (e: any) {
     console.log('Failed while parsing configuration file', e);
@@ -148,6 +149,8 @@ async function getJfrogCliConfigServerId(): Promise<string | undefined> {
 async function getJfrogCliFullConfig(): Promise<any> {
   let cliConfigRes;
   const cliConfResult = await execOnHost('runcli.sh', 'runcli.bat', ['config', 'export']);
+  console.log(cliConfResult);
+  
   cliConfigRes = JSON.parse(window.atob(cliConfResult.stdout));
   return cliConfigRes;
 }
