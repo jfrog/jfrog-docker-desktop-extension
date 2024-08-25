@@ -1,59 +1,34 @@
 import { styled, Box, Button, Link, Stack } from '@mui/material';
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { setupEnv } from '../api/setup-env';
-import { ddToast } from '../api/utils';
+import { ddClient } from '../api/utils';
 import { JfrogHeadline } from '../components/JfrogHeadline';
 
-export const enum SetupStage {
-  Idle,
-  WaitingForUser,
-  PreparingEnv,
-  Done,
-  Error,
-}
+const FREE_TRIAL_LINK : string = "https://jfrog.com/start-free/";
 
 export const SetupEnvPage = () => {
   const navigate = useNavigate();
-  const [setupStage, setSetupStage] = useState<SetupStage>(SetupStage.Idle);
-
-  const setupEnvHandler = () => {
-    setSetupStage(SetupStage.WaitingForUser);
-    setupEnv(() => setSetupStage(SetupStage.PreparingEnv))
-      .then(() => {
-        setSetupStage(SetupStage.Done);
-        ddToast.success('Please verify your email address within the next 72 hours.');
-        navigate('/scan');
-      })
-      .catch(() => {
-        setSetupStage(SetupStage.Error);
-        console.error;
-      });
-  };
 
   return (
     <>
-      <JfrogHeadline headline="Create a FREE JFrog Environment" />
+      <JfrogHeadline headline="Create a FREE TRIAL JFrog Environment" />
       <Stack direction="column" justifyContent="flex-start" alignItems="flex-start" spacing={0} margin={'50px'}>
-        <Box>You can set up a FREE JFrog Environment in the cloud.</Box>
+        <Box>You can set up a FREE TRIAL JFrog Environment.</Box>
         <Box>
           {'We invite you to '}
           <Link
             underline="hover"
             fontWeight="700"
             fontSize="16px"
-            onClick={setupEnvHandler}
+            onClick={() => ddClient?.host?.openExternal(FREE_TRIAL_LINK)}
             sx={{
               textDecoration: 'underline',
             }}
           >
-            sign in here
+            sign up here
           </Link>
           {' to create your environment.'}
         </Box>
-        <Box> Docker Desktop will automatically connect to your environment once the setup is complete.</Box>
-
-        {(setupStage == SetupStage.WaitingForUser || setupStage == SetupStage.PreparingEnv) && (
+        <Box> Upon Completion, you will be able to sign in with your new environment and credentials </Box>
           <Box width={1} marginTop="50px" display="flex" position="relative">
             <video width={'100%'} muted autoPlay loop style={{ objectFit: 'cover', transform: 'scaleX(-1)' }}>
               <source src={'https://media.jfrog.com/wp-content/uploads/2021/12/29120758/drop-1.mp4'} type="video/mp4" />
@@ -69,10 +44,8 @@ export const SetupEnvPage = () => {
               fontWeight="600"
               zIndex="1000"
             >
-              {setupStage == SetupStage.WaitingForUser ? 'Waiting for you to sign in...' : 'Completing the setup...'}
             </Box>
           </Box>
-        )}
       </Stack>
       <DoneButton>
         <Button type="submit" onClick={() => navigate(-1)} variant="outlined">
@@ -82,11 +55,6 @@ export const SetupEnvPage = () => {
     </>
   );
 };
-
-const Title = styled(Box)`
-  display: flex;
-  align-items: flex-start;
-`;
 
 const DoneButton = styled(Box)`
   position: absolute;
