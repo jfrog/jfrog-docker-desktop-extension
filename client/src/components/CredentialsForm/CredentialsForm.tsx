@@ -33,7 +33,7 @@ export const CredentialsForm = (
               alignItems: 'center',
             }}
           >
-            Create one for FREE
+            Create a FREE TRIAL
             <OpenInIcon sx={{ marginLeft: '3px', fontSize: '18px' }} />
           </Link>
         </Box>

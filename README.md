@@ -41,6 +41,6 @@ Using the JFrog Extension doesn't require a paid JFrog subscription.
 Follow these directions to proceed, based on your use case:
 
 - If you already have a JFrog environment which includes Xray, all you need to do is set the connection details through the UI.
-- If you don't have a JFrog environment, JFrog supports setting up an environment for free. The extension will then connect to this environment automatically. Please note that this new JFrog environment will be available for you as long as you need it.
+- If you don't have a JFrog environment, JFrog supports setting up an environment with a free trial. The extension will then connect to this environment automatically. Please note, if no payment method is added, that this new JFrog environment will not be available after the trial period ends.
 
 ##
