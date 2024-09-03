@@ -47,6 +47,7 @@ LABEL org.opencontainers.image.title="JFrog" \
     com.docker.extension.additional-urls="[{\"title\":\"Documentation\",\"url\":\"https://github.com/jfrog/jfrog-docker-desktop-extension#readme\"},{\"title\":\"Source code\",\"url\":\"https://github.com/jfrog/jfrog-docker-desktop-extension\"},{\"title\":\"JFrog Xray documentation\",\"url\":\"https://www.jfrog.com/confluence/display/JFROG/JFrog+Xray\"}]" \
     com.docker.extension.changelog="<p>New Improvements 📈</p><ul><li>Improved encryption for user credentials</li></ul><p>Bug Fixes 🛠</p><ul><li>Fixed login issues for Windows users</li><li>Fixed the free environment link</li></ul>"
 
+
 COPY --from=client-builder /app/client/dist ui
 COPY resources/icon.svg .
 COPY metadata.json .
