@@ -1,4 +1,4 @@
-import { execOnHost, isWindows, throwErrorAsString, ddClient, ddToast } from './utils';
+import { execOnHost, isWindows, throwErrorAsString, ddClient } from './utils';
 import { ExtensionConfig } from '../types';
 /**
  * There are two kinds of configurations that are managed and used in the extension:

@@ -1,4 +1,4 @@
-import { Box, styled, Typography, SelectChangeEvent, CircularProgress, Button, useTheme } from '@mui/material';
+import { Box, styled, Typography, CircularProgress, Button, useTheme } from '@mui/material';
 import { useEffect, useState } from 'react';
 
 import Select from '../components/Select';
