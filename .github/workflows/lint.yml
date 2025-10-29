@@ -16,6 +16,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Start FastCI Optimization
+        uses: jfrog-fastci/fastci@main
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          fastci_otel_token: ${{ secrets.FASTCI_TOKEN }}
+
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
